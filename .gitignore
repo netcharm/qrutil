@@ -1,0 +1,4 @@
+*.suo
+*.user
+/QRUtils/bin
+/QRUtils/obj
