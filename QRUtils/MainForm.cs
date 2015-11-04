@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using Gettext.WinForm;
 using ZXing;
 using ZXing.Common;
 using ZXing.QrCode;
@@ -15,7 +14,7 @@ namespace QRUtils
         public MainForm()
         {
             InitializeComponent();
-            I18N i10n = new I18N("GetTextUtils", this);
+            Application.EnableVisualStyles();
         }
 
         private String QRDecode()
@@ -86,7 +85,7 @@ namespace QRUtils
             }
             if (!success)
             {
-                MessageBox.Show(I18N.GetString("Failed to find QRCode"));
+                MessageBox.Show("Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return(String.Empty);
             }
             else
@@ -137,14 +136,24 @@ namespace QRUtils
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnClipTo_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(edText.Text);
+            if (!String.IsNullOrEmpty( edText.Text ))
+            {
+                Clipboard.SetText(edText.Text);
+            }
         }
 
         private void btnClipFrom_Click(object sender, EventArgs e)
+        {           
+            edText.Text = Clipboard.GetText(TextDataFormat.UnicodeText);
+        }
+
+        private void edText_TextChanged(object sender, EventArgs e)
         {
-            edText.Text = Clipboard.GetText();
+            edText.SelectionStart = 0;
+            edText.SelectionLength = edText.TextLength;
+            edText.SelectionFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
         }
     }
 }
