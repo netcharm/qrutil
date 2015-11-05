@@ -75,6 +75,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.edText.EnableAutoDragDrop = true;
             this.edText.Font = new System.Drawing.Font("DejaVu Sans Mono", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.edText.ImeMode = System.Windows.Forms.ImeMode.On;
             this.edText.Location = new System.Drawing.Point(8, 8);
             this.edText.MaxLength = 2000;
             this.edText.Name = "edText";
@@ -84,6 +85,7 @@
             this.edText.TabIndex = 1;
             this.edText.Text = "";
             this.edText.TextChanged += new System.EventHandler(this.edText_TextChanged);
+            this.edText.Validated += new System.EventHandler(this.edText_Validated);
             // 
             // btnQREncode
             // 

@@ -6,6 +6,8 @@ using ZXing;
 using ZXing.Common;
 using ZXing.QrCode;
 using ZXing.QrCode.Internal;
+using System.Text;
+using ZXing.Rendering;
 
 namespace QRUtils
 {
@@ -48,10 +50,16 @@ namespace QRUtils
                                      GraphicsUnit.Pixel);
                     }
 
-                    var source = new BitmapLuminanceSource(target);
-                    var bitmap = new BinaryBitmap(new HybridBinarizer(source));
-                    QRCodeReader reader = new QRCodeReader();
-                    var result = reader.decode(bitmap);
+                    var br = new ZXing.BarcodeReader();
+
+                    var decOptions = new ZXing.Common.DecodingOptions
+                    {
+                        PureBarcode = false
+                    };
+
+                    decOptions.Hints.Add(DecodeHintType.CHARACTER_SET, "UTF-8");
+                    var result = br.Decode(target);
+
                     if (result != null)
                     {
                         QRCodeSplashForm splash = new QRCodeSplashForm();
@@ -98,41 +106,45 @@ namespace QRUtils
         {
             //this.Hide();
             //Application.DoEvents();
-            //System.Threading.Thread.Sleep(75);
             this.Opacity = 0.0f;
 
             edText.Text = QRDecode();
 
-            //System.Threading.Thread.Sleep(100);
             this.Opacity = 1.0f;
             //this.Show();
         }
 
         private void btnQREncode_Click(object sender, EventArgs e)
         {
+            if(String.IsNullOrEmpty(edText.Text)) return;
+
+            //string qrText = Encoding.UTF8.GetString(Encoding.Default.GetBytes("中文")); //edText.Text));
             string qrText = edText.Text;
-            QRCode code = ZXing.QrCode.Internal.Encoder.encode(qrText, ErrorCorrectionLevel.M);
-            ByteMatrix m = code.Matrix;
-            int blockSize = Math.Max(picQR.Height / m.Height, 1);
-            Bitmap drawArea = new Bitmap((m.Width * blockSize), (m.Height * blockSize));
-            using (Graphics g = Graphics.FromImage(drawArea))
+
+            var width = 256;
+            var height = 256;
+            var margin = 0;
+
+            var bw = new ZXing.BarcodeWriter();
+
+            var encOptions = new ZXing.Common.EncodingOptions
             {
-                g.Clear(Color.White);
-                using (Brush b = new SolidBrush(Color.Black))
-                {
-                    for (int row = 0; row < m.Width; row++)
-                    {
-                        for (int col = 0; col < m.Height; col++)
-                        {
-                            if (m[row, col] != 0)
-                            {
-                                g.FillRectangle(b, blockSize * row, blockSize * col, blockSize, blockSize);
-                            }
-                        }
-                    }
-                }
-            }
-            picQR.Image = drawArea;
+                Width = width,
+                Height = height,
+                Margin = margin,
+                PureBarcode = false
+            };
+
+            encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            encOptions.Hints.Add(EncodeHintType.DISABLE_ECI, true);
+            encOptions.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
+
+            bw.Renderer = new BitmapRenderer();
+            bw.Options = encOptions;
+            bw.Format = ZXing.BarcodeFormat.QR_CODE;
+            Bitmap barcodeBitmap = bw.Write(qrText);
+
+            picQR.Image = barcodeBitmap;
 
         }
 
@@ -151,9 +163,14 @@ namespace QRUtils
 
         private void edText_TextChanged(object sender, EventArgs e)
         {
+        }
+
+        private void edText_Validated(object sender, EventArgs e)
+        {
             edText.SelectionStart = 0;
             edText.SelectionLength = edText.TextLength;
             edText.SelectionFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
+
         }
     }
 }
