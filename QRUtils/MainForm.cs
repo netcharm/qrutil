@@ -3,16 +3,15 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using ZXing;
-using ZXing.Common;
-using ZXing.QrCode;
 using ZXing.QrCode.Internal;
-using System.Text;
 using ZXing.Rendering;
 
 namespace QRUtils
 {
     public partial class MainForm : Form
     {
+        private Font monoFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
+
         public MainForm()
         {
             InitializeComponent();
@@ -117,12 +116,14 @@ namespace QRUtils
         private void btnQREncode_Click(object sender, EventArgs e)
         {
             if(String.IsNullOrEmpty(edText.Text)) return;
+            
+            int MAX_TEXT = 750;
 
             //string qrText = Encoding.UTF8.GetString(Encoding.Default.GetBytes("中文")); //edText.Text));
             string qrText = edText.Text;
 
-            var width = 256;
-            var height = 256;
+            var width = 512;
+            var height = 512;
             var margin = 0;
 
             var bw = new ZXing.BarcodeWriter();
@@ -132,18 +133,23 @@ namespace QRUtils
                 Width = width,
                 Height = height,
                 Margin = margin,
-                PureBarcode = false
+                PureBarcode = true
             };
 
-            encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
             encOptions.Hints.Add(EncodeHintType.DISABLE_ECI, true);
             encOptions.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
+            encOptions.Hints.Add(EncodeHintType.PDF417_COMPACT, true);
+            encOptions.Hints.Add(EncodeHintType.PDF417_COMPACTION, ZXing.PDF417.Internal.Compaction.AUTO );
 
             bw.Renderer = new BitmapRenderer();
             bw.Options = encOptions;
             bw.Format = ZXing.BarcodeFormat.QR_CODE;
+            if (qrText.Length > MAX_TEXT)
+            {
+                qrText = qrText.Substring(0, MAX_TEXT);
+            }
             Bitmap barcodeBitmap = bw.Write(qrText);
-
             picQR.Image = barcodeBitmap;
 
         }
@@ -161,16 +167,14 @@ namespace QRUtils
             edText.Text = Clipboard.GetText(TextDataFormat.UnicodeText);
         }
 
-        private void edText_TextChanged(object sender, EventArgs e)
+        private void edText_KeyDown(object sender, KeyEventArgs e)
         {
+            if ((e.Control && e.KeyCode == Keys.V) || (e.Shift && e.KeyCode == Keys.I))
+            {
+                edText.Text += Clipboard.GetText(TextDataFormat.UnicodeText);
+                e.Handled = true;
+            }
         }
 
-        private void edText_Validated(object sender, EventArgs e)
-        {
-            edText.SelectionStart = 0;
-            edText.SelectionLength = edText.TextLength;
-            edText.SelectionFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
-
-        }
     }
 }
