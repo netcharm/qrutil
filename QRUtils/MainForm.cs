@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
 using ZXing;
 using ZXing.QrCode.Internal;
 using ZXing.Rendering;
@@ -12,119 +12,99 @@ namespace QRUtils
     {
         private Font monoFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
 
+        //private readonly IList<ResultPoint> resultPoints = new List<ResultPoint>();
+
         public MainForm()
         {
             InitializeComponent();
             Application.EnableVisualStyles();
         }
 
+        private Bitmap GetScreenSnapshot()
+        {
+            Bitmap fullImage = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
+                                          Screen.PrimaryScreen.Bounds.Height);
+            using (Graphics g = Graphics.FromImage(fullImage))
+            {
+                g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
+                                    Screen.PrimaryScreen.Bounds.Y,
+                                    0, 0,
+                                    fullImage.Size,
+                                    CopyPixelOperation.SourceCopy);
+            }
+            return (fullImage);
+        }
+
+        private void ShowQRCodeMask(ResultPoint[] points)
+        {
+            QRCodeSplashForm splash = new QRCodeSplashForm();
+            float minX = Int32.MaxValue, minY = Int32.MaxValue, maxX = 0, maxY = 0;
+            foreach (ResultPoint point in points)
+            {
+                minX = Math.Min(minX, point.X);
+                minY = Math.Min(minY, point.Y);
+                maxX = Math.Max(maxX, point.X);
+                maxY = Math.Max(maxY, point.Y);
+            }
+            // make it 20% larger
+            float margin = (maxX - minX) * 0.20f;
+            minX += -margin;
+            maxX += margin;
+            minY += -margin;
+            maxY += margin;
+            splash.Location = new Point((int)minX, (int)minY);
+            // we need a panel because a window has a minimal size
+            splash.Panel.Size = new Size((int)maxX - (int)minX, (int)maxY - (int)minY);
+            splash.Size = splash.Panel.Size;
+            splash.Show();
+            System.Threading.Thread.Sleep(250);
+            splash.Close();
+        }
+
         private String QRDecode()
         {
-            var success = false;
-            String QRString = "No QRCode!";
-
-            using (Bitmap fullImage = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
-                                            Screen.PrimaryScreen.Bounds.Height))
+            using (Bitmap fullImage = GetScreenSnapshot())
             {
-                using (Graphics g = Graphics.FromImage(fullImage))
+                var br = new ZXing.BarcodeReader();
+                br.AutoRotate = true;
+                br.Options.CharacterSet = "UTF-8";
+                br.Options.TryHarder = true;
+                br.Options.PureBarcode = false;
+                br.TryInverted = true;
+
+                //br.ResultPointFound += point =>
+                //{
+                //    if (point == null)
+                //        resultPoints.Clear();
+                //    else
+                //        resultPoints.Add(point);
+                //};
+
+                var result = br.Decode(fullImage);
+                if (result != null)
                 {
-                    g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
-                                     Screen.PrimaryScreen.Bounds.Y,
-                                     0, 0,
-                                     fullImage.Size,
-                                     CopyPixelOperation.SourceCopy);
+                    ShowQRCodeMask(result.ResultPoints);
+                    return (result.Text);
                 }
-                for (int i = 0; i < 5; i++)
+                else
                 {
-                    int marginLeft = fullImage.Width * i / 3 / 5;
-                    int marginTop = fullImage.Height * i / 3 / 5;
-                    Rectangle cropRect = new Rectangle(marginLeft, marginTop, fullImage.Width - marginLeft * 2, fullImage.Height - marginTop * 2);
-                    Bitmap target = new Bitmap(cropRect.Width, cropRect.Height);
-
-                    using (Graphics g = Graphics.FromImage(target))
-                    {
-                        g.DrawImage(fullImage,
-                                     new Rectangle(0, 0, target.Width, target.Height),
-                                     cropRect,
-                                     GraphicsUnit.Pixel);
-                    }
-
-                    var br = new ZXing.BarcodeReader();
-
-                    var decOptions = new ZXing.Common.DecodingOptions
-                    {
-                        PureBarcode = false
-                    };
-
-                    decOptions.Hints.Add(DecodeHintType.CHARACTER_SET, "UTF-8");
-                    var result = br.Decode(target);
-
-                    if (result != null)
-                    {
-                        QRCodeSplashForm splash = new QRCodeSplashForm();
-                        float minX = Int32.MaxValue, minY = Int32.MaxValue, maxX = 0, maxY = 0;
-                        foreach (ResultPoint point in result.ResultPoints)
-                        {
-                            minX = Math.Min(minX, point.X);
-                            minY = Math.Min(minY, point.Y);
-                            maxX = Math.Max(maxX, point.X);
-                            maxY = Math.Max(maxY, point.Y);
-                        }
-                        // make it 20% larger
-                        float margin = (maxX - minX) * 0.20f;
-                        minX += -margin + marginLeft;
-                        maxX += margin + marginLeft;
-                        minY += -margin + marginTop;
-                        maxY += margin + marginTop;
-                        splash.Location = new Point((int)minX, (int)minY);
-                        // we need a panel because a window has a minimal size
-                        splash.Panel.Size = new Size((int)maxX - (int)minX, (int)maxY - (int)minY);
-                        splash.Size = splash.Panel.Size;
-                        splash.Show();
-                        System.Threading.Thread.Sleep(250);
-                        splash.Close();
-
-                        QRString = result.ToString();
-                        success = true;
-                        break;
-                    }
+                    MessageBox.Show("Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return (String.Empty);
                 }
-            }
-            if (!success)
-            {
-                MessageBox.Show("Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return(String.Empty);
-            }
-            else
-            {
-                return (QRString);
             }
         }
 
-        private void btnQRDecode_Click(object sender, EventArgs e)
+        private Bitmap QREncode(String text)
         {
-            //this.Hide();
-            //Application.DoEvents();
-            this.Opacity = 0.0f;
-
-            edText.Text = QRDecode();
-
-            this.Opacity = 1.0f;
-            //this.Show();
-        }
-
-        private void btnQREncode_Click(object sender, EventArgs e)
-        {
-            if(String.IsNullOrEmpty(edText.Text)) return;
-            
-            int MAX_TEXT = 750;
-
-            //string qrText = Encoding.UTF8.GetString(Encoding.Default.GetBytes("中文")); //edText.Text));
-            string qrText = edText.Text;
-
             var width = 512;
             var height = 512;
             var margin = 0;
+
+            int MAX_TEXT = 750;
+
+            if (String.IsNullOrEmpty(text)) return (new Bitmap(width, height));
+            
+            string qrText = text;
 
             var bw = new ZXing.BarcodeWriter();
 
@@ -132,11 +112,11 @@ namespace QRUtils
             {
                 Width = width,
                 Height = height,
-                Margin = margin,
-                PureBarcode = true
+                PureBarcode = false
             };
 
             encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+            encOptions.Hints.Add(EncodeHintType.MARGIN, margin);
             encOptions.Hints.Add(EncodeHintType.DISABLE_ECI, true);
             encOptions.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
             encOptions.Hints.Add(EncodeHintType.PDF417_COMPACT, true);
@@ -150,8 +130,79 @@ namespace QRUtils
                 qrText = qrText.Substring(0, MAX_TEXT);
             }
             Bitmap barcodeBitmap = bw.Write(qrText);
-            picQR.Image = barcodeBitmap;
+            return (barcodeBitmap);
+        }
 
+        private List<String> QRDecodeMulti()
+        {
+            using (Bitmap fullImage = GetScreenSnapshot())
+            {
+                //var br = new ZXing.BarcodeReader( null, 
+                //                                  bitmap => new BitmapLuminanceSource(bitmap),
+                //                                  luminance => new GlobalHistogramBinarizer(luminance));
+                var br = new ZXing.BarcodeReader();
+                br.AutoRotate = true;
+                br.Options.CharacterSet = "UTF-8";
+                br.Options.TryHarder = true;
+                br.Options.PureBarcode = true;
+                br.TryInverted = true;
+
+                //br.ResultPointFound += point =>
+                //{
+                //    if (point == null)
+                //        resultPoints.Clear();
+                //    else
+                //        resultPoints.Add(point);
+                //};
+
+                var results = br.DecodeMultiple(fullImage);
+                if (results != null)
+                {
+                    var textList = new List<String>();
+                    foreach (var result in results)
+                    {
+                        ShowQRCodeMask(result.ResultPoints);
+                        textList.Add(result.Text);
+                    }
+                    return (textList);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return (new List<String>());
+                }
+            }
+        }
+
+        private void btnQRDecode_Click(object sender, EventArgs e)
+        {
+            bool MULTI = false;
+            //this.Hide();
+            //Application.DoEvents();
+            this.Opacity = 0.0f;
+            System.Threading.Thread.Sleep(75);
+
+            if (MULTI)
+            {
+                edText.Clear();
+                foreach (var result in QRDecodeMulti())
+                {
+                    edText.Text += result + '\n';
+                }
+            }
+            else
+            {
+                edText.Text = QRDecode();
+            }
+
+
+            this.Opacity = 1.0f;
+            //this.Show();
+        }
+
+        private void btnQREncode_Click(object sender, EventArgs e)
+        {
+            picQR.Image = QREncode(edText.Text);
         }
 
         private void btnClipTo_Click(object sender, EventArgs e)
