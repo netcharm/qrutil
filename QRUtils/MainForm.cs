@@ -13,6 +13,8 @@ namespace QRUtils
         private Font monoFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
         private ErrorCorrectionLevel errorLevel = ErrorCorrectionLevel.M;
 
+        private KeyboardHook hook = new KeyboardHook();
+
         public MainForm()
         {
             InitializeComponent();
@@ -21,6 +23,15 @@ namespace QRUtils
             colorDlg.Color = Color.Cyan;
             picMaskColor.BackColor = Color.Red;
 
+            loadSettings();
+
+            // register the event that is fired after the key press.
+            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+            hook.RegisterHotKey(QRUtils.ModifierKeys.Win, Keys.Q);
+        }
+
+        private void loadSettings()
+        {
             Properties.Settings.Default.Reload();
 
             Color maskColor = (Color)Properties.Settings.Default["MaskColor"];
@@ -49,6 +60,13 @@ namespace QRUtils
                 errorLevel = ErrorCorrectionLevel.Q;
             }
             cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf(errorString);
+        }
+
+        private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            // show the keys pressed in a label.
+            //edText.Text = e.Modifier.ToString() + " + " + e.Key.ToString();
+            btnQRDecode.PerformClick();
         }
 
         private Bitmap GetScreenSnapshot()
