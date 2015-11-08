@@ -16,6 +16,8 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
+                hook.Dispose();
+                monoFont.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -43,6 +45,7 @@
             this.colorDlg = new System.Windows.Forms.ColorDialog();
             this.cbErrorLevel = new System.Windows.Forms.ComboBox();
             this.lblErrorLevel = new System.Windows.Forms.Label();
+            this.lblHotKey = new System.Windows.Forms.Label();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
             this.pnlOption.SuspendLayout();
@@ -142,6 +145,7 @@
             // 
             // pnlOption
             // 
+            this.pnlOption.Controls.Add(this.lblHotKey);
             this.pnlOption.Controls.Add(this.lblErrorLevel);
             this.pnlOption.Controls.Add(this.cbErrorLevel);
             this.pnlOption.Controls.Add(this.lnlMaskColor);
@@ -208,6 +212,15 @@
             this.lblErrorLevel.TabIndex = 11;
             this.lblErrorLevel.Text = "ErrorLevel:";
             // 
+            // lblHotKey
+            // 
+            this.lblHotKey.AutoSize = true;
+            this.lblHotKey.Location = new System.Drawing.Point(147, 18);
+            this.lblHotKey.Name = "lblHotKey";
+            this.lblHotKey.Size = new System.Drawing.Size(95, 12);
+            this.lblHotKey.TabIndex = 12;
+            this.lblHotKey.Text = "Hotkey: Win + Q";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -227,7 +240,6 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "QRCode Utils";
-            this.TopMost = true;
             this.pnlQR.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).EndInit();
             this.pnlOption.ResumeLayout(false);
@@ -253,6 +265,7 @@
         private System.Windows.Forms.ColorDialog colorDlg;
         private System.Windows.Forms.Label lblErrorLevel;
         private System.Windows.Forms.ComboBox cbErrorLevel;
+        private System.Windows.Forms.Label lblHotKey;
     }
 }
 

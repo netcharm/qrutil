@@ -26,8 +26,16 @@ namespace QRUtils
             loadSettings();
 
             // register the event that is fired after the key press.
-            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
-            hook.RegisterHotKey(QRUtils.ModifierKeys.Win, Keys.Q);
+            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hookKeyPressed);
+            try
+            {
+                hook.RegisterHotKey(QRUtils.ModifierKeys.Win, Keys.Q);
+            }
+            catch
+            {
+                MessageBox.Show("Failed to bind hotkey Win+Q!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lblHotKey.Hide();
+            }
         }
 
         private void loadSettings()
@@ -62,7 +70,7 @@ namespace QRUtils
             cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf(errorString);
         }
 
-        private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        private void hookKeyPressed(object sender, KeyPressedEventArgs e)
         {
             // show the keys pressed in a label.
             //edText.Text = e.Modifier.ToString() + " + " + e.Key.ToString();
@@ -180,6 +188,7 @@ namespace QRUtils
         {
             using (Bitmap fullImage = GetScreenSnapshot())
             {
+                fullImage.Save("test.png");
                 //var br = new ZXing.BarcodeReader( null, 
                 //                                  bitmap => new BitmapLuminanceSource(bitmap),
                 //                                  luminance => new GlobalHistogramBinarizer(luminance));
@@ -216,9 +225,11 @@ namespace QRUtils
 
             //this.Hide();
             //Application.DoEvents();
-            this.Opacity = 0.0f;
-            System.Threading.Thread.Sleep(75);
-
+            if (this.WindowState != FormWindowState.Minimized)
+            {
+                this.Opacity = 0.0f;
+                System.Threading.Thread.Sleep(75);
+            }
             if (MULTI)
             {
                 edText.Clear();
@@ -231,7 +242,6 @@ namespace QRUtils
             {
                 edText.Text = QRDecode();
             }
-
 
             this.Opacity = 1.0f;
             //this.Show();
