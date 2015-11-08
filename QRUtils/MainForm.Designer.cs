@@ -36,6 +36,7 @@
             this.btnQRDecode = new System.Windows.Forms.Button();
             this.btnClipFrom = new System.Windows.Forms.Button();
             this.btnClipTo = new System.Windows.Forms.Button();
+            this.chkMultiDecode = new System.Windows.Forms.CheckBox();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
             this.SuspendLayout();
@@ -90,7 +91,7 @@
             // btnQREncode
             // 
             this.btnQREncode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnQREncode.Location = new System.Drawing.Point(393, 27);
+            this.btnQREncode.Location = new System.Drawing.Point(390, 40);
             this.btnQREncode.Name = "btnQREncode";
             this.btnQREncode.Size = new System.Drawing.Size(49, 44);
             this.btnQREncode.TabIndex = 2;
@@ -101,7 +102,7 @@
             // btnQRDecode
             // 
             this.btnQRDecode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnQRDecode.Location = new System.Drawing.Point(393, 211);
+            this.btnQRDecode.Location = new System.Drawing.Point(390, 224);
             this.btnQRDecode.Name = "btnQRDecode";
             this.btnQRDecode.Size = new System.Drawing.Size(49, 44);
             this.btnQRDecode.TabIndex = 3;
@@ -112,7 +113,7 @@
             // btnClipFrom
             // 
             this.btnClipFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClipFrom.Location = new System.Drawing.Point(394, 89);
+            this.btnClipFrom.Location = new System.Drawing.Point(391, 102);
             this.btnClipFrom.Name = "btnClipFrom";
             this.btnClipFrom.Size = new System.Drawing.Size(47, 44);
             this.btnClipFrom.TabIndex = 4;
@@ -123,7 +124,7 @@
             // btnClipTo
             // 
             this.btnClipTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClipTo.Location = new System.Drawing.Point(393, 149);
+            this.btnClipTo.Location = new System.Drawing.Point(390, 162);
             this.btnClipTo.Name = "btnClipTo";
             this.btnClipTo.Size = new System.Drawing.Size(48, 44);
             this.btnClipTo.TabIndex = 5;
@@ -131,11 +132,26 @@
             this.btnClipTo.UseVisualStyleBackColor = true;
             this.btnClipTo.Click += new System.EventHandler(this.btnClipTo_Click);
             // 
+            // chkMultiDecode
+            // 
+            this.chkMultiDecode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkMultiDecode.AutoEllipsis = true;
+            this.chkMultiDecode.Checked = true;
+            this.chkMultiDecode.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMultiDecode.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.chkMultiDecode.Location = new System.Drawing.Point(384, 10);
+            this.chkMultiDecode.Name = "chkMultiDecode";
+            this.chkMultiDecode.Size = new System.Drawing.Size(70, 24);
+            this.chkMultiDecode.TabIndex = 6;
+            this.chkMultiDecode.Text = "Multiple";
+            this.chkMultiDecode.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 277);
+            this.Controls.Add(this.chkMultiDecode);
             this.Controls.Add(this.btnClipTo);
             this.Controls.Add(this.btnClipFrom);
             this.Controls.Add(this.btnQRDecode);
@@ -165,6 +181,7 @@
         private System.Windows.Forms.Button btnClipFrom;
         private System.Windows.Forms.Button btnClipTo;
         private System.Windows.Forms.RichTextBox edText;
+        private System.Windows.Forms.CheckBox chkMultiDecode;
     }
 }
 

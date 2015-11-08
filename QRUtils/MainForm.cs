@@ -12,8 +12,6 @@ namespace QRUtils
     {
         private Font monoFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
 
-        //private readonly IList<ResultPoint> resultPoints = new List<ResultPoint>();
-
         public MainForm()
         {
             InitializeComponent();
@@ -35,11 +33,11 @@ namespace QRUtils
             return (fullImage);
         }
 
-        private void ShowQRCodeMask(ResultPoint[] points)
+        private void ShowQRCodeMask(Result result)
         {
             QRCodeSplashForm splash = new QRCodeSplashForm();
             float minX = Int32.MaxValue, minY = Int32.MaxValue, maxX = 0, maxY = 0;
-            foreach (ResultPoint point in points)
+            foreach (ResultPoint point in result.ResultPoints)
             {
                 minX = Math.Min(minX, point.X);
                 minY = Math.Min(minY, point.Y);
@@ -47,10 +45,10 @@ namespace QRUtils
                 maxY = Math.Max(maxY, point.Y);
             }
             // make it 20% larger
-            float margin = (maxX - minX) * 0.20f;
-            minX += -margin;
+            float margin = (maxX - minX) * 0.2f;
+            minX -= margin;
             maxX += margin;
-            minY += -margin;
+            minY -= margin;
             maxY += margin;
             splash.Location = new Point((int)minX, (int)minY);
             // we need a panel because a window has a minimal size
@@ -59,6 +57,45 @@ namespace QRUtils
             splash.Show();
             System.Threading.Thread.Sleep(250);
             splash.Close();
+        }
+
+        private Bitmap QREncode(String text)
+        {
+            var width = 512;
+            var height = 512;
+            var margin = 0;
+
+            int MAX_TEXT = 750;
+
+            if (String.IsNullOrEmpty(text)) return (new Bitmap(width, height));
+
+            string qrText = text;
+
+            var bw = new ZXing.BarcodeWriter();
+
+            var encOptions = new ZXing.Common.EncodingOptions
+            {
+                Width = width,
+                Height = height,
+                PureBarcode = false
+            };
+
+            encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
+            encOptions.Hints.Add(EncodeHintType.MARGIN, margin);
+            encOptions.Hints.Add(EncodeHintType.DISABLE_ECI, true);
+            encOptions.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
+            encOptions.Hints.Add(EncodeHintType.PDF417_COMPACT, true);
+            encOptions.Hints.Add(EncodeHintType.PDF417_COMPACTION, ZXing.PDF417.Internal.Compaction.AUTO);
+
+            bw.Renderer = new BitmapRenderer();
+            bw.Options = encOptions;
+            bw.Format = ZXing.BarcodeFormat.QR_CODE;
+            if (qrText.Length > MAX_TEXT)
+            {
+                qrText = qrText.Substring(0, MAX_TEXT);
+            }
+            Bitmap barcodeBitmap = bw.Write(qrText);
+            return (barcodeBitmap);
         }
 
         private String QRDecode()
@@ -72,18 +109,10 @@ namespace QRUtils
                 br.Options.PureBarcode = false;
                 br.TryInverted = true;
 
-                //br.ResultPointFound += point =>
-                //{
-                //    if (point == null)
-                //        resultPoints.Clear();
-                //    else
-                //        resultPoints.Add(point);
-                //};
-
                 var result = br.Decode(fullImage);
                 if (result != null)
                 {
-                    ShowQRCodeMask(result.ResultPoints);
+                    ShowQRCodeMask(result);
                     return (result.Text);
                 }
                 else
@@ -92,45 +121,6 @@ namespace QRUtils
                     return (String.Empty);
                 }
             }
-        }
-
-        private Bitmap QREncode(String text)
-        {
-            var width = 512;
-            var height = 512;
-            var margin = 0;
-
-            int MAX_TEXT = 750;
-
-            if (String.IsNullOrEmpty(text)) return (new Bitmap(width, height));
-            
-            string qrText = text;
-
-            var bw = new ZXing.BarcodeWriter();
-
-            var encOptions = new ZXing.Common.EncodingOptions
-            {
-                Width = width,
-                Height = height,
-                PureBarcode = false
-            };
-
-            encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-            encOptions.Hints.Add(EncodeHintType.MARGIN, margin);
-            encOptions.Hints.Add(EncodeHintType.DISABLE_ECI, true);
-            encOptions.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
-            encOptions.Hints.Add(EncodeHintType.PDF417_COMPACT, true);
-            encOptions.Hints.Add(EncodeHintType.PDF417_COMPACTION, ZXing.PDF417.Internal.Compaction.AUTO );
-
-            bw.Renderer = new BitmapRenderer();
-            bw.Options = encOptions;
-            bw.Format = ZXing.BarcodeFormat.QR_CODE;
-            if (qrText.Length > MAX_TEXT)
-            {
-                qrText = qrText.Substring(0, MAX_TEXT);
-            }
-            Bitmap barcodeBitmap = bw.Write(qrText);
-            return (barcodeBitmap);
         }
 
         private List<String> QRDecodeMulti()
@@ -142,18 +132,11 @@ namespace QRUtils
                 //                                  luminance => new GlobalHistogramBinarizer(luminance));
                 var br = new ZXing.BarcodeReader();
                 br.AutoRotate = true;
+                br.TryInverted = true;
                 br.Options.CharacterSet = "UTF-8";
                 br.Options.TryHarder = true;
                 br.Options.PureBarcode = true;
-                br.TryInverted = true;
-
-                //br.ResultPointFound += point =>
-                //{
-                //    if (point == null)
-                //        resultPoints.Clear();
-                //    else
-                //        resultPoints.Add(point);
-                //};
+                br.Options.PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE };
 
                 var results = br.DecodeMultiple(fullImage);
                 if (results != null)
@@ -161,7 +144,7 @@ namespace QRUtils
                     var textList = new List<String>();
                     foreach (var result in results)
                     {
-                        ShowQRCodeMask(result.ResultPoints);
+                        ShowQRCodeMask(result);
                         textList.Add(result.Text);
                     }
                     return (textList);
@@ -176,7 +159,8 @@ namespace QRUtils
 
         private void btnQRDecode_Click(object sender, EventArgs e)
         {
-            bool MULTI = false;
+            bool MULTI = chkMultiDecode.Checked; //true;
+
             //this.Hide();
             //Application.DoEvents();
             this.Opacity = 0.0f;
@@ -187,7 +171,7 @@ namespace QRUtils
                 edText.Clear();
                 foreach (var result in QRDecodeMulti())
                 {
-                    edText.Text += result + '\n';
+                    edText.Text += result + "\n\n";
                 }
             }
             else
