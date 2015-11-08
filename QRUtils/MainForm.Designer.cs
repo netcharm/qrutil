@@ -36,9 +36,17 @@
             this.btnQRDecode = new System.Windows.Forms.Button();
             this.btnClipFrom = new System.Windows.Forms.Button();
             this.btnClipTo = new System.Windows.Forms.Button();
+            this.pnlOption = new System.Windows.Forms.Panel();
+            this.lnlMaskColor = new System.Windows.Forms.Label();
+            this.picMaskColor = new System.Windows.Forms.PictureBox();
             this.chkMultiDecode = new System.Windows.Forms.CheckBox();
+            this.colorDlg = new System.Windows.Forms.ColorDialog();
+            this.cbErrorLevel = new System.Windows.Forms.ComboBox();
+            this.lblErrorLevel = new System.Windows.Forms.Label();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
+            this.pnlOption.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picMaskColor)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlQR
@@ -83,7 +91,7 @@
             this.edText.Name = "edText";
             this.edText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
             this.edText.ShowSelectionMargin = true;
-            this.edText.Size = new System.Drawing.Size(370, 260);
+            this.edText.Size = new System.Drawing.Size(441, 461);
             this.edText.TabIndex = 1;
             this.edText.Text = "";
             this.edText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edText_KeyDown);
@@ -91,7 +99,7 @@
             // btnQREncode
             // 
             this.btnQREncode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnQREncode.Location = new System.Drawing.Point(390, 40);
+            this.btnQREncode.Location = new System.Drawing.Point(455, 281);
             this.btnQREncode.Name = "btnQREncode";
             this.btnQREncode.Size = new System.Drawing.Size(49, 44);
             this.btnQREncode.TabIndex = 2;
@@ -101,8 +109,8 @@
             // 
             // btnQRDecode
             // 
-            this.btnQRDecode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnQRDecode.Location = new System.Drawing.Point(390, 224);
+            this.btnQRDecode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnQRDecode.Location = new System.Drawing.Point(666, 281);
             this.btnQRDecode.Name = "btnQRDecode";
             this.btnQRDecode.Size = new System.Drawing.Size(49, 44);
             this.btnQRDecode.TabIndex = 3;
@@ -113,7 +121,7 @@
             // btnClipFrom
             // 
             this.btnClipFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClipFrom.Location = new System.Drawing.Point(391, 102);
+            this.btnClipFrom.Location = new System.Drawing.Point(510, 281);
             this.btnClipFrom.Name = "btnClipFrom";
             this.btnClipFrom.Size = new System.Drawing.Size(47, 44);
             this.btnClipFrom.TabIndex = 4;
@@ -123,8 +131,8 @@
             // 
             // btnClipTo
             // 
-            this.btnClipTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClipTo.Location = new System.Drawing.Point(390, 162);
+            this.btnClipTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClipTo.Location = new System.Drawing.Point(614, 281);
             this.btnClipTo.Name = "btnClipTo";
             this.btnClipTo.Size = new System.Drawing.Size(48, 44);
             this.btnClipTo.TabIndex = 5;
@@ -132,26 +140,80 @@
             this.btnClipTo.UseVisualStyleBackColor = true;
             this.btnClipTo.Click += new System.EventHandler(this.btnClipTo_Click);
             // 
+            // pnlOption
+            // 
+            this.pnlOption.Controls.Add(this.lblErrorLevel);
+            this.pnlOption.Controls.Add(this.cbErrorLevel);
+            this.pnlOption.Controls.Add(this.lnlMaskColor);
+            this.pnlOption.Controls.Add(this.picMaskColor);
+            this.pnlOption.Controls.Add(this.chkMultiDecode);
+            this.pnlOption.Location = new System.Drawing.Point(456, 331);
+            this.pnlOption.Name = "pnlOption";
+            this.pnlOption.Size = new System.Drawing.Size(258, 137);
+            this.pnlOption.TabIndex = 7;
+            // 
+            // lnlMaskColor
+            // 
+            this.lnlMaskColor.Location = new System.Drawing.Point(12, 57);
+            this.lnlMaskColor.Name = "lnlMaskColor";
+            this.lnlMaskColor.Size = new System.Drawing.Size(72, 28);
+            this.lnlMaskColor.TabIndex = 9;
+            this.lnlMaskColor.Text = "Mask Color:";
+            // 
+            // picMaskColor
+            // 
+            this.picMaskColor.Location = new System.Drawing.Point(87, 57);
+            this.picMaskColor.Name = "picMaskColor";
+            this.picMaskColor.Size = new System.Drawing.Size(36, 36);
+            this.picMaskColor.TabIndex = 8;
+            this.picMaskColor.TabStop = false;
+            this.picMaskColor.Click += new System.EventHandler(this.picMaskColor_Click);
+            // 
             // chkMultiDecode
             // 
             this.chkMultiDecode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkMultiDecode.AutoEllipsis = true;
+            this.chkMultiDecode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkMultiDecode.Checked = true;
             this.chkMultiDecode.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMultiDecode.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.chkMultiDecode.Location = new System.Drawing.Point(384, 10);
+            this.chkMultiDecode.Location = new System.Drawing.Point(12, 13);
             this.chkMultiDecode.Name = "chkMultiDecode";
-            this.chkMultiDecode.Size = new System.Drawing.Size(70, 24);
-            this.chkMultiDecode.TabIndex = 6;
-            this.chkMultiDecode.Text = "Multiple";
+            this.chkMultiDecode.Size = new System.Drawing.Size(111, 24);
+            this.chkMultiDecode.TabIndex = 7;
+            this.chkMultiDecode.Text = "Multiple Decode";
             this.chkMultiDecode.UseVisualStyleBackColor = true;
+            // 
+            // cbErrorLevel
+            // 
+            this.cbErrorLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbErrorLevel.FormattingEnabled = true;
+            this.cbErrorLevel.Items.AddRange(new object[] {
+            "L",
+            "M",
+            "Q",
+            "H"});
+            this.cbErrorLevel.Location = new System.Drawing.Point(87, 103);
+            this.cbErrorLevel.Name = "cbErrorLevel";
+            this.cbErrorLevel.Size = new System.Drawing.Size(36, 20);
+            this.cbErrorLevel.TabIndex = 10;
+            this.cbErrorLevel.SelectedIndexChanged += new System.EventHandler(this.cbErrorLevel_SelectedIndexChanged);
+            // 
+            // lblErrorLevel
+            // 
+            this.lblErrorLevel.AutoSize = true;
+            this.lblErrorLevel.Location = new System.Drawing.Point(12, 107);
+            this.lblErrorLevel.Name = "lblErrorLevel";
+            this.lblErrorLevel.Size = new System.Drawing.Size(71, 12);
+            this.lblErrorLevel.TabIndex = 11;
+            this.lblErrorLevel.Text = "ErrorLevel:";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(724, 277);
-            this.Controls.Add(this.chkMultiDecode);
+            this.ClientSize = new System.Drawing.Size(724, 478);
+            this.Controls.Add(this.pnlOption);
             this.Controls.Add(this.btnClipTo);
             this.Controls.Add(this.btnClipFrom);
             this.Controls.Add(this.btnQRDecode);
@@ -168,6 +230,9 @@
             this.TopMost = true;
             this.pnlQR.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).EndInit();
+            this.pnlOption.ResumeLayout(false);
+            this.pnlOption.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picMaskColor)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -181,7 +246,13 @@
         private System.Windows.Forms.Button btnClipFrom;
         private System.Windows.Forms.Button btnClipTo;
         private System.Windows.Forms.RichTextBox edText;
+        private System.Windows.Forms.Panel pnlOption;
         private System.Windows.Forms.CheckBox chkMultiDecode;
+        private System.Windows.Forms.Label lnlMaskColor;
+        private System.Windows.Forms.PictureBox picMaskColor;
+        private System.Windows.Forms.ColorDialog colorDlg;
+        private System.Windows.Forms.Label lblErrorLevel;
+        private System.Windows.Forms.ComboBox cbErrorLevel;
     }
 }
 

@@ -33,7 +33,7 @@
             // 
             // Panel
             // 
-            this.Panel.BackColor = System.Drawing.Color.Crimson;
+            this.Panel.BackColor = System.Drawing.Color.Cyan;
             this.Panel.Location = new System.Drawing.Point(0, 0);
             this.Panel.Margin = new System.Windows.Forms.Padding(0);
             this.Panel.Name = "Panel";

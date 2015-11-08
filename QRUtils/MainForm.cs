@@ -11,11 +11,44 @@ namespace QRUtils
     public partial class MainForm : Form
     {
         private Font monoFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
+        private ErrorCorrectionLevel errorLevel = ErrorCorrectionLevel.M;
 
         public MainForm()
         {
             InitializeComponent();
             Application.EnableVisualStyles();
+
+            colorDlg.Color = Color.Cyan;
+            picMaskColor.BackColor = Color.Red;
+
+            Properties.Settings.Default.Reload();
+
+            Color maskColor = (Color)Properties.Settings.Default["MaskColor"];
+            colorDlg.Color = maskColor;
+            picMaskColor.BackColor = maskColor;
+
+            String errorString = Properties.Settings.Default["ErrorCorrectionLevel"].ToString();
+            if      (String.Equals(errorString, "L", StringComparison.CurrentCultureIgnoreCase))
+            {
+                errorLevel = ErrorCorrectionLevel.L;
+            }
+            else if (String.Equals(errorString, "M", StringComparison.CurrentCultureIgnoreCase))
+            {
+                errorLevel = ErrorCorrectionLevel.M;
+            }
+            else if (String.Equals(errorString, "Q", StringComparison.CurrentCultureIgnoreCase))
+            {
+                errorLevel = ErrorCorrectionLevel.Q;
+            }
+            else if (String.Equals(errorString, "H", StringComparison.CurrentCultureIgnoreCase))
+            {
+                errorLevel = ErrorCorrectionLevel.H;
+            }
+            else
+            {
+                errorLevel = ErrorCorrectionLevel.Q;
+            }
+            cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf(errorString);
         }
 
         private Bitmap GetScreenSnapshot()
@@ -36,6 +69,8 @@ namespace QRUtils
         private void ShowQRCodeMask(Result result)
         {
             QRCodeSplashForm splash = new QRCodeSplashForm();
+            splash.Panel.BackColor = picMaskColor.BackColor;
+
             float minX = Int32.MaxValue, minY = Int32.MaxValue, maxX = 0, maxY = 0;
             foreach (ResultPoint point in result.ResultPoints)
             {
@@ -80,7 +115,7 @@ namespace QRUtils
                 PureBarcode = false
             };
 
-            encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q);
+            encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, errorLevel);
             encOptions.Hints.Add(EncodeHintType.MARGIN, margin);
             encOptions.Hints.Add(EncodeHintType.DISABLE_ECI, true);
             encOptions.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
@@ -209,6 +244,44 @@ namespace QRUtils
                 edText.Text += Clipboard.GetText(TextDataFormat.UnicodeText);
                 e.Handled = true;
             }
+        }
+
+        private void picMaskColor_Click(object sender, EventArgs e)
+        {
+            colorDlg.Color = picMaskColor.BackColor;
+            colorDlg.ShowDialog();
+            picMaskColor.BackColor = colorDlg.Color;
+            
+            Properties.Settings.Default["MaskColor"] = colorDlg.Color;
+            Properties.Settings.Default.Save(); 
+        }
+
+        private void cbErrorLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            String errorString = cbErrorLevel.SelectedItem.ToString();
+            if (String.Equals(errorString, "L", StringComparison.CurrentCultureIgnoreCase))
+            {
+                errorLevel = ErrorCorrectionLevel.L;
+            }
+            else if (String.Equals(errorString, "M", StringComparison.CurrentCultureIgnoreCase))
+            {
+                errorLevel = ErrorCorrectionLevel.M;
+            }
+            else if (String.Equals(errorString, "Q", StringComparison.CurrentCultureIgnoreCase))
+            {
+                errorLevel = ErrorCorrectionLevel.Q;
+            }
+            else if (String.Equals(errorString, "H", StringComparison.CurrentCultureIgnoreCase))
+            {
+                errorLevel = ErrorCorrectionLevel.H;
+            }
+            else
+            {
+                errorLevel = ErrorCorrectionLevel.Q;
+            }
+
+            Properties.Settings.Default["ErrorCorrectionLevel"] = errorString;
+            Properties.Settings.Default.Save(); 
         }
 
     }
