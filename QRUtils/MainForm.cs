@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 using ZXing;
 using ZXing.QrCode.Internal;
@@ -105,7 +106,35 @@ namespace QRUtils
             return (fullImage);
         }
 
-        private void ShowQRCodeMask(Result result)
+        private float calcBorderWidth(Bitmap QRImage, Point mark, Size size)
+        {
+            float pixelWidth = 1.0f;
+
+            int X = Math.Max(0, mark.X - 100);
+            int Y = Math.Max(0, mark.Y - 100);
+            int W = Math.Min(QRImage.Width - X, size.Width + 200);
+            int H = Math.Min(QRImage.Height - Y, size.Height + 200);
+            Bitmap bwQR = QRImage.Clone(new Rectangle(X, Y, W, H), PixelFormat.Format1bppIndexed);
+            bwQR.Save("test-bw.png");
+
+            int origX = 100;
+            int origY = 100;
+            if (mark.X < 100) origX = mark.X;
+            if (mark.Y < 100) origY = mark.Y;
+
+            for (var i = 0; i < 100; i++ )
+            {
+                var color = bwQR.GetPixel(origX - i, origY);
+                if(color.ToArgb() == Color.White.ToArgb())
+                {
+                    pixelWidth = i;
+                    break;
+                }
+            }
+            return (pixelWidth);
+        }
+
+        private void ShowQRCodeMask(Result result, Bitmap QRImage)
         {
             QRCodeSplashForm splash = new QRCodeSplashForm();
             splash.Panel.BackColor = picMaskColor.BackColor;
@@ -118,8 +147,11 @@ namespace QRUtils
                 maxX = Math.Max(maxX, point.X);
                 maxY = Math.Max(maxY, point.Y);
             }
-            // make it 20% larger
-            float margin = (maxX - minX) * 0.2f;
+
+            Point mark = new Point((int)minX, (int)minY);
+            Size size = new Size((int)(maxX - minX), (int)(maxY - minY));
+            float pixelWidth = calcBorderWidth(QRImage, mark, size);
+            float margin = pixelWidth * 3;
             minX -= margin;
             maxX += margin;
             minY -= margin;
@@ -187,7 +219,7 @@ namespace QRUtils
                 var result = br.Decode(fullImage);
                 if (result != null)
                 {
-                    ShowQRCodeMask(result);
+                    ShowQRCodeMask(result, fullImage);
                     return (result.Text);
                 }
                 else
@@ -220,7 +252,7 @@ namespace QRUtils
                     var textList = new List<string>();
                     foreach (var result in results)
                     {
-                        ShowQRCodeMask(result);
+                        ShowQRCodeMask(result, fullImage);
                         textList.Add(result.Text);
                     }
                     return (textList);

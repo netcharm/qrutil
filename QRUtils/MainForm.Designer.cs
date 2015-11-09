@@ -30,7 +30,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.pnlQR = new System.Windows.Forms.Panel();
             this.picQR = new System.Windows.Forms.PictureBox();
             this.edText = new System.Windows.Forms.RichTextBox();
@@ -39,13 +38,15 @@
             this.btnClipFrom = new System.Windows.Forms.Button();
             this.btnClipTo = new System.Windows.Forms.Button();
             this.pnlOption = new System.Windows.Forms.Panel();
+            this.lblHotKey = new System.Windows.Forms.Label();
+            this.lblErrorLevel = new System.Windows.Forms.Label();
+            this.cbErrorLevel = new System.Windows.Forms.ComboBox();
             this.lnlMaskColor = new System.Windows.Forms.Label();
             this.picMaskColor = new System.Windows.Forms.PictureBox();
             this.chkMultiDecode = new System.Windows.Forms.CheckBox();
             this.colorDlg = new System.Windows.Forms.ColorDialog();
-            this.cbErrorLevel = new System.Windows.Forms.ComboBox();
-            this.lblErrorLevel = new System.Windows.Forms.Label();
-            this.lblHotKey = new System.Windows.Forms.Label();
+            this.chkOverLogo = new System.Windows.Forms.CheckBox();
+            this.lblTextLength = new System.Windows.Forms.Label();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
             this.pnlOption.SuspendLayout();
@@ -85,6 +86,7 @@
             this.edText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.edText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.edText.EnableAutoDragDrop = true;
             this.edText.Font = new System.Drawing.Font("DejaVu Sans Mono", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.edText.HideSelection = false;
@@ -97,6 +99,7 @@
             this.edText.Size = new System.Drawing.Size(441, 461);
             this.edText.TabIndex = 1;
             this.edText.Text = "";
+            this.edText.TextChanged += new System.EventHandler(this.edText_TextChanged);
             this.edText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edText_KeyDown);
             // 
             // btnQREncode
@@ -145,6 +148,8 @@
             // 
             // pnlOption
             // 
+            this.pnlOption.Controls.Add(this.lblTextLength);
+            this.pnlOption.Controls.Add(this.chkOverLogo);
             this.pnlOption.Controls.Add(this.lblHotKey);
             this.pnlOption.Controls.Add(this.lblErrorLevel);
             this.pnlOption.Controls.Add(this.cbErrorLevel);
@@ -156,11 +161,48 @@
             this.pnlOption.Size = new System.Drawing.Size(258, 137);
             this.pnlOption.TabIndex = 7;
             // 
+            // lblHotKey
+            // 
+            this.lblHotKey.AutoSize = true;
+            this.lblHotKey.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.lblHotKey.Location = new System.Drawing.Point(147, 19);
+            this.lblHotKey.Name = "lblHotKey";
+            this.lblHotKey.Size = new System.Drawing.Size(95, 12);
+            this.lblHotKey.TabIndex = 12;
+            this.lblHotKey.Text = "Hotkey: Win + Q";
+            // 
+            // lblErrorLevel
+            // 
+            this.lblErrorLevel.AutoSize = true;
+            this.lblErrorLevel.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.lblErrorLevel.Location = new System.Drawing.Point(12, 107);
+            this.lblErrorLevel.Name = "lblErrorLevel";
+            this.lblErrorLevel.Size = new System.Drawing.Size(71, 12);
+            this.lblErrorLevel.TabIndex = 11;
+            this.lblErrorLevel.Text = "ErrorLevel:";
+            // 
+            // cbErrorLevel
+            // 
+            this.cbErrorLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbErrorLevel.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cbErrorLevel.FormattingEnabled = true;
+            this.cbErrorLevel.Items.AddRange(new object[] {
+            "L",
+            "M",
+            "Q",
+            "H"});
+            this.cbErrorLevel.Location = new System.Drawing.Point(87, 103);
+            this.cbErrorLevel.Name = "cbErrorLevel";
+            this.cbErrorLevel.Size = new System.Drawing.Size(36, 20);
+            this.cbErrorLevel.TabIndex = 10;
+            this.cbErrorLevel.SelectedIndexChanged += new System.EventHandler(this.cbErrorLevel_SelectedIndexChanged);
+            // 
             // lnlMaskColor
             // 
+            this.lnlMaskColor.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.lnlMaskColor.Location = new System.Drawing.Point(12, 57);
             this.lnlMaskColor.Name = "lnlMaskColor";
-            this.lnlMaskColor.Size = new System.Drawing.Size(72, 28);
+            this.lnlMaskColor.Size = new System.Drawing.Size(72, 36);
             this.lnlMaskColor.TabIndex = 9;
             this.lnlMaskColor.Text = "Mask Color:";
             // 
@@ -175,51 +217,44 @@
             // 
             // chkMultiDecode
             // 
-            this.chkMultiDecode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkMultiDecode.AutoEllipsis = true;
             this.chkMultiDecode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkMultiDecode.Checked = true;
             this.chkMultiDecode.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMultiDecode.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.chkMultiDecode.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.chkMultiDecode.Location = new System.Drawing.Point(12, 13);
             this.chkMultiDecode.Name = "chkMultiDecode";
             this.chkMultiDecode.Size = new System.Drawing.Size(111, 24);
             this.chkMultiDecode.TabIndex = 7;
-            this.chkMultiDecode.Text = "Multiple Decode";
+            this.chkMultiDecode.Text = "Multiple Decode ";
             this.chkMultiDecode.UseVisualStyleBackColor = true;
             // 
-            // cbErrorLevel
+            // colorDlg
             // 
-            this.cbErrorLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbErrorLevel.FormattingEnabled = true;
-            this.cbErrorLevel.Items.AddRange(new object[] {
-            "L",
-            "M",
-            "Q",
-            "H"});
-            this.cbErrorLevel.Location = new System.Drawing.Point(87, 103);
-            this.cbErrorLevel.Name = "cbErrorLevel";
-            this.cbErrorLevel.Size = new System.Drawing.Size(36, 20);
-            this.cbErrorLevel.TabIndex = 10;
-            this.cbErrorLevel.SelectedIndexChanged += new System.EventHandler(this.cbErrorLevel_SelectedIndexChanged);
+            this.colorDlg.FullOpen = true;
+            this.colorDlg.ShowHelp = true;
             // 
-            // lblErrorLevel
+            // chkOverLogo
             // 
-            this.lblErrorLevel.AutoSize = true;
-            this.lblErrorLevel.Location = new System.Drawing.Point(12, 107);
-            this.lblErrorLevel.Name = "lblErrorLevel";
-            this.lblErrorLevel.Size = new System.Drawing.Size(71, 12);
-            this.lblErrorLevel.TabIndex = 11;
-            this.lblErrorLevel.Text = "ErrorLevel:";
+            this.chkOverLogo.AutoEllipsis = true;
+            this.chkOverLogo.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkOverLogo.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.chkOverLogo.Location = new System.Drawing.Point(12, 30);
+            this.chkOverLogo.Name = "chkOverLogo";
+            this.chkOverLogo.Size = new System.Drawing.Size(111, 24);
+            this.chkOverLogo.TabIndex = 13;
+            this.chkOverLogo.Text = "Overlay Logo";
+            this.chkOverLogo.UseVisualStyleBackColor = true;
             // 
-            // lblHotKey
+            // lblTextLength
             // 
-            this.lblHotKey.AutoSize = true;
-            this.lblHotKey.Location = new System.Drawing.Point(147, 18);
-            this.lblHotKey.Name = "lblHotKey";
-            this.lblHotKey.Size = new System.Drawing.Size(95, 12);
-            this.lblHotKey.TabIndex = 12;
-            this.lblHotKey.Text = "Hotkey: Win + Q";
+            this.lblTextLength.Location = new System.Drawing.Point(147, 106);
+            this.lblTextLength.Name = "lblTextLength";
+            this.lblTextLength.Size = new System.Drawing.Size(95, 14);
+            this.lblTextLength.TabIndex = 14;
+            this.lblTextLength.Text = "0";
+            this.lblTextLength.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MainForm
             // 
@@ -235,7 +270,6 @@
             this.Controls.Add(this.pnlQR);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.HelpButton = true;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -266,6 +300,8 @@
         private System.Windows.Forms.Label lblErrorLevel;
         private System.Windows.Forms.ComboBox cbErrorLevel;
         private System.Windows.Forms.Label lblHotKey;
+        private System.Windows.Forms.CheckBox chkOverLogo;
+        private System.Windows.Forms.Label lblTextLength;
     }
 }
 

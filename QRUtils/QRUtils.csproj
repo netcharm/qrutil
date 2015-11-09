@@ -54,7 +54,7 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>qrutils.ico</ApplicationIcon>
+    <ApplicationIcon>qrutils_small.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="qrutils.ico" />
+    <Content Include="qrutils_small.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
