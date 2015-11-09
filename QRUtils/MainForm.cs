@@ -48,7 +48,8 @@ namespace QRUtils
             catch
             {
                 MessageBox.Show(this, "Failed to bind hotkey Win+Q!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                lblHotKey.Hide();
+                //status.Items[0]
+                statusLabelHotkey.Text = String.Format("Hotkey: {0}", "None");
             }
         }
 
@@ -115,7 +116,9 @@ namespace QRUtils
             int W = Math.Min(QRImage.Width - X, size.Width + 200);
             int H = Math.Min(QRImage.Height - Y, size.Height + 200);
             Bitmap bwQR = QRImage.Clone(new Rectangle(X, Y, W, H), PixelFormat.Format1bppIndexed);
+            #if DEBUG 
             bwQR.Save("test-bw.png");
+            #endif
 
             int origX = 100;
             int origY = 100;
@@ -205,9 +208,9 @@ namespace QRUtils
             }
         }
 
-        private string QRDecode()
+        private string QRDecode(Bitmap qrImage)
         {
-            using (Bitmap fullImage = getScreenSnapshot())
+            using (qrImage)
             {
                 var br = new BarcodeReader();
                 br.AutoRotate = true;
@@ -216,10 +219,10 @@ namespace QRUtils
                 br.Options.PureBarcode = false;
                 br.TryInverted = true;
 
-                var result = br.Decode(fullImage);
+                var result = br.Decode(qrImage);
                 if (result != null)
                 {
-                    ShowQRCodeMask(result, fullImage);
+                    ShowQRCodeMask(result, qrImage);
                     return (result.Text);
                 }
                 else
@@ -230,11 +233,13 @@ namespace QRUtils
             }
         }
 
-        private List<string> QRDecodeMulti()
+        private List<string> QRDecodeMulti(Bitmap qrImage)
         {
-            using (Bitmap fullImage = getScreenSnapshot())
+            using (qrImage)
             {
+                //#if DEBUG
                 //fullImage.Save("test.png");
+                //endif
                 //var br = new BarcodeReader( null, 
                 //                                  bitmap => new BitmapLuminanceSource(bitmap),
                 //                                  luminance => new GlobalHistogramBinarizer(luminance));
@@ -246,13 +251,13 @@ namespace QRUtils
                 br.Options.PureBarcode = false;
                 br.Options.PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE };
 
-                var results = br.DecodeMultiple(fullImage);
+                var results = br.DecodeMultiple(qrImage);
                 if (results != null)
                 {
                     var textList = new List<string>();
                     foreach (var result in results)
                     {
-                        ShowQRCodeMask(result, fullImage);
+                        ShowQRCodeMask(result, qrImage);
                         textList.Add(result.Text);
                     }
                     return (textList);
@@ -279,14 +284,18 @@ namespace QRUtils
             if (MULTI)
             {
                 edText.Clear();
-                foreach (var result in QRDecodeMulti())
+                foreach (var result in QRDecodeMulti(getScreenSnapshot()))
                 {
                     edText.Text += result + "\n\n";
                 }
+                //status.Items[2]
+                statusLabelDecodeCount.Text = String.Format("QR Found: {0}", edText.Lines.Length / 2);
             }
             else
             {
-                edText.Text = QRDecode();
+                edText.Text = QRDecode(getScreenSnapshot());
+                //status.Items[2]
+                statusLabelDecodeCount.Text = String.Format("QR Found: {0}", 1);
             }
 
             this.Opacity = 1.0f;
@@ -331,7 +340,8 @@ namespace QRUtils
 
         private void edText_TextChanged(object sender, EventArgs e)
         {
-            lblTextLength.Text = edText.Text.Length.ToString();
+            //status.Items[1]
+            statusLabelTextCount.Text = String.Format("Text Count: {0}", edText.Text.Length.ToString());
         }
 
         private void picMaskColor_Click(object sender, EventArgs e)
