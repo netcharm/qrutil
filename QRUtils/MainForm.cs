@@ -10,8 +10,18 @@ namespace QRUtils
 {
     public partial class MainForm : Form
     {
-        private Font monoFont = new System.Drawing.Font("DejaVu Sans Mono", 10);
+        private Font monoFont = new Font("DejaVu Sans Mono", 10);
         private ErrorCorrectionLevel errorLevel = ErrorCorrectionLevel.M;
+
+        // QR码数据容量
+        //   数字                      最多 7089 字符
+        //   字母                      最多 4296 字符
+        //   二进制数（8 bits）         最多 2953 字符
+        //   日文汉字（Shift JIS）      最多 1817 字符
+        //   平片假名（Shift JIS）      最多 1817 字符
+        //   中文汉字（UTF-8）          最多 0984 字符
+        //   中文汉字（BIG5）           最多 1800 字符
+        int MAX_TEXT = 7089;
 
         private KeyboardHook hook = new KeyboardHook();
 
@@ -19,6 +29,9 @@ namespace QRUtils
         {
             InitializeComponent();
             Application.EnableVisualStyles();
+            this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+
+            edText.MaxLength = MAX_TEXT;
 
             colorDlg.Color = Color.Cyan;
             picMaskColor.BackColor = Color.Red;
@@ -33,7 +46,7 @@ namespace QRUtils
             }
             catch
             {
-                MessageBox.Show("Failed to bind hotkey Win+Q!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Failed to bind hotkey Win+Q!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 lblHotKey.Hide();
             }
         }
@@ -46,20 +59,20 @@ namespace QRUtils
             colorDlg.Color = maskColor;
             picMaskColor.BackColor = maskColor;
 
-            String errorString = Properties.Settings.Default["ErrorCorrectionLevel"].ToString();
-            if      (String.Equals(errorString, "L", StringComparison.CurrentCultureIgnoreCase))
+            string errorString = Properties.Settings.Default["ErrorCorrectionLevel"].ToString();
+            if      (string.Equals(errorString, "L", StringComparison.CurrentCultureIgnoreCase))
             {
                 errorLevel = ErrorCorrectionLevel.L;
             }
-            else if (String.Equals(errorString, "M", StringComparison.CurrentCultureIgnoreCase))
+            else if (string.Equals(errorString, "M", StringComparison.CurrentCultureIgnoreCase))
             {
                 errorLevel = ErrorCorrectionLevel.M;
             }
-            else if (String.Equals(errorString, "Q", StringComparison.CurrentCultureIgnoreCase))
+            else if (string.Equals(errorString, "Q", StringComparison.CurrentCultureIgnoreCase))
             {
                 errorLevel = ErrorCorrectionLevel.Q;
             }
-            else if (String.Equals(errorString, "H", StringComparison.CurrentCultureIgnoreCase))
+            else if (string.Equals(errorString, "H", StringComparison.CurrentCultureIgnoreCase))
             {
                 errorLevel = ErrorCorrectionLevel.H;
             }
@@ -77,7 +90,7 @@ namespace QRUtils
             btnQRDecode.PerformClick();
         }
 
-        private Bitmap GetScreenSnapshot()
+        private Bitmap getScreenSnapshot()
         {
             Bitmap fullImage = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
                                           Screen.PrimaryScreen.Bounds.Height);
@@ -97,7 +110,7 @@ namespace QRUtils
             QRCodeSplashForm splash = new QRCodeSplashForm();
             splash.Panel.BackColor = picMaskColor.BackColor;
 
-            float minX = Int32.MaxValue, minY = Int32.MaxValue, maxX = 0, maxY = 0;
+            float minX = int.MaxValue, minY = int.MaxValue, maxX = 0, maxY = 0;
             foreach (ResultPoint point in result.ResultPoints)
             {
                 minX = Math.Min(minX, point.X);
@@ -120,50 +133,51 @@ namespace QRUtils
             splash.Close();
         }
 
-        private Bitmap QREncode(String text)
+        private Bitmap QREncode(string text)
         {
             var width = 512;
             var height = 512;
             var margin = 0;
 
-            int MAX_TEXT = 750;
-
-            if (String.IsNullOrEmpty(text)) return (new Bitmap(width, height));
+            if (string.IsNullOrEmpty(text)) return (new Bitmap(width, height));
 
             string qrText = text;
 
-            var bw = new ZXing.BarcodeWriter();
+            var bw = new BarcodeWriter();
 
-            var encOptions = new ZXing.Common.EncodingOptions
-            {
-                Width = width,
-                Height = height,
-                PureBarcode = false
-            };
-
-            encOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, errorLevel);
-            encOptions.Hints.Add(EncodeHintType.MARGIN, margin);
-            encOptions.Hints.Add(EncodeHintType.DISABLE_ECI, true);
-            encOptions.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
-            encOptions.Hints.Add(EncodeHintType.PDF417_COMPACT, true);
-            encOptions.Hints.Add(EncodeHintType.PDF417_COMPACTION, ZXing.PDF417.Internal.Compaction.AUTO);
+            bw.Options.Width = width;
+            bw.Options.Height = height;
+            bw.Options.PureBarcode = false;
+            bw.Options.Hints.Add(EncodeHintType.ERROR_CORRECTION, errorLevel);
+            bw.Options.Hints.Add(EncodeHintType.MARGIN, margin);
+            bw.Options.Hints.Add(EncodeHintType.DISABLE_ECI, true);
+            bw.Options.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
+            bw.Options.Hints.Add(EncodeHintType.PDF417_COMPACT, true);
+            bw.Options.Hints.Add(EncodeHintType.PDF417_COMPACTION, ZXing.PDF417.Internal.Compaction.AUTO);
 
             bw.Renderer = new BitmapRenderer();
-            bw.Options = encOptions;
-            bw.Format = ZXing.BarcodeFormat.QR_CODE;
+            bw.Format = BarcodeFormat.QR_CODE;
             if (qrText.Length > MAX_TEXT)
             {
                 qrText = qrText.Substring(0, MAX_TEXT);
             }
-            Bitmap barcodeBitmap = bw.Write(qrText);
-            return (barcodeBitmap);
+            try
+            {
+                Bitmap barcodeBitmap = bw.Write(qrText);
+                return (barcodeBitmap);
+            }
+            catch(WriterException)
+            {
+                MessageBox.Show(this, "Text too long!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return (new Bitmap(width, height));
+            }
         }
 
-        private String QRDecode()
+        private string QRDecode()
         {
-            using (Bitmap fullImage = GetScreenSnapshot())
+            using (Bitmap fullImage = getScreenSnapshot())
             {
-                var br = new ZXing.BarcodeReader();
+                var br = new BarcodeReader();
                 br.AutoRotate = true;
                 br.Options.CharacterSet = "UTF-8";
                 br.Options.TryHarder = true;
@@ -178,32 +192,32 @@ namespace QRUtils
                 }
                 else
                 {
-                    MessageBox.Show("Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return (String.Empty);
+                    MessageBox.Show(this, "Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return (string.Empty);
                 }
             }
         }
 
-        private List<String> QRDecodeMulti()
+        private List<string> QRDecodeMulti()
         {
-            using (Bitmap fullImage = GetScreenSnapshot())
+            using (Bitmap fullImage = getScreenSnapshot())
             {
-                fullImage.Save("test.png");
-                //var br = new ZXing.BarcodeReader( null, 
+                //fullImage.Save("test.png");
+                //var br = new BarcodeReader( null, 
                 //                                  bitmap => new BitmapLuminanceSource(bitmap),
                 //                                  luminance => new GlobalHistogramBinarizer(luminance));
-                var br = new ZXing.BarcodeReader();
+                var br = new BarcodeReader();
                 br.AutoRotate = true;
                 br.TryInverted = true;
                 br.Options.CharacterSet = "UTF-8";
                 br.Options.TryHarder = true;
-                br.Options.PureBarcode = true;
+                br.Options.PureBarcode = false;
                 br.Options.PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE };
 
                 var results = br.DecodeMultiple(fullImage);
                 if (results != null)
                 {
-                    var textList = new List<String>();
+                    var textList = new List<string>();
                     foreach (var result in results)
                     {
                         ShowQRCodeMask(result);
@@ -213,8 +227,8 @@ namespace QRUtils
                 }
                 else
                 {
-                    MessageBox.Show("Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return (new List<String>());
+                    MessageBox.Show(this, "Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return (new List<string>());
                 }
             }
         }
@@ -254,7 +268,7 @@ namespace QRUtils
 
         private void btnClipTo_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty( edText.Text ))
+            if (!string.IsNullOrEmpty( edText.Text ))
             {
                 Clipboard.SetText(edText.Text);
             }
@@ -269,9 +283,23 @@ namespace QRUtils
         {
             if ((e.Control && e.KeyCode == Keys.V) || (e.Shift && e.KeyCode == Keys.I))
             {
-                edText.Text += Clipboard.GetText(TextDataFormat.UnicodeText);
+                string text = edText.Text + Clipboard.GetText(TextDataFormat.UnicodeText);
+                if(text.Length>MAX_TEXT)
+                {
+                    edText.Text = text.Substring(0, MAX_TEXT);
+                }
+                else
+                {
+                    edText.Text = text;
+                }
+                
                 e.Handled = true;
             }
+        }
+
+        private void edText_TextChanged(object sender, EventArgs e)
+        {
+            lblTextLength.Text = edText.Text.Length.ToString();
         }
 
         private void picMaskColor_Click(object sender, EventArgs e)
@@ -286,20 +314,20 @@ namespace QRUtils
 
         private void cbErrorLevel_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String errorString = cbErrorLevel.SelectedItem.ToString();
-            if (String.Equals(errorString, "L", StringComparison.CurrentCultureIgnoreCase))
+            string errorString = cbErrorLevel.SelectedItem.ToString();
+            if (string.Equals(errorString, "L", StringComparison.CurrentCultureIgnoreCase))
             {
                 errorLevel = ErrorCorrectionLevel.L;
             }
-            else if (String.Equals(errorString, "M", StringComparison.CurrentCultureIgnoreCase))
+            else if (string.Equals(errorString, "M", StringComparison.CurrentCultureIgnoreCase))
             {
                 errorLevel = ErrorCorrectionLevel.M;
             }
-            else if (String.Equals(errorString, "Q", StringComparison.CurrentCultureIgnoreCase))
+            else if (string.Equals(errorString, "Q", StringComparison.CurrentCultureIgnoreCase))
             {
                 errorLevel = ErrorCorrectionLevel.Q;
             }
-            else if (String.Equals(errorString, "H", StringComparison.CurrentCultureIgnoreCase))
+            else if (string.Equals(errorString, "H", StringComparison.CurrentCultureIgnoreCase))
             {
                 errorLevel = ErrorCorrectionLevel.H;
             }
