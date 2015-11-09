@@ -125,7 +125,7 @@ namespace QRUtils
             if (mark.X < 100) origX = mark.X;
             if (mark.Y < 100) origY = mark.Y;
 
-            for (var i = 0; i < 100; i++ )
+            for (var i = 2; i < 100; i++ )
             {
                 var color = bwQR.GetPixel(origX - i, origY);
                 if(color.ToArgb() == Color.White.ToArgb())
@@ -143,12 +143,29 @@ namespace QRUtils
             splash.Panel.BackColor = picMaskColor.BackColor;
 
             float minX = int.MaxValue, minY = int.MaxValue, maxX = 0, maxY = 0;
+            object orientation = 0;
+            float Angle = 0;
+            if (result.ResultMetadata.ContainsKey(ResultMetadataType.ORIENTATION))
+            {
+                result.ResultMetadata.TryGetValue(ResultMetadataType.ORIENTATION, out orientation);
+                Angle = (float)((int)orientation * Math.PI / 180);
+            }
             foreach (ResultPoint point in result.ResultPoints)
             {
-                minX = Math.Min(minX, point.X);
-                minY = Math.Min(minY, point.Y);
-                maxX = Math.Max(maxX, point.X);
-                maxY = Math.Max(maxY, point.Y);
+                float x = point.X;
+                float y = point.Y;
+                if (Angle != 0)
+                {
+                    //x = QRImage.Width - (float)Math.Abs(point.X * Math.Cos(Angle) - point.Y * Math.Sin(Angle));
+                    //y = QRImage.Height - (float)Math.Abs(point.Y * Math.Cos(Angle) + point.X * Math.Sin(Angle));
+                    x = QRImage.Width - (float)Math.Abs(point.X * Math.Cos(Angle) + point.Y * Math.Sin(Angle));
+                    y = (float)Math.Abs(-point.Y * Math.Cos(Angle) + point.X * Math.Sin(Angle));
+                }
+
+                minX = Math.Min(minX, x);
+                minY = Math.Min(minY, y);
+                maxX = Math.Max(maxX, x);
+                maxY = Math.Max(maxY, y);
             }
 
             Point mark = new Point((int)minX, (int)minY);
@@ -227,7 +244,9 @@ namespace QRUtils
                 }
                 else
                 {
+                    #if DENUG
                     MessageBox.Show(this, "Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    #endif
                     return (string.Empty);
                 }
             }
@@ -237,9 +256,9 @@ namespace QRUtils
         {
             using (qrImage)
             {
-                //#if DEBUG
-                //fullImage.Save("test.png");
-                //endif
+                #if DEBUG
+                qrImage.Save("screensnap.png");
+                #endif
                 //var br = new BarcodeReader( null, 
                 //                                  bitmap => new BitmapLuminanceSource(bitmap),
                 //                                  luminance => new GlobalHistogramBinarizer(luminance));
@@ -264,7 +283,9 @@ namespace QRUtils
                 }
                 else
                 {
+                    #if DEBUG
                     MessageBox.Show(this, "Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    #endif
                     return (new List<string>());
                 }
             }
@@ -284,12 +305,13 @@ namespace QRUtils
             if (MULTI)
             {
                 edText.Clear();
-                foreach (var result in QRDecodeMulti(getScreenSnapshot()))
+                var results = QRDecodeMulti(getScreenSnapshot());
+                foreach (var result in results)
                 {
                     edText.Text += result + "\n\n";
                 }
                 //status.Items[2]
-                statusLabelDecodeCount.Text = String.Format("QR Found: {0}", edText.Lines.Length / 2);
+                statusLabelDecodeCount.Text = String.Format("QR Found: {0}", results.Count);
             }
             else
             {
