@@ -234,6 +234,7 @@ namespace QRUtils
             }
         }
 
+#if DEBUG
         //
         // this function code get from 
         // http://www.codeproject.com/Articles/617613/Fast-Pixel-Operations-in-NET-With-and-Without-unsa
@@ -274,6 +275,10 @@ namespace QRUtils
             image.UnlockBits(imageData);
         }
 
+        //
+        // this function code get from 
+        // http://social.msdn.microsoft.com/Forums/en-us/vblanguage/thread/500f7827-06cf-4646-a4a1-e075c16bbb38
+        //
         private ColorPalette GetGrayScalePalette(Bitmap image)
         {
             if(image.PixelFormat != PixelFormat.Format8bppIndexed) throw new InvalidOperationException();
@@ -285,6 +290,7 @@ namespace QRUtils
             }
             return (monoPalette);
         }
+#endif
 
         private void setDecodeOptions(BarcodeReader br)
         {
@@ -337,22 +343,6 @@ namespace QRUtils
 
                 try
                 {
-                    //int X = 0;
-                    //int Y = 0;
-                    //int W = qrImage.Width;
-                    //int H = qrImage.Height;
-                    //Bitmap bwQR = qrImage.Clone(new Rectangle(X, Y, W, H), PixelFormat.Format1bppIndexed);
-                    //Bitmap bwQR = qrImage.Clone(new Rectangle(X, Y, W, H), PixelFormat.Format8bppIndexed);
-                    //bwQR.Palette = GetGrayScalePalette(bwQR);
-#if DEBUG
-                    //bwQR.Save("bw-test-g.png");
-#endif
-                    //byte c = Color.Black.G;
-                    //DetectColorWithMarshal(bwQR, c, c, c, 5);
-#if DEBUG
-                    //bwQR.Save("bw-test-b.png");
-#endif
-                    //var result = br.Decode(bwQR);
                     var result = br.Decode(qrImage);
                     if (result != null)
                     {
