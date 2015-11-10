@@ -38,6 +38,10 @@
             this.btnClipFrom = new System.Windows.Forms.Button();
             this.btnClipTo = new System.Windows.Forms.Button();
             this.pnlOption = new System.Windows.Forms.Panel();
+            this.grpDecodeFormat = new System.Windows.Forms.GroupBox();
+            this.chkDecodeFormat1D = new System.Windows.Forms.CheckBox();
+            this.chkDecodeFormatDM = new System.Windows.Forms.CheckBox();
+            this.chkDecodeFormatQR = new System.Windows.Forms.CheckBox();
             this.chkOverLogo = new System.Windows.Forms.CheckBox();
             this.lblErrorLevel = new System.Windows.Forms.Label();
             this.cbErrorLevel = new System.Windows.Forms.ComboBox();
@@ -53,6 +57,7 @@
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
             this.pnlOption.SuspendLayout();
+            this.grpDecodeFormat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picMaskColor)).BeginInit();
             this.status.SuspendLayout();
             this.SuspendLayout();
@@ -150,6 +155,7 @@
             // 
             // pnlOption
             // 
+            this.pnlOption.Controls.Add(this.grpDecodeFormat);
             this.pnlOption.Controls.Add(this.chkOverLogo);
             this.pnlOption.Controls.Add(this.lblErrorLevel);
             this.pnlOption.Controls.Add(this.cbErrorLevel);
@@ -160,6 +166,59 @@
             this.pnlOption.Name = "pnlOption";
             this.pnlOption.Size = new System.Drawing.Size(258, 137);
             this.pnlOption.TabIndex = 7;
+            // 
+            // grpDecodeFormat
+            // 
+            this.grpDecodeFormat.Controls.Add(this.chkDecodeFormat1D);
+            this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatDM);
+            this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatQR);
+            this.grpDecodeFormat.Location = new System.Drawing.Point(136, 37);
+            this.grpDecodeFormat.Name = "grpDecodeFormat";
+            this.grpDecodeFormat.Size = new System.Drawing.Size(111, 87);
+            this.grpDecodeFormat.TabIndex = 15;
+            this.grpDecodeFormat.TabStop = false;
+            this.grpDecodeFormat.Text = "Decode Format";
+            // 
+            // chkDecodeFormat1D
+            // 
+            this.chkDecodeFormat1D.AutoEllipsis = true;
+            this.chkDecodeFormat1D.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkDecodeFormat1D.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.chkDecodeFormat1D.Location = new System.Drawing.Point(6, 58);
+            this.chkDecodeFormat1D.Name = "chkDecodeFormat1D";
+            this.chkDecodeFormat1D.Size = new System.Drawing.Size(99, 17);
+            this.chkDecodeFormat1D.TabIndex = 17;
+            this.chkDecodeFormat1D.Text = "All 1D Code";
+            this.chkDecodeFormat1D.UseVisualStyleBackColor = true;
+            this.chkDecodeFormat1D.CheckedChanged += new System.EventHandler(this.chkDecodeFormat_CheckedChanged);
+            // 
+            // chkDecodeFormatDM
+            // 
+            this.chkDecodeFormatDM.AutoEllipsis = true;
+            this.chkDecodeFormatDM.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkDecodeFormatDM.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.chkDecodeFormatDM.Location = new System.Drawing.Point(6, 37);
+            this.chkDecodeFormatDM.Name = "chkDecodeFormatDM";
+            this.chkDecodeFormatDM.Size = new System.Drawing.Size(99, 17);
+            this.chkDecodeFormatDM.TabIndex = 16;
+            this.chkDecodeFormatDM.Text = "Data Matrix";
+            this.chkDecodeFormatDM.UseVisualStyleBackColor = true;
+            this.chkDecodeFormatDM.CheckedChanged += new System.EventHandler(this.chkDecodeFormat_CheckedChanged);
+            // 
+            // chkDecodeFormatQR
+            // 
+            this.chkDecodeFormatQR.AutoEllipsis = true;
+            this.chkDecodeFormatQR.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkDecodeFormatQR.Checked = true;
+            this.chkDecodeFormatQR.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkDecodeFormatQR.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.chkDecodeFormatQR.Location = new System.Drawing.Point(6, 16);
+            this.chkDecodeFormatQR.Name = "chkDecodeFormatQR";
+            this.chkDecodeFormatQR.Size = new System.Drawing.Size(99, 17);
+            this.chkDecodeFormatQR.TabIndex = 15;
+            this.chkDecodeFormatQR.Text = "QR Code";
+            this.chkDecodeFormatQR.UseVisualStyleBackColor = true;
+            this.chkDecodeFormatQR.CheckedChanged += new System.EventHandler(this.chkDecodeFormat_CheckedChanged);
             // 
             // chkOverLogo
             // 
@@ -232,6 +291,7 @@
             this.chkMultiDecode.TabIndex = 7;
             this.chkMultiDecode.Text = "Multiple Decode ";
             this.chkMultiDecode.UseVisualStyleBackColor = true;
+            this.chkMultiDecode.CheckedChanged += new System.EventHandler(this.chkMultiDecode_CheckedChanged);
             // 
             // colorDlg
             // 
@@ -283,13 +343,13 @@
             this.statusLabelDecodeCount.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.statusLabelDecodeCount.DoubleClickEnabled = true;
             this.statusLabelDecodeCount.Name = "statusLabelDecodeCount";
-            this.statusLabelDecodeCount.Size = new System.Drawing.Size(75, 17);
-            this.statusLabelDecodeCount.Text = "QR Found: 0";
+            this.statusLabelDecodeCount.Size = new System.Drawing.Size(87, 17);
+            this.statusLabelDecodeCount.Text = "Code Found: 0";
             // 
             // statusLabelInfo
             // 
             this.statusLabelInfo.Name = "statusLabelInfo";
-            this.statusLabelInfo.Size = new System.Drawing.Size(417, 17);
+            this.statusLabelInfo.Size = new System.Drawing.Size(448, 17);
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
             // 
@@ -316,6 +376,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).EndInit();
             this.pnlOption.ResumeLayout(false);
             this.pnlOption.PerformLayout();
+            this.grpDecodeFormat.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picMaskColor)).EndInit();
             this.status.ResumeLayout(false);
             this.status.PerformLayout();
@@ -346,6 +407,10 @@
         private System.Windows.Forms.ToolStripStatusLabel statusLabelTextCount;
         private System.Windows.Forms.ToolStripStatusLabel statusLabelDecodeCount;
         private System.Windows.Forms.ToolStripStatusLabel statusLabelInfo;
+        private System.Windows.Forms.GroupBox grpDecodeFormat;
+        private System.Windows.Forms.CheckBox chkDecodeFormat1D;
+        private System.Windows.Forms.CheckBox chkDecodeFormatDM;
+        private System.Windows.Forms.CheckBox chkDecodeFormatQR;
     }
 }
 

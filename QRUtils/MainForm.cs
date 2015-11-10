@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Media;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ZXing;
+using ZXing.Common;
 using ZXing.QrCode.Internal;
 using ZXing.Rendering;
 
@@ -17,11 +20,11 @@ namespace QRUtils
         // QR码数据容量
         //   数字                      最多 7089 字符
         //   字母                      最多 4296 字符
-        //   二进制数（8 bits）         最多 2953 字符
-        //   日文汉字（Shift JIS）      最多 1817 字符
-        //   平片假名（Shift JIS）      最多 1817 字符
-        //   中文汉字（UTF-8）          最多 0984 字符
-        //   中文汉字（BIG5）           最多 1800 字符
+        //   二进制数（8 bits）        最多 2953 字符
+        //   日文汉字（Shift JIS）     最多 1817 字符
+        //   平片假名（Shift JIS）     最多 1817 字符
+        //   中文汉字（UTF-8）         最多 0984 字符
+        //   中文汉字（BIG5）          最多 1800 字符
         int MAX_TEXT = 7089;
 
         private KeyboardHook hook = new KeyboardHook();
@@ -83,6 +86,10 @@ namespace QRUtils
                 errorLevel = ErrorCorrectionLevel.Q;
             }
             cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf(errorString);
+
+            chkDecodeFormat1D.Checked = (bool)Properties.Settings.Default["DecodeFormat1D"];
+            chkDecodeFormatDM.Checked = (bool)Properties.Settings.Default["DecodeFormatDM"];
+            chkDecodeFormatQR.Checked = (bool)Properties.Settings.Default["DecodeFormatQR"];
         }
 
         private void hookKeyPressed(object sender, KeyPressedEventArgs e)
@@ -109,6 +116,8 @@ namespace QRUtils
 
         private float calcBorderWidth(Bitmap QRImage, Point mark, Size size)
         {
+            if (mark.X <= 0 || mark.Y <= 0) return 0;
+
             float pixelWidth = 1.0f;
 
             int X = Math.Max(0, mark.X - 100);
@@ -225,30 +234,147 @@ namespace QRUtils
             }
         }
 
+        //
+        // this function code get from 
+        // http://www.codeproject.com/Articles/617613/Fast-Pixel-Operations-in-NET-With-and-Without-unsa
+        //
+        private void DetectColorWithMarshal(Bitmap image,
+          byte searchedR, byte searchedG, int searchedB, int tolerance)
+        {
+            BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width,
+              image.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+
+            byte[] imageBytes = new byte[Math.Abs(imageData.Stride) * image.Height];
+            IntPtr scan0 = imageData.Scan0;
+
+            Marshal.Copy(scan0, imageBytes, 0, imageBytes.Length);
+
+            byte unmatchingValue = Color.White.G;
+            byte matchingValue = Color.Black.G;
+            int toleranceSquared = tolerance * tolerance;
+
+            for (int i = 0; i < imageBytes.Length; i += 3)
+            {
+                byte pixelB = imageBytes[i];
+                byte pixelR = imageBytes[i + 2];
+                byte pixelG = imageBytes[i + 1];
+
+                int diffR = pixelR - searchedR;
+                int diffG = pixelG - searchedG;
+                int diffB = pixelB - searchedB;
+
+                int distance = diffR * diffR + diffG * diffG + diffB * diffB;
+
+                imageBytes[i] = imageBytes[i + 1] = imageBytes[i + 2] = distance >
+                  toleranceSquared ? unmatchingValue : matchingValue;
+            }
+
+            Marshal.Copy(imageBytes, 0, scan0, imageBytes.Length);
+
+            image.UnlockBits(imageData);
+        }
+
+        private ColorPalette GetGrayScalePalette(Bitmap image)
+        {
+            if(image.PixelFormat != PixelFormat.Format8bppIndexed) throw new InvalidOperationException();
+            ColorPalette monoPalette = image.Palette;
+            Color[] entries = monoPalette.Entries;
+            for(var i=0; i < image.Palette.Entries.Length; i++)
+            {
+                entries[i] = Color.FromArgb(i, i, i);
+            }
+            return (monoPalette);
+        }
+
+        private void setDecodeOptions(BarcodeReader br)
+        {
+            br.AutoRotate = true;
+            br.TryInverted = true;
+            br.Options.CharacterSet = "UTF-8";
+            br.Options.TryHarder = true;
+            br.Options.PureBarcode = false;
+            //br.Options.ReturnCodabarStartEnd = true;
+            //br.Options.UseCode39ExtendedMode = true;
+            //br.Options.UseCode39RelaxedExtendedMode = true;
+            br.Options.PossibleFormats = new List<BarcodeFormat>
+            {
+                //BarcodeFormat.All_1D,
+                //BarcodeFormat.DATA_MATRIX,
+                //BarcodeFormat.AZTEC,
+                //BarcodeFormat.PDF_417,
+                //BarcodeFormat.QR_CODE
+            };
+            if (chkDecodeFormat1D.Checked)
+            {
+                br.Options.PossibleFormats.Add(BarcodeFormat.All_1D);
+                br.Options.PossibleFormats.Add(BarcodeFormat.CODABAR);
+                br.Options.PossibleFormats.Add(BarcodeFormat.CODE_128);
+                br.Options.PossibleFormats.Add(BarcodeFormat.CODE_39);
+                br.Options.PossibleFormats.Add(BarcodeFormat.CODE_93);
+                br.Options.PossibleFormats.Add(BarcodeFormat.EAN_13);
+                br.Options.PossibleFormats.Add(BarcodeFormat.EAN_8);
+                br.Options.PossibleFormats.Add(BarcodeFormat.ITF);
+                br.Options.PossibleFormats.Add(BarcodeFormat.MAXICODE);
+                br.Options.PossibleFormats.Add(BarcodeFormat.RSS_14);
+                br.Options.PossibleFormats.Add(BarcodeFormat.RSS_EXPANDED);
+                br.Options.PossibleFormats.Add(BarcodeFormat.UPC_A);
+                br.Options.PossibleFormats.Add(BarcodeFormat.UPC_E);
+                br.Options.PossibleFormats.Add(BarcodeFormat.UPC_EAN_EXTENSION);
+            }
+            if (chkDecodeFormatDM.Checked) br.Options.PossibleFormats.Add(BarcodeFormat.DATA_MATRIX);
+            if (chkDecodeFormatQR.Checked) br.Options.PossibleFormats.Add(BarcodeFormat.QR_CODE);
+        }
+
         private string QRDecode(Bitmap qrImage)
         {
             using (qrImage)
             {
+                //var br = new BarcodeReader(null,
+                //                           bitmap => new BitmapLuminanceSource(bitmap),
+                //                           luminance => new GlobalHistogramBinarizer(luminance));
                 var br = new BarcodeReader();
-                br.AutoRotate = true;
-                br.Options.CharacterSet = "UTF-8";
-                br.Options.TryHarder = true;
-                br.Options.PureBarcode = false;
-                br.TryInverted = true;
+                setDecodeOptions(br);
 
-                var result = br.Decode(qrImage);
-                if (result != null)
+                try
                 {
-                    ShowQRCodeMask(result, qrImage);
-                    return (result.Text);
+                    //int X = 0;
+                    //int Y = 0;
+                    //int W = qrImage.Width;
+                    //int H = qrImage.Height;
+                    //Bitmap bwQR = qrImage.Clone(new Rectangle(X, Y, W, H), PixelFormat.Format1bppIndexed);
+                    //Bitmap bwQR = qrImage.Clone(new Rectangle(X, Y, W, H), PixelFormat.Format8bppIndexed);
+                    //bwQR.Palette = GetGrayScalePalette(bwQR);
+#if DEBUG
+                    //bwQR.Save("bw-test-g.png");
+#endif
+                    //byte c = Color.Black.G;
+                    //DetectColorWithMarshal(bwQR, c, c, c, 5);
+#if DEBUG
+                    //bwQR.Save("bw-test-b.png");
+#endif
+                    //var result = br.Decode(bwQR);
+                    var result = br.Decode(qrImage);
+                    if (result != null)
+                    {
+                        ShowQRCodeMask(result, qrImage);
+                        SystemSounds.Beep.Play();
+                        return (result.Text);
+                    }
+                    else
+                    {
+#if DEBUG
+                        MessageBox.Show(this, "Failed to find Code!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+#endif
+                        SystemSounds.Exclamation.Play();
+                        return (string.Empty);
+                    }
                 }
-                else
+                catch
                 {
-                    #if DENUG
-                    MessageBox.Show(this, "Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    #endif
+                    SystemSounds.Exclamation.Play();
                     return (string.Empty);
                 }
+
             }
         }
 
@@ -256,36 +382,42 @@ namespace QRUtils
         {
             using (qrImage)
             {
-                #if DEBUG
+#if DEBUG
                 qrImage.Save("screensnap.png");
-                #endif
+#endif
                 //var br = new BarcodeReader( null, 
-                //                                  bitmap => new BitmapLuminanceSource(bitmap),
-                //                                  luminance => new GlobalHistogramBinarizer(luminance));
+                //                            bitmap => new BitmapLuminanceSource(bitmap),
+                //                            luminance => new GlobalHistogramBinarizer(luminance));
                 var br = new BarcodeReader();
-                br.AutoRotate = true;
-                br.TryInverted = true;
-                br.Options.CharacterSet = "UTF-8";
-                br.Options.TryHarder = true;
-                br.Options.PureBarcode = false;
-                br.Options.PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE };
+                setDecodeOptions(br);
 
-                var results = br.DecodeMultiple(qrImage);
-                if (results != null)
+                try
                 {
-                    var textList = new List<string>();
-                    foreach (var result in results)
+                    var results = br.DecodeMultiple(qrImage);
+                    if (results != null)
                     {
-                        ShowQRCodeMask(result, qrImage);
-                        textList.Add(result.Text);
+                        var textList = new List<string>();
+                        foreach (var result in results)
+                        {
+                            ShowQRCodeMask(result, qrImage);
+                            textList.Add(result.Text);
+                        }
+                        //SystemSounds.Asterisk.Play();
+                        SystemSounds.Beep.Play();
+                        return (textList);
                     }
-                    return (textList);
+                    else
+                    {
+#if DEBUG
+                        MessageBox.Show(this, "Failed to find Code!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+#endif
+                        SystemSounds.Exclamation.Play();
+                        return (new List<string>());
+                    }
                 }
-                else
+                catch
                 {
-                    #if DEBUG
-                    MessageBox.Show(this, "Failed to find QRCode!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    #endif
+                    SystemSounds.Exclamation.Play();
                     return (new List<string>());
                 }
             }
@@ -311,13 +443,20 @@ namespace QRUtils
                     edText.Text += result + "\n\n";
                 }
                 //status.Items[2]
-                statusLabelDecodeCount.Text = String.Format("QR Found: {0}", results.Count);
+                statusLabelDecodeCount.Text = String.Format("Code Found: {0}", results.Count);
             }
             else
             {
                 edText.Text = QRDecode(getScreenSnapshot());
                 //status.Items[2]
-                statusLabelDecodeCount.Text = String.Format("QR Found: {0}", 1);
+                if(edText.Text.Length>0)
+                {
+                    statusLabelDecodeCount.Text = String.Format("Code Found: {0}", 1);
+                }
+                else
+                {
+                    statusLabelDecodeCount.Text = String.Format("Code Found: {0}", 0);
+                }
             }
 
             this.Opacity = 1.0f;
@@ -399,10 +538,21 @@ namespace QRUtils
             {
                 errorLevel = ErrorCorrectionLevel.Q;
             }
-
             Properties.Settings.Default["ErrorCorrectionLevel"] = errorString;
             Properties.Settings.Default.Save(); 
         }
 
+        private void chkDecodeFormat_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default["DecodeFormat1D"] = chkDecodeFormat1D.Checked;
+            Properties.Settings.Default["DecodeFormatDM"] = chkDecodeFormatDM.Checked;
+            Properties.Settings.Default["DecodeFormatQR"] = chkDecodeFormatQR.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void chkMultiDecode_CheckedChanged(object sender, EventArgs e)
+        {
+            //grpDecodeFormat.Enabled = chkMultiDecode.Checked;
+        }
     }
 }
