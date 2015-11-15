@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.0.0\n"
 "Report-Msgid-Bugs-To: netcharm <netcharm@163.com>\n"
-"POT-Creation-Date: 2015-11-15 23:13+0800\n"
-"PO-Revision-Date: 2015-11-16 00:01+0800\n"
+"POT-Creation-Date: 2015-11-16 00:27+0800\n"
+"PO-Revision-Date: 2015-11-16 00:30+0800\n"
 "Last-Translator: netcharm <netcharm@163.com>\n"
 "Language-Team: netcharm <netcharm@163.com>\n"
 "MIME-Version: 1.0\n"
@@ -51,31 +51,31 @@ msgstr "QR二維碼"
 msgid "Overlay Logo"
 msgstr "覆蓋自定義標誌"
 
-#: MainForm.Designer.cs:243
+#: MainForm.Designer.cs:242
 msgid "ErrorLevel:"
 msgstr "編碼容錯級別:"
 
-#: MainForm.Designer.cs:268
+#: MainForm.Designer.cs:267
 msgid "Mask Color:"
 msgstr "指示遮罩顏色:"
 
-#: MainForm.Designer.cs:292
+#: MainForm.Designer.cs:291
 msgid "Multiple Decode "
 msgstr "一次性複數解碼"
 
-#: MainForm.Designer.cs:325
+#: MainForm.Designer.cs:324
 msgid "Hotkey: WIN + Q"
 msgstr "熱鍵: WIN + Q"
 
-#: MainForm.Designer.cs:336
+#: MainForm.Designer.cs:335
 msgid "Text Count: 0"
 msgstr "文本長度: 0"
 
-#: MainForm.Designer.cs:347
+#: MainForm.Designer.cs:346
 msgid "Code Found: 0"
 msgstr "解碼計數: 0"
 
-#: MainForm.Designer.cs:354
+#: MainForm.Designer.cs:353
 msgid "Ready"
 msgstr "就緒"
 
@@ -86,4 +86,27 @@ msgstr "QR二維碼小工具"
 #: QRCodeSplashForm.designer.cs:60
 msgid "QRCodeSplashForm"
 msgstr "QR二維碼指示"
+
+#: MainForm.cs:62
+#: MainForm.cs:68
+#, csharp-format
+#| msgid "Hotkey: WIN + Q"
+msgid "Hotkey: {0}"
+msgstr "熱鍵: {0}"
+
+#: MainForm.cs:68
+msgid "None"
+msgstr "沒有"
+
+#: MainForm.cs:449
+#, csharp-format
+#| msgid "Code Found: 0"
+msgid "Code Found: {0}"
+msgstr "解碼計數: {0}"
+
+#: MainForm.cs:515
+#, csharp-format
+#| msgid "Text Count: 0"
+msgid "Text Count: {0}"
+msgstr "文本長度: {0}"
 

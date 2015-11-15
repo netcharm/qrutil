@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: QRUtils\n"
 "Report-Msgid-Bugs-To: netcharm <netcharm@163.com>\n"
-"POT-Creation-Date: 2015-11-15 23:13+0800\n"
-"PO-Revision-Date: 2015-11-15 23:13+0800\n"
+"POT-Creation-Date: 2015-11-16 00:27+0800\n"
+"PO-Revision-Date: 2015-11-16 00:27+0800\n"
 "Last-Translator: netcharm <netcharm@163.com>\n"
 "Language-Team: netcharm <netcharm@163.com>\n"
 "MIME-Version: 1.0\n"
@@ -56,31 +56,31 @@ msgstr ""
 msgid "Overlay Logo"
 msgstr ""
 
-#: MainForm.Designer.cs:243
+#: MainForm.Designer.cs:242
 msgid "ErrorLevel:"
 msgstr ""
 
-#: MainForm.Designer.cs:268
+#: MainForm.Designer.cs:267
 msgid "Mask Color:"
 msgstr ""
 
-#: MainForm.Designer.cs:292
+#: MainForm.Designer.cs:291
 msgid "Multiple Decode "
 msgstr ""
 
-#: MainForm.Designer.cs:325
+#: MainForm.Designer.cs:324
 msgid "Hotkey: WIN + Q"
 msgstr ""
 
-#: MainForm.Designer.cs:336
+#: MainForm.Designer.cs:335
 msgid "Text Count: 0"
 msgstr ""
 
-#: MainForm.Designer.cs:347
+#: MainForm.Designer.cs:346
 msgid "Code Found: 0"
 msgstr ""
 
-#: MainForm.Designer.cs:354
+#: MainForm.Designer.cs:353
 msgid "Ready"
 msgstr ""
 
@@ -90,4 +90,23 @@ msgstr ""
 
 #: QRCodeSplashForm.designer.cs:60
 msgid "QRCodeSplashForm"
+msgstr ""
+
+#: MainForm.cs:62 MainForm.cs:68
+#, csharp-format
+msgid "Hotkey: {0}"
+msgstr ""
+
+#: MainForm.cs:68
+msgid "None"
+msgstr ""
+
+#: MainForm.cs:449
+#, csharp-format
+msgid "Code Found: {0}"
+msgstr ""
+
+#: MainForm.cs:515
+#, csharp-format
+msgid "Text Count: {0}"
 msgstr ""

@@ -59,12 +59,13 @@ namespace QRUtils
             try
             {
                 hook.RegisterHotKey(QRUtils.ModifierKeys.Win, Keys.Q);
+                statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), "WIN + Q" );
             }
             catch
             {
                 MessageBox.Show(this, "Failed to bind hotkey Win+Q!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //status.Items[0]
-                statusLabelHotkey.Text = String.Format("Hotkey: {0}", "None");
+                statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), I18N._( "None" ) );
             }
         }
 
@@ -445,7 +446,7 @@ namespace QRUtils
                     edText.Text += result + "\n\n";
                 }
                 //status.Items[2]
-                statusLabelDecodeCount.Text = String.Format("Code Found: {0}", results.Count);
+                statusLabelDecodeCount.Text = string.Format(I18N._("Code Found: {0}"), results.Count);
             }
             else
             {
@@ -453,11 +454,11 @@ namespace QRUtils
                 //status.Items[2]
                 if(edText.Text.Length>0)
                 {
-                    statusLabelDecodeCount.Text = String.Format("Code Found: {0}", 1);
+                    statusLabelDecodeCount.Text = string.Format("Code Found: {0}", 1);
                 }
                 else
                 {
-                    statusLabelDecodeCount.Text = String.Format("Code Found: {0}", 0);
+                    statusLabelDecodeCount.Text = string.Format("Code Found: {0}", 0);
                 }
             }
 
@@ -511,7 +512,7 @@ namespace QRUtils
         private void edText_TextChanged(object sender, EventArgs e)
         {
             //status.Items[1]
-            statusLabelTextCount.Text = String.Format("Text Count: {0}", edText.Text.Length.ToString());
+            statusLabelTextCount.Text = string.Format(I18N._("Text Count: {0}"), edText.Text.Length.ToString());
         }
 
         private void picMaskColor_Click(object sender, EventArgs e)

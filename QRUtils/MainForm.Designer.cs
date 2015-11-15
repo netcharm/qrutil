@@ -348,9 +348,10 @@
             // statusLabelInfo
             // 
             this.statusLabelInfo.Name = "statusLabelInfo";
-            this.statusLabelInfo.Size = new System.Drawing.Size(436, 17);
+            this.statusLabelInfo.Size = new System.Drawing.Size(405, 17);
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
+            this.statusLabelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // MainForm
             // 
