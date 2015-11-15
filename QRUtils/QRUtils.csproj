@@ -95,6 +95,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NGettext">
+      <HintPath>..\..\_refs\NGettext.dll</HintPath>
+    </Reference>
+    <Reference Include="NGettext.WinForm">
+      <HintPath>..\..\_refs\NGettext.WinForm.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -152,7 +158,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="qrutils.ico" />
     <Content Include="qrutils_small.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -162,7 +167,13 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="locale\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /D /S /I /Y  "$(ProjectDir)locale" "$(TargetDir)locale"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,0 +1,89 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0.0.0\n"
+"Report-Msgid-Bugs-To: netcharm <netcharm@163.com>\n"
+"POT-Creation-Date: 2015-11-15 23:13+0800\n"
+"PO-Revision-Date: 2015-11-15 23:17+0800\n"
+"Last-Translator: netcharm <netcharm@163.com>\n"
+"Language-Team: netcharm <netcharm@163.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: MainForm.Designer.cs:119
+msgid "==> QR"
+msgstr ""
+
+#: MainForm.Designer.cs:130
+msgid "<== QR"
+msgstr ""
+
+#: MainForm.Designer.cs:141
+msgid "<== Clip"
+msgstr ""
+
+#: MainForm.Designer.cs:152
+msgid "==> Clip"
+msgstr ""
+
+#: MainForm.Designer.cs:180
+msgid "Decode Format"
+msgstr "解码支持格式"
+
+#: MainForm.Designer.cs:191
+msgid "All 1D Code"
+msgstr "全部1维条码"
+
+#: MainForm.Designer.cs:204
+msgid "Data Matrix"
+msgstr ""
+
+#: MainForm.Designer.cs:219
+msgid "QR Code"
+msgstr "QR二维码"
+
+#: MainForm.Designer.cs:232
+msgid "Overlay Logo"
+msgstr "覆盖自定义标志"
+
+#: MainForm.Designer.cs:243
+msgid "ErrorLevel:"
+msgstr "编码容错级别:"
+
+#: MainForm.Designer.cs:268
+msgid "Mask Color:"
+msgstr "指示遮罩颜色:"
+
+#: MainForm.Designer.cs:292
+msgid "Multiple Decode "
+msgstr "一次性复数解码"
+
+#: MainForm.Designer.cs:325
+msgid "Hotkey: WIN + Q"
+msgstr "热键: WIN + Q"
+
+#: MainForm.Designer.cs:336
+msgid "Text Count: 0"
+msgstr "文本长度: 0"
+
+#: MainForm.Designer.cs:347
+msgid "Code Found: 0"
+msgstr "解码计数: 0"
+
+#: MainForm.Designer.cs:354
+msgid "Ready"
+msgstr "就绪"
+
+#: MainForm.Designer.cs:374
+msgid "QRCode Utils"
+msgstr "QR二维码小工具"
+
+#: QRCodeSplashForm.designer.cs:60
+msgid "QRCodeSplashForm"
+msgstr "QR二维码指示"
+

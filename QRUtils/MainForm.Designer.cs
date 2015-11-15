@@ -172,7 +172,7 @@
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormat1D);
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatDM);
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatQR);
-            this.grpDecodeFormat.Location = new System.Drawing.Point(136, 37);
+            this.grpDecodeFormat.Location = new System.Drawing.Point(140, 37);
             this.grpDecodeFormat.Name = "grpDecodeFormat";
             this.grpDecodeFormat.Size = new System.Drawing.Size(111, 87);
             this.grpDecodeFormat.TabIndex = 15;
@@ -225,20 +225,19 @@
             this.chkOverLogo.AutoEllipsis = true;
             this.chkOverLogo.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkOverLogo.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.chkOverLogo.Location = new System.Drawing.Point(12, 14);
+            this.chkOverLogo.Location = new System.Drawing.Point(10, 100);
             this.chkOverLogo.Name = "chkOverLogo";
-            this.chkOverLogo.Size = new System.Drawing.Size(111, 24);
+            this.chkOverLogo.Size = new System.Drawing.Size(120, 24);
             this.chkOverLogo.TabIndex = 13;
             this.chkOverLogo.Text = "Overlay Logo";
             this.chkOverLogo.UseVisualStyleBackColor = true;
             // 
             // lblErrorLevel
             // 
-            this.lblErrorLevel.AutoSize = true;
             this.lblErrorLevel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.lblErrorLevel.Location = new System.Drawing.Point(12, 90);
+            this.lblErrorLevel.Location = new System.Drawing.Point(12, 74);
             this.lblErrorLevel.Name = "lblErrorLevel";
-            this.lblErrorLevel.Size = new System.Drawing.Size(71, 12);
+            this.lblErrorLevel.Size = new System.Drawing.Size(80, 16);
             this.lblErrorLevel.TabIndex = 11;
             this.lblErrorLevel.Text = "ErrorLevel:";
             // 
@@ -252,7 +251,7 @@
             "M",
             "Q",
             "H"});
-            this.cbErrorLevel.Location = new System.Drawing.Point(87, 86);
+            this.cbErrorLevel.Location = new System.Drawing.Point(94, 72);
             this.cbErrorLevel.Name = "cbErrorLevel";
             this.cbErrorLevel.Size = new System.Drawing.Size(36, 20);
             this.cbErrorLevel.TabIndex = 10;
@@ -261,16 +260,16 @@
             // lblMaskColor
             // 
             this.lblMaskColor.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.lblMaskColor.Location = new System.Drawing.Point(12, 58);
+            this.lblMaskColor.Location = new System.Drawing.Point(12, 19);
             this.lblMaskColor.Name = "lblMaskColor";
-            this.lblMaskColor.Size = new System.Drawing.Size(72, 12);
+            this.lblMaskColor.Size = new System.Drawing.Size(80, 36);
             this.lblMaskColor.TabIndex = 9;
             this.lblMaskColor.Text = "Mask Color:";
             this.lblMaskColor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // picMaskColor
             // 
-            this.picMaskColor.Location = new System.Drawing.Point(87, 46);
+            this.picMaskColor.Location = new System.Drawing.Point(94, 19);
             this.picMaskColor.Name = "picMaskColor";
             this.picMaskColor.Size = new System.Drawing.Size(36, 36);
             this.picMaskColor.TabIndex = 8;
@@ -285,7 +284,7 @@
             this.chkMultiDecode.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMultiDecode.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkMultiDecode.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.chkMultiDecode.Location = new System.Drawing.Point(136, 14);
+            this.chkMultiDecode.Location = new System.Drawing.Point(140, 14);
             this.chkMultiDecode.Name = "chkMultiDecode";
             this.chkMultiDecode.Size = new System.Drawing.Size(111, 24);
             this.chkMultiDecode.TabIndex = 7;
@@ -349,7 +348,7 @@
             // statusLabelInfo
             // 
             this.statusLabelInfo.Name = "statusLabelInfo";
-            this.statusLabelInfo.Size = new System.Drawing.Size(448, 17);
+            this.statusLabelInfo.Size = new System.Drawing.Size(436, 17);
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
             // 
@@ -375,7 +374,6 @@
             this.pnlQR.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).EndInit();
             this.pnlOption.ResumeLayout(false);
-            this.pnlOption.PerformLayout();
             this.grpDecodeFormat.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picMaskColor)).EndInit();
             this.status.ResumeLayout(false);

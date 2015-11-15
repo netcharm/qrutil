@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: QRUtils\n"
+"Report-Msgid-Bugs-To: netcharm <netcharm@163.com>\n"
+"POT-Creation-Date: 2015-11-15 23:13+0800\n"
+"PO-Revision-Date: 2015-11-15 23:13+0800\n"
+"Last-Translator: netcharm <netcharm@163.com>\n"
+"Language-Team: netcharm <netcharm@163.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: China\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+
+#: MainForm.Designer.cs:119
+msgid "==> QR"
+msgstr ""
+
+#: MainForm.Designer.cs:130
+msgid "<== QR"
+msgstr ""
+
+#: MainForm.Designer.cs:141
+msgid "<== Clip"
+msgstr ""
+
+#: MainForm.Designer.cs:152
+msgid "==> Clip"
+msgstr ""
+
+#: MainForm.Designer.cs:180
+msgid "Decode Format"
+msgstr ""
+
+#: MainForm.Designer.cs:191
+msgid "All 1D Code"
+msgstr ""
+
+#: MainForm.Designer.cs:204
+msgid "Data Matrix"
+msgstr ""
+
+#: MainForm.Designer.cs:219
+msgid "QR Code"
+msgstr ""
+
+#: MainForm.Designer.cs:232
+msgid "Overlay Logo"
+msgstr ""
+
+#: MainForm.Designer.cs:243
+msgid "ErrorLevel:"
+msgstr ""
+
+#: MainForm.Designer.cs:268
+msgid "Mask Color:"
+msgstr ""
+
+#: MainForm.Designer.cs:292
+msgid "Multiple Decode "
+msgstr ""
+
+#: MainForm.Designer.cs:325
+msgid "Hotkey: WIN + Q"
+msgstr ""
+
+#: MainForm.Designer.cs:336
+msgid "Text Count: 0"
+msgstr ""
+
+#: MainForm.Designer.cs:347
+msgid "Code Found: 0"
+msgstr ""
+
+#: MainForm.Designer.cs:354
+msgid "Ready"
+msgstr ""
+
+#: MainForm.Designer.cs:374
+msgid "QRCode Utils"
+msgstr ""
+
+#: QRCodeSplashForm.designer.cs:60
+msgid "QRCodeSplashForm"
+msgstr ""

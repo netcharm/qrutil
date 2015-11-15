@@ -6,14 +6,23 @@ using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ZXing;
-using ZXing.Common;
 using ZXing.QrCode.Internal;
 using ZXing.Rendering;
+using System.Resources;
+using System.Globalization;
+using System.Threading;
+
+using NGettext.WinForm;
 
 namespace QRUtils
 {
     public partial class MainForm : Form
     {
+        // string resourceName = typeof(Program).Assembly.GetName().Name;
+        private static string resourceBaseName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+        private static string resourceCultureName = Thread.CurrentThread.CurrentUICulture.Name;
+        private static string resourcePath = AppDomain.CurrentDomain.BaseDirectory + "locale";
+
         private Font monoFont = new Font("DejaVu Sans Mono", 10);
         private ErrorCorrectionLevel errorLevel = ErrorCorrectionLevel.M;
 
@@ -29,11 +38,14 @@ namespace QRUtils
 
         private KeyboardHook hook = new KeyboardHook();
 
+
         public MainForm()
         {
             InitializeComponent();
             Application.EnableVisualStyles();
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+
+            I18N i10n = new I18N( null, this);
 
             edText.MaxLength = MAX_TEXT;
 
@@ -475,8 +487,15 @@ namespace QRUtils
         {
             if ((e.Control && e.KeyCode == Keys.V) || (e.Shift && e.KeyCode == Keys.I))
             {
-                string text = edText.Text + Clipboard.GetText(TextDataFormat.UnicodeText);
-                if(text.Length>MAX_TEXT)
+                var cursor = edText.SelectionStart;
+                if ( edText.SelectionLength > 0 )
+                {
+                    edText.Text = edText.Text.Remove( edText.SelectionStart, edText.SelectionLength );
+                    edText.SelectionStart = cursor;
+                }
+                var cliptext = Clipboard.GetText(TextDataFormat.UnicodeText);
+                string text = edText.Text.Insert( edText.SelectionStart, cliptext );
+                if (text.Length>MAX_TEXT)
                 {
                     edText.Text = text.Substring(0, MAX_TEXT);
                 }
@@ -484,7 +503,7 @@ namespace QRUtils
                 {
                     edText.Text = text;
                 }
-                
+                edText.SelectionStart = cursor + cliptext.Length;
                 e.Handled = true;
             }
         }
@@ -543,6 +562,14 @@ namespace QRUtils
         private void chkMultiDecode_CheckedChanged(object sender, EventArgs e)
         {
             //grpDecodeFormat.Enabled = chkMultiDecode.Checked;
+            if(chkDecodeFormatQR.Checked || chkDecodeFormatDM.Checked || chkDecodeFormat1D.Checked)
+            {
+
+            }
+            else
+            {
+                if(chkMultiDecode.Checked) chkDecodeFormatQR.Checked = true;
+            }
         }
     }
 }
