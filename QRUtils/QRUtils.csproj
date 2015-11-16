@@ -147,6 +147,10 @@
       <DependentUpon>QRCodeSplashForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="locale\zh_CN\LC_MESSAGES\QRUtils.mo" />
+    <None Include="locale\zh_CN\LC_MESSAGES\QRUtils.po" />
+    <None Include="locale\zh_TW\LC_MESSAGES\QRUtils.mo" />
+    <None Include="locale\zh_TW\LC_MESSAGES\QRUtils.po" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -167,9 +171,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="locale\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /D /S /I /Y  "$(ProjectDir)locale" "$(TargetDir)locale"</PostBuildEvent>

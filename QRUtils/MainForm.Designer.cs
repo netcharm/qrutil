@@ -172,7 +172,7 @@
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormat1D);
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatDM);
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatQR);
-            this.grpDecodeFormat.Location = new System.Drawing.Point(140, 37);
+            this.grpDecodeFormat.Location = new System.Drawing.Point(145, 41);
             this.grpDecodeFormat.Name = "grpDecodeFormat";
             this.grpDecodeFormat.Size = new System.Drawing.Size(111, 87);
             this.grpDecodeFormat.TabIndex = 15;
@@ -225,7 +225,7 @@
             this.chkOverLogo.AutoEllipsis = true;
             this.chkOverLogo.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkOverLogo.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.chkOverLogo.Location = new System.Drawing.Point(10, 100);
+            this.chkOverLogo.Location = new System.Drawing.Point(10, 104);
             this.chkOverLogo.Name = "chkOverLogo";
             this.chkOverLogo.Size = new System.Drawing.Size(120, 24);
             this.chkOverLogo.TabIndex = 13;
@@ -235,7 +235,7 @@
             // lblErrorLevel
             // 
             this.lblErrorLevel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.lblErrorLevel.Location = new System.Drawing.Point(12, 74);
+            this.lblErrorLevel.Location = new System.Drawing.Point(12, 78);
             this.lblErrorLevel.Name = "lblErrorLevel";
             this.lblErrorLevel.Size = new System.Drawing.Size(80, 16);
             this.lblErrorLevel.TabIndex = 11;
@@ -251,7 +251,7 @@
             "M",
             "Q",
             "H"});
-            this.cbErrorLevel.Location = new System.Drawing.Point(94, 72);
+            this.cbErrorLevel.Location = new System.Drawing.Point(94, 76);
             this.cbErrorLevel.Name = "cbErrorLevel";
             this.cbErrorLevel.Size = new System.Drawing.Size(36, 20);
             this.cbErrorLevel.TabIndex = 10;
