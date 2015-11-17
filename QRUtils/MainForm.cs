@@ -36,6 +36,9 @@ namespace QRUtils
         //   中文汉字（BIG5）          最多 1800 字符
         int MAX_TEXT = 7089;
 
+        private string lastText = string.Empty;
+        private int lastCursor = 0;
+
         private KeyboardHook hook = new KeyboardHook();
 
 
@@ -488,11 +491,13 @@ namespace QRUtils
         {
             if ((e.Control && e.KeyCode == Keys.V) || (e.Shift && e.KeyCode == Keys.I))
             {
-                var cursor = edText.SelectionStart;
+                lastText = edText.Text;
+                lastCursor = edText.SelectionStart;
+
                 if ( edText.SelectionLength > 0 )
                 {
                     edText.Text = edText.Text.Remove( edText.SelectionStart, edText.SelectionLength );
-                    edText.SelectionStart = cursor;
+                    edText.SelectionStart = lastCursor;
                 }
                 var cliptext = Clipboard.GetText(TextDataFormat.UnicodeText);
                 string text = edText.Text.Insert( edText.SelectionStart, cliptext );
@@ -504,9 +509,19 @@ namespace QRUtils
                 {
                     edText.Text = text;
                 }
-                edText.SelectionStart = cursor + cliptext.Length;
+                edText.SelectionStart = lastCursor + cliptext.Length;
                 e.Handled = true;
             }
+            else if ( e.Control && e.KeyCode == Keys.Z )
+            {
+                if(!edText.CanUndo)
+                {
+                    edText.Text = lastText;
+                    edText.SelectionStart = lastCursor;
+                    //e.Handled = true;
+                }
+            }
+
         }
 
         private void edText_TextChanged(object sender, EventArgs e)
