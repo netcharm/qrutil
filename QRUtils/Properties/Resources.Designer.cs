@@ -59,23 +59,5 @@ namespace QRUtils.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   查找类似 Error Level: 的本地化字符串。
-        /// </summary>
-        internal static string ErrorLevel {
-            get {
-                return ResourceManager.GetString("ErrorLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 Mask Color: 的本地化字符串。
-        /// </summary>
-        internal static string MaskColor {
-            get {
-                return ResourceManager.GetString("MaskColor", resourceCulture);
-            }
-        }
     }
 }

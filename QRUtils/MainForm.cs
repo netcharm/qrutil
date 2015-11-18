@@ -16,6 +16,8 @@ using NGettext.WinForm;
 
 namespace QRUtils
 {
+    public enum BARCODE_TYPE { EXPRESS=0, ISBN=1, PRODUCT=2 };
+    
     public partial class MainForm : Form
     {
         // string resourceName = typeof(Program).Assembly.GetName().Name;
@@ -55,6 +57,9 @@ namespace QRUtils
             colorDlg.Color = Color.Cyan;
             picMaskColor.BackColor = Color.Red;
 
+            if( cbBarFormat.Items.Count > 0)
+                cbBarFormat.SelectedIndex = 0;
+
             loadSettings();
 
             // register the event that is fired after the key press.
@@ -66,7 +71,7 @@ namespace QRUtils
             }
             catch
             {
-                MessageBox.Show(this, "Failed to bind hotkey Win+Q!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show( this, I18N._( "Failed to bind hotkey Win+Q!" ), I18N._( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error );
                 //status.Items[0]
                 statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), I18N._( "None" ) );
             }
@@ -81,19 +86,19 @@ namespace QRUtils
             picMaskColor.BackColor = maskColor;
 
             string errorString = Properties.Settings.Default["ErrorCorrectionLevel"].ToString();
-            if      (string.Equals(errorString, "L", StringComparison.CurrentCultureIgnoreCase))
+            if ( string.Equals( errorString, I18N._( "L" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.L;
             }
-            else if (string.Equals(errorString, "M", StringComparison.CurrentCultureIgnoreCase))
+            else if ( string.Equals( errorString, I18N._( "M" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.M;
             }
-            else if (string.Equals(errorString, "Q", StringComparison.CurrentCultureIgnoreCase))
+            else if ( string.Equals( errorString, I18N._( "Q" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.Q;
             }
-            else if (string.Equals(errorString, "H", StringComparison.CurrentCultureIgnoreCase))
+            else if ( string.Equals( errorString, I18N._( "H" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.H;
             }
@@ -101,7 +106,7 @@ namespace QRUtils
             {
                 errorLevel = ErrorCorrectionLevel.Q;
             }
-            cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf(errorString);
+            cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf(I18N._(errorString));
 
             chkDecodeFormat1D.Checked = (bool)Properties.Settings.Default["DecodeFormat1D"];
             chkDecodeFormatDM.Checked = (bool)Properties.Settings.Default["DecodeFormatDM"];
@@ -210,6 +215,43 @@ namespace QRUtils
             splash.Close();
         }
 
+        private Bitmap BarEncode(string text, BarcodeFormat barFormat = BarcodeFormat.CODE_128 )
+        {
+            var width = 256;
+            var height = 115;
+            var margin = 0;
+
+            if ( string.IsNullOrEmpty( text ) ) return ( new Bitmap( width, height ) );
+
+            string barText = text;
+
+            var bw = new BarcodeWriter();
+
+            bw.Options.Width = width;
+            bw.Options.Height = height;
+            //bw.Options.PureBarcode = false;
+            bw.Options.Hints.Add( EncodeHintType.MARGIN, margin );
+            bw.Options.Hints.Add( EncodeHintType.DISABLE_ECI, true );
+            bw.Options.Hints.Add( EncodeHintType.CHARACTER_SET, "UTF-8" );
+
+            bw.Renderer = new BitmapRenderer();
+            bw.Format = barFormat;
+            if ( barText.Length > 16 )
+            {
+                barText = barText.Substring( 0, 16 );
+            }
+            try
+            {
+                Bitmap barcodeBitmap = bw.Write(barText);
+                return ( barcodeBitmap );
+            }
+            catch ( WriterException )
+            {
+                MessageBox.Show( this, I18N._( "Text data can not be encoded to barcode!" ), I18N._( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return ( new Bitmap( width, height ) );
+            }
+        }
+
         private Bitmap QREncode(string text)
         {
             var width = 512;
@@ -245,7 +287,7 @@ namespace QRUtils
             }
             catch(WriterException)
             {
-                MessageBox.Show(this, "Text too long!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, I18N._( "Text too long!" ), I18N._( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return (new Bitmap(width, height));
             }
         }
@@ -540,22 +582,22 @@ namespace QRUtils
             Properties.Settings.Default.Save(); 
         }
 
-        private void cbErrorLevel_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbErrorLevel_SelectedIndexChanged( object sender, EventArgs e )
         {
             string errorString = cbErrorLevel.SelectedItem.ToString();
-            if (string.Equals(errorString, "L", StringComparison.CurrentCultureIgnoreCase))
+            if ( string.Equals( errorString, I18N._( "L" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.L;
             }
-            else if (string.Equals(errorString, "M", StringComparison.CurrentCultureIgnoreCase))
+            else if ( string.Equals( errorString, I18N._( "M" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.M;
             }
-            else if (string.Equals(errorString, "Q", StringComparison.CurrentCultureIgnoreCase))
+            else if ( string.Equals( errorString, I18N._( "Q" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.Q;
             }
-            else if (string.Equals(errorString, "H", StringComparison.CurrentCultureIgnoreCase))
+            else if ( string.Equals( errorString, I18N._( "H" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.H;
             }
@@ -564,7 +606,7 @@ namespace QRUtils
                 errorLevel = ErrorCorrectionLevel.Q;
             }
             Properties.Settings.Default["ErrorCorrectionLevel"] = errorString;
-            Properties.Settings.Default.Save(); 
+            Properties.Settings.Default.Save();
         }
 
         private void chkDecodeFormat_CheckedChanged(object sender, EventArgs e)
@@ -586,6 +628,28 @@ namespace QRUtils
             {
                 if(chkMultiDecode.Checked) chkDecodeFormatQR.Checked = true;
             }
+        }
+
+        private void btnBarCode_Click( object sender, EventArgs e )
+        {
+            var targetBar = (BARCODE_TYPE) Enum.ToObject( typeof( BARCODE_TYPE ), cbBarFormat.SelectedIndex );
+            var targetFromat = BarcodeFormat.CODE_39;
+            switch(cbBarFormat.SelectedIndex)
+            {
+                case 0:
+                    targetFromat = BarcodeFormat.CODE_128;
+                    break;
+                case 1:
+                    targetFromat = BarcodeFormat.EAN_13;
+                    break;
+                case 2:
+                    targetFromat = BarcodeFormat.EAN_13;
+                    break;
+                default:
+                    targetFromat = BarcodeFormat.CODE_128;
+                    break;
+            }
+            picQR.Image = BarEncode( edText.Text, targetFromat );
         }
     }
 }

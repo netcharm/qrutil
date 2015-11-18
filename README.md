@@ -12,12 +12,12 @@ Requirements
 3. ZXing.net
 4. NGettext
 5. NGettext wrapper for auto translater form via gnu I18N tools
-    1. https://github.com/netcharm/NGettextUtils
-    2. https://bitbucket.org/netcharm/NGettextUtils
+  1. https://github.com/netcharm/NGettextUtils
+  2. https://bitbucket.org/netcharm/NGettextUtils
 6. Some core code is copied from ShadowSocks .net GUI client source
 7. keyboard hook class code get from stackoverflow:
-    1. http://stackoverflow.com/questions/48935/how-can-i-register-a-global-hot-key-to-say-ctrlshiftletter-using-wpf-and-ne)
-    2. http://stackoverflow.com/questions/2450373/set-global-hotkeys-using-c-sharp
+  1. http://stackoverflow.com/questions/48935/how-can-i-register-a-global-hot-key-to-say-ctrlshiftletter-using-wpf-and-ne)
+  2. http://stackoverflow.com/questions/2450373/set-global-hotkeys-using-c-sharp
 
 Source
 ======

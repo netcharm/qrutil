@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: QRUtils\n"
 "Report-Msgid-Bugs-To: netcharm <netcharm@163.com>\n"
-"POT-Creation-Date: 2015-11-16 01:34+0800\n"
-"PO-Revision-Date: 2015-11-16 01:34+0800\n"
+"POT-Creation-Date: 2015-11-18 21:15+0800\n"
+"PO-Revision-Date: 2015-11-18 21:15+0800\n"
 "Last-Translator: netcharm <netcharm@163.com>\n"
 "Language-Team: netcharm <netcharm@163.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,71 +20,103 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 
-#: MainForm.Designer.cs:119
+#: MainForm.Designer.cs:121
 msgid "==> QR"
 msgstr ""
 
-#: MainForm.Designer.cs:130
+#: MainForm.Designer.cs:132
 msgid "<== QR"
 msgstr ""
 
-#: MainForm.Designer.cs:141
+#: MainForm.Designer.cs:143
 msgid "<== Clip"
 msgstr ""
 
-#: MainForm.Designer.cs:152
+#: MainForm.Designer.cs:154
 msgid "==> Clip"
 msgstr ""
 
-#: MainForm.Designer.cs:180
+#: MainForm.Designer.cs:183
 msgid "Decode Format"
 msgstr ""
 
-#: MainForm.Designer.cs:191
+#: MainForm.Designer.cs:194
 msgid "All 1D Code"
 msgstr ""
 
-#: MainForm.Designer.cs:204
+#: MainForm.Designer.cs:207
 msgid "Data Matrix"
 msgstr ""
 
-#: MainForm.Designer.cs:219
+#: MainForm.Designer.cs:222
 msgid "QR Code"
 msgstr ""
 
-#: MainForm.Designer.cs:232
+#: MainForm.Designer.cs:235
 msgid "Overlay Logo"
 msgstr ""
 
-#: MainForm.Designer.cs:242
+#: MainForm.Designer.cs:245
 msgid "ErrorLevel:"
 msgstr ""
 
-#: MainForm.Designer.cs:267
+#: MainForm.Designer.cs:253 MainForm.cs:88 MainForm.cs:587
+msgid "L"
+msgstr ""
+
+#: MainForm.Designer.cs:254 MainForm.cs:92 MainForm.cs:591
+msgid "M"
+msgstr ""
+
+#: MainForm.Designer.cs:255 MainForm.cs:96 MainForm.cs:595
+msgid "Q"
+msgstr ""
+
+#: MainForm.Designer.cs:256 MainForm.cs:100 MainForm.cs:599
+msgid "H"
+msgstr ""
+
+#: MainForm.Designer.cs:270
 msgid "Mask Color:"
 msgstr ""
 
-#: MainForm.Designer.cs:291
+#: MainForm.Designer.cs:294
 msgid "Multiple Decode "
 msgstr ""
 
-#: MainForm.Designer.cs:324
+#: MainForm.Designer.cs:327
 msgid "Hotkey: WIN + Q"
 msgstr ""
 
-#: MainForm.Designer.cs:335
+#: MainForm.Designer.cs:338
 msgid "Text Count: 0"
 msgstr ""
 
-#: MainForm.Designer.cs:346
+#: MainForm.Designer.cs:349
 msgid "Code Found: 0"
 msgstr ""
 
-#: MainForm.Designer.cs:353
+#: MainForm.Designer.cs:356
 msgid "Ready"
 msgstr ""
 
-#: MainForm.Designer.cs:374
+#: MainForm.Designer.cs:364
+msgid "Express"
+msgstr ""
+
+#: MainForm.Designer.cs:365
+msgid "ISBN"
+msgstr ""
+
+#: MainForm.Designer.cs:366
+msgid "Product"
+msgstr ""
+
+#: MainForm.Designer.cs:378
+msgid "Bar Code"
+msgstr ""
+
+#: MainForm.Designer.cs:401
 msgid "QRCode Utils"
 msgstr ""
 
@@ -92,21 +124,37 @@ msgstr ""
 msgid "QRCodeSplashForm"
 msgstr ""
 
-#: MainForm.cs:62 MainForm.cs:68
+#: MainForm.cs:69 MainForm.cs:75
 #, csharp-format
 msgid "Hotkey: {0}"
 msgstr ""
 
-#: MainForm.cs:68
+#: MainForm.cs:73
+msgid "Failed to bind hotkey Win+Q!"
+msgstr ""
+
+#: MainForm.cs:73 MainForm.cs:249 MainForm.cs:289
+msgid "Error"
+msgstr ""
+
+#: MainForm.cs:75
 msgid "None"
 msgstr ""
 
-#: MainForm.cs:449
+#: MainForm.cs:249
+msgid "Text data can not be encoded to barcode!"
+msgstr ""
+
+#: MainForm.cs:289
+msgid "Text too long!"
+msgstr ""
+
+#: MainForm.cs:493
 #, csharp-format
 msgid "Code Found: {0}"
 msgstr ""
 
-#: MainForm.cs:515
+#: MainForm.cs:571
 #, csharp-format
 msgid "Text Count: {0}"
 msgstr ""

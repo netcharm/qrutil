@@ -54,6 +54,8 @@
             this.statusLabelTextCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelDecodeCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelInfo = new System.Windows.Forms.ToolStripStatusLabel();
+            this.cbBarFormat = new System.Windows.Forms.ComboBox();
+            this.btnBarCode = new System.Windows.Forms.Button();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
             this.pnlOption.SuspendLayout();
@@ -134,7 +136,7 @@
             // btnClipFrom
             // 
             this.btnClipFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClipFrom.Location = new System.Drawing.Point(510, 281);
+            this.btnClipFrom.Location = new System.Drawing.Point(509, 281);
             this.btnClipFrom.Name = "btnClipFrom";
             this.btnClipFrom.Size = new System.Drawing.Size(47, 44);
             this.btnClipFrom.TabIndex = 4;
@@ -145,7 +147,7 @@
             // btnClipTo
             // 
             this.btnClipTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClipTo.Location = new System.Drawing.Point(614, 281);
+            this.btnClipTo.Location = new System.Drawing.Point(613, 281);
             this.btnClipTo.Name = "btnClipTo";
             this.btnClipTo.Size = new System.Drawing.Size(48, 44);
             this.btnClipTo.TabIndex = 5;
@@ -155,6 +157,7 @@
             // 
             // pnlOption
             // 
+            this.pnlOption.Controls.Add(this.cbBarFormat);
             this.pnlOption.Controls.Add(this.grpDecodeFormat);
             this.pnlOption.Controls.Add(this.chkOverLogo);
             this.pnlOption.Controls.Add(this.lblErrorLevel);
@@ -348,16 +351,40 @@
             // statusLabelInfo
             // 
             this.statusLabelInfo.Name = "statusLabelInfo";
-            this.statusLabelInfo.Size = new System.Drawing.Size(405, 17);
+            this.statusLabelInfo.Size = new System.Drawing.Size(436, 17);
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
             this.statusLabelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cbBarFormat
+            // 
+            this.cbBarFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBarFormat.FormattingEnabled = true;
+            this.cbBarFormat.Items.AddRange(new object[] {
+            "Express",
+            "ISBN",
+            "Product"});
+            this.cbBarFormat.Location = new System.Drawing.Point(10, 41);
+            this.cbBarFormat.Name = "cbBarFormat";
+            this.cbBarFormat.Size = new System.Drawing.Size(78, 20);
+            this.cbBarFormat.TabIndex = 16;
+            // 
+            // btnBarCode
+            // 
+            this.btnBarCode.Location = new System.Drawing.Point(564, 281);
+            this.btnBarCode.Name = "btnBarCode";
+            this.btnBarCode.Size = new System.Drawing.Size(40, 44);
+            this.btnBarCode.TabIndex = 9;
+            this.btnBarCode.Text = "Bar Code";
+            this.btnBarCode.UseVisualStyleBackColor = true;
+            this.btnBarCode.Click += new System.EventHandler(this.btnBarCode_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 501);
+            this.Controls.Add(this.btnBarCode);
             this.Controls.Add(this.status);
             this.Controls.Add(this.pnlOption);
             this.Controls.Add(this.btnClipTo);
@@ -410,6 +437,8 @@
         private System.Windows.Forms.CheckBox chkDecodeFormat1D;
         private System.Windows.Forms.CheckBox chkDecodeFormatDM;
         private System.Windows.Forms.CheckBox chkDecodeFormatQR;
+        private System.Windows.Forms.ComboBox cbBarFormat;
+        private System.Windows.Forms.Button btnBarCode;
     }
 }
 

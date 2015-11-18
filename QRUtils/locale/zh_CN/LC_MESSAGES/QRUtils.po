@@ -7,79 +7,119 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.0.0\n"
 "Report-Msgid-Bugs-To: netcharm <netcharm@163.com>\n"
-"POT-Creation-Date: 2015-11-16 00:27+0800\n"
-"PO-Revision-Date: 2015-11-16 00:31+0800\n"
+"POT-Creation-Date: 2015-11-18 21:15+0800\n"
+"PO-Revision-Date: 2015-11-18 22:05+0800\n"
 "Last-Translator: netcharm <netcharm@163.com>\n"
 "Language-Team: netcharm <netcharm@163.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: MainForm.Designer.cs:119
+#: MainForm.Designer.cs:121
 msgid "==> QR"
 msgstr ""
 
-#: MainForm.Designer.cs:130
+#: MainForm.Designer.cs:132
 msgid "<== QR"
 msgstr ""
 
-#: MainForm.Designer.cs:141
+#: MainForm.Designer.cs:143
 msgid "<== Clip"
 msgstr ""
 
-#: MainForm.Designer.cs:152
+#: MainForm.Designer.cs:154
 msgid "==> Clip"
 msgstr ""
 
-#: MainForm.Designer.cs:180
+#: MainForm.Designer.cs:183
 msgid "Decode Format"
 msgstr "解码支持格式"
 
-#: MainForm.Designer.cs:191
+#: MainForm.Designer.cs:194
 msgid "All 1D Code"
 msgstr "全部1维条码"
 
-#: MainForm.Designer.cs:204
+#: MainForm.Designer.cs:207
 msgid "Data Matrix"
 msgstr ""
 
-#: MainForm.Designer.cs:219
+#: MainForm.Designer.cs:222
 msgid "QR Code"
 msgstr "QR二维码"
 
-#: MainForm.Designer.cs:232
+#: MainForm.Designer.cs:235
 msgid "Overlay Logo"
 msgstr "覆盖自定义标志"
 
-#: MainForm.Designer.cs:242
+#: MainForm.Designer.cs:245
 msgid "ErrorLevel:"
 msgstr "编码容错级别:"
 
-#: MainForm.Designer.cs:267
+#: MainForm.Designer.cs:253
+#: MainForm.cs:88
+#: MainForm.cs:587
+msgid "L"
+msgstr ""
+
+#: MainForm.Designer.cs:254
+#: MainForm.cs:92
+#: MainForm.cs:591
+msgid "M"
+msgstr ""
+
+#: MainForm.Designer.cs:255
+#: MainForm.cs:96
+#: MainForm.cs:595
+msgid "Q"
+msgstr ""
+
+#: MainForm.Designer.cs:256
+#: MainForm.cs:100
+#: MainForm.cs:599
+msgid "H"
+msgstr ""
+
+#: MainForm.Designer.cs:270
 msgid "Mask Color:"
 msgstr "指示遮罩颜色:"
 
-#: MainForm.Designer.cs:291
+#: MainForm.Designer.cs:294
 msgid "Multiple Decode "
 msgstr "一次性复数解码"
 
-#: MainForm.Designer.cs:324
+#: MainForm.Designer.cs:327
 msgid "Hotkey: WIN + Q"
 msgstr "热键: WIN + Q"
 
-#: MainForm.Designer.cs:335
+#: MainForm.Designer.cs:338
 msgid "Text Count: 0"
 msgstr "文本长度: 0"
 
-#: MainForm.Designer.cs:346
+#: MainForm.Designer.cs:349
 msgid "Code Found: 0"
 msgstr "解码计数: 0"
 
-#: MainForm.Designer.cs:353
+#: MainForm.Designer.cs:356
 msgid "Ready"
 msgstr "就绪"
 
-#: MainForm.Designer.cs:374
+#: MainForm.Designer.cs:364
+msgid "Express"
+msgstr "快递"
+
+#: MainForm.Designer.cs:365
+msgid "ISBN"
+msgstr "图书"
+
+#: MainForm.Designer.cs:366
+msgid "Product"
+msgstr "产品"
+
+#: MainForm.Designer.cs:378
+msgid "Bar Code"
+msgstr "条码"
+
+#: MainForm.Designer.cs:401
 msgid "QRCode Utils"
 msgstr "QR二维码小工具"
 
@@ -87,26 +127,41 @@ msgstr "QR二维码小工具"
 msgid "QRCodeSplashForm"
 msgstr "QR二维码指示"
 
-#: MainForm.cs:62
-#: MainForm.cs:68
+#: MainForm.cs:69
+#: MainForm.cs:75
 #, csharp-format
-#| msgid "Hotkey: WIN + Q"
 msgid "Hotkey: {0}"
 msgstr "热键: {0}"
 
-#: MainForm.cs:68
+#: MainForm.cs:73
+msgid "Failed to bind hotkey Win+Q!"
+msgstr "绑定热键 WIN + Q 失败!"
+
+#: MainForm.cs:73
+#: MainForm.cs:249
+#: MainForm.cs:289
+msgid "Error"
+msgstr "出错啦"
+
+#: MainForm.cs:75
 msgid "None"
 msgstr "没有"
 
-#: MainForm.cs:449
+#: MainForm.cs:249
+msgid "Text data can not be encoded to barcode!"
+msgstr "文本数据无法编码成条码!"
+
+#: MainForm.cs:289
+msgid "Text too long!"
+msgstr "文本过长!"
+
+#: MainForm.cs:493
 #, csharp-format
-#| msgid "Code Found: 0"
 msgid "Code Found: {0}"
 msgstr "解码计数: {0}"
 
-#: MainForm.cs:515
+#: MainForm.cs:571
 #, csharp-format
-#| msgid "Text Count: 0"
 msgid "Text Count: {0}"
 msgstr "文本长度: {0}"
 
