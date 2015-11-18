@@ -224,6 +224,33 @@ namespace QRUtils
             if ( string.IsNullOrEmpty( text ) ) return ( new Bitmap( width, height ) );
 
             string barText = text;
+            int maxText = 16;
+            switch( barFormat )
+            {
+                case BarcodeFormat.CODE_128:
+                    maxText = 232;
+                    break;
+                case BarcodeFormat.EAN_13:
+                    long value = 0;
+                    if ( barText.Length != 13 || !long.TryParse( barText, out value ) )
+                    {
+                        return ( new Bitmap( width, height ) );
+                    }
+                    else
+                    {
+                        int[] w = { 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3 };
+                        var cd = 0;
+                        for ( int i = 0; i < 12; i++ )
+                        {
+                            cd += (int)Char.GetNumericValue(barText[i]) * w[i];
+                        }
+                        cd = 10 - (cd % 10);
+                        barText = barText.Substring(0, 12) + cd.ToString();
+                    }
+                    break;
+                default:
+                    return ( new Bitmap( width, height ) );
+            }
 
             var bw = new BarcodeWriter();
 
@@ -236,9 +263,9 @@ namespace QRUtils
 
             bw.Renderer = new BitmapRenderer();
             bw.Format = barFormat;
-            if ( barText.Length > 16 )
+            if ( barText.Length > maxText )
             {
-                barText = barText.Substring( 0, 16 );
+                barText = barText.Substring( 0, maxText );
             }
             try
             {
