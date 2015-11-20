@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Threading;
 
 using NGettext.WinForm;
+using ZXing.Common;
 
 namespace QRUtils
 {
@@ -215,43 +216,87 @@ namespace QRUtils
             splash.Close();
         }
 
-        private Bitmap BarEncode(string text, BarcodeFormat barFormat = BarcodeFormat.CODE_128 )
+        private string calcISBN_10( string text )
+        {
+            text = text.Replace( "-", "" ).Replace( " ", "" );
+
+            long value = 0;
+            if ( !long.TryParse( text, out value ) ) return ( string.Empty );
+            if ( text.Length != 9 && text.Length != 10 )
+            {
+                if ( text.Length == 12 || text.Length == 13 )
+                {
+                    text = text.Substring( 3, 9 );
+                }
+                else
+                    return ( string.Empty );
+            }
+
+            int[] w = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            var cd = 0;
+            for ( int i = 0; i < 9; i++ )
+            {
+                cd += (int) Char.GetNumericValue( text[i] ) * w[i];
+            }
+            var N = cd % 11;
+            if ( N == 10 )
+                cd = 'X';
+            else
+                cd = ( N == 11 ) ? 0 : N;
+            return text.Substring( 0, 9 ) + cd.ToString();
+        }
+
+        private string calcISBN_13(string text)
+        {
+            text = text.Replace( "-", "" ).Replace( " ", "" );
+
+            long value = 0;
+            if ( !long.TryParse( text, out value ) ) return ( string.Empty );
+            if ( text.Length != 12 && text.Length != 13 ) return ( string.Empty );
+
+            int[] w = { 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3 };
+            var cd = 0;
+            for ( int i = 0; i < 12; i++ )
+            {
+                cd += (int) Char.GetNumericValue( text[i] ) * w[i];
+            }
+            cd = ( cd % 10 == 0 ) ? 0 : 10 - ( cd % 10 );
+            return text.Substring( 0, 12 ) + cd.ToString();
+        }
+
+        private Bitmap BarEncode( string text, BarcodeFormat barFormat = BarcodeFormat.CODE_128, bool isbn = false )
         {
             var width = 256;
-            var height = 115;
+            var height = 128;
             var margin = 0;
 
             if ( string.IsNullOrEmpty( text ) ) return ( new Bitmap( width, height ) );
 
             string barText = text;
             int maxText = 16;
-            switch( barFormat )
+            switch ( barFormat )
             {
                 case BarcodeFormat.CODE_128:
+                    width = 256;
+                    height = 72;
+                    margin = 7;
                     maxText = 232;
                     break;
                 case BarcodeFormat.EAN_13:
-                    long value = 0;
-                    if ( barText.Length != 13 || !long.TryParse( barText, out value ) )
+                    //height = (int) ( width * 25.93 / 37.29 );
+                    height = (int) ( width * 26.26 / 37.29 );
+                    if ( isbn )
                     {
-                        return ( new Bitmap( width, height ) );
-                    }
-                    else
-                    {
-                        int[] w = { 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3 };
-                        var cd = 0;
-                        for ( int i = 0; i < 12; i++ )
-                        {
-                            cd += (int)Char.GetNumericValue(barText[i]) * w[i];
-                        }
-                        cd = 10 - (cd % 10);
-                        barText = barText.Substring(0, 12) + cd.ToString();
+                        string isbn13 = calcISBN_13(barText);
+                        string isbn10 = calcISBN_10(barText);
+                        if ( string.IsNullOrEmpty( isbn13 ) ) return ( new Bitmap( width, height ) );
+                        //if ( string.IsNullOrEmpty( isbn10 ) ) return ( new Bitmap( width, height ) );
+                        barText = isbn13;
                     }
                     break;
                 default:
                     return ( new Bitmap( width, height ) );
             }
-
             var bw = new BarcodeWriter();
 
             bw.Options.Width = width;
@@ -269,6 +314,13 @@ namespace QRUtils
             }
             try
             {
+                BitMatrix bm = bw.Encode( barText );
+                int[] rectangle = bm.getEnclosingRectangle();
+                var bmW = rectangle[2];
+                var bmH = rectangle[3];
+                //bw.Options.Width = ( bmW <= 256 ) ? ( bmW + 32 ) : (int)( bmW * ( 1 + 32 / 256 ) );
+                bw.Options.Width = (int)( bmW * 1.25);
+
                 Bitmap barcodeBitmap = bw.Write(barText);
                 return ( barcodeBitmap );
             }
@@ -309,6 +361,12 @@ namespace QRUtils
             }
             try
             {
+                BitMatrix bm = bw.Encode( qrText );
+                int[] rectangle = bm.getEnclosingRectangle();
+                var bmW = rectangle[2];
+                var bmH = rectangle[3];
+                bw.Options.Width = (int) ( bmW * 1.1 );
+
                 Bitmap barcodeBitmap = bw.Write(qrText);
                 return (barcodeBitmap);
             }
@@ -661,6 +719,7 @@ namespace QRUtils
         {
             var targetBar = (BARCODE_TYPE) Enum.ToObject( typeof( BARCODE_TYPE ), cbBarFormat.SelectedIndex );
             var targetFromat = BarcodeFormat.CODE_39;
+            bool isbn = false;
             switch(cbBarFormat.SelectedIndex)
             {
                 case 0:
@@ -668,6 +727,7 @@ namespace QRUtils
                     break;
                 case 1:
                     targetFromat = BarcodeFormat.EAN_13;
+                    isbn = true;
                     break;
                 case 2:
                     targetFromat = BarcodeFormat.EAN_13;
@@ -676,7 +736,7 @@ namespace QRUtils
                     targetFromat = BarcodeFormat.CODE_128;
                     break;
             }
-            picQR.Image = BarEncode( edText.Text, targetFromat );
+            picQR.Image = BarEncode( edText.Text.Replace( "-", "" ).Replace( " ", "" ), targetFromat, isbn );
         }
     }
 }

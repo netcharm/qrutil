@@ -38,6 +38,7 @@
             this.btnClipFrom = new System.Windows.Forms.Button();
             this.btnClipTo = new System.Windows.Forms.Button();
             this.pnlOption = new System.Windows.Forms.Panel();
+            this.cbBarFormat = new System.Windows.Forms.ComboBox();
             this.grpDecodeFormat = new System.Windows.Forms.GroupBox();
             this.chkDecodeFormat1D = new System.Windows.Forms.CheckBox();
             this.chkDecodeFormatDM = new System.Windows.Forms.CheckBox();
@@ -54,7 +55,6 @@
             this.statusLabelTextCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelDecodeCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelInfo = new System.Windows.Forms.ToolStripStatusLabel();
-            this.cbBarFormat = new System.Windows.Forms.ComboBox();
             this.btnBarCode = new System.Windows.Forms.Button();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
@@ -169,6 +169,19 @@
             this.pnlOption.Name = "pnlOption";
             this.pnlOption.Size = new System.Drawing.Size(258, 137);
             this.pnlOption.TabIndex = 7;
+            // 
+            // cbBarFormat
+            // 
+            this.cbBarFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBarFormat.FormattingEnabled = true;
+            this.cbBarFormat.Items.AddRange(new object[] {
+            "Express",
+            "ISBN",
+            "Product"});
+            this.cbBarFormat.Location = new System.Drawing.Point(10, 41);
+            this.cbBarFormat.Name = "cbBarFormat";
+            this.cbBarFormat.Size = new System.Drawing.Size(78, 20);
+            this.cbBarFormat.TabIndex = 16;
             // 
             // grpDecodeFormat
             // 
@@ -355,19 +368,6 @@
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
             this.statusLabelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cbBarFormat
-            // 
-            this.cbBarFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbBarFormat.FormattingEnabled = true;
-            this.cbBarFormat.Items.AddRange(new object[] {
-            "Express",
-            "ISBN",
-            "Product"});
-            this.cbBarFormat.Location = new System.Drawing.Point(10, 41);
-            this.cbBarFormat.Name = "cbBarFormat";
-            this.cbBarFormat.Size = new System.Drawing.Size(78, 20);
-            this.cbBarFormat.TabIndex = 16;
             // 
             // btnBarCode
             // 
