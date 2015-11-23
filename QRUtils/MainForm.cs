@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Media;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using NGettext.WinForm;
@@ -24,6 +25,10 @@ namespace QRUtils
     public partial class MainForm : Form
     {
         private static string AppPath = AppDomain.CurrentDomain.BaseDirectory;
+
+        private static Configuration config = ConfigurationManager.OpenExeConfiguration( Application.ExecutablePath );
+        private AppSettingsSection appSection = config.AppSettings;
+
         // string resourceName = typeof(Program).Assembly.GetName().Name;
         private static string resourceBaseName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
         private static string resourceCultureName = Thread.CurrentThread.CurrentUICulture.Name;
@@ -32,6 +37,7 @@ namespace QRUtils
         private Font monoFont = new Font("DejaVu Sans Mono", 10);
         private ErrorCorrectionLevel errorLevel = ErrorCorrectionLevel.M;
 
+        private Color maskColor = Color.FromArgb(0, 192, 192);
         private Color overlayBGColor = Color.Orange;
         private string overlayLogo = "logo.png";
 
@@ -95,16 +101,51 @@ namespace QRUtils
 
         private void loadSettings()
         {
-            Properties.Settings.Default.Reload();
+            int R = maskColor.R, G = maskColor.G, B = maskColor.B, A = maskColor.A;
+            if ( appSection.Settings["MaskColor"] != null )
+            {
+                var colorValues = appSection.Settings["MaskColor"].Value.Split(',');
+                R = Convert.ToInt16( colorValues[0].Trim() );
+                G = Convert.ToInt16( colorValues[1].Trim() );
+                B = Convert.ToInt16( colorValues[2].Trim() );
+                if( colorValues.Length>3)
+                  A = Convert.ToInt16( colorValues[3].Trim() );
+                maskColor = Color.FromArgb( A, R, G, B );
+            }
+            else
+            {
+                appSection.Settings.Add( "MaskColor", $"{maskColor.R}, {maskColor.G}, {maskColor.B}, {maskColor.A}" );
+            }
 
-            Color maskColor = (Color)Properties.Settings.Default["MaskColor"];
             colorDlg.Color = maskColor;
             picMaskColor.BackColor = maskColor;
 
-            overlayBGColor = (Color) Properties.Settings.Default["OverlayBGColor"];
-            overlayLogo = (string)Properties.Settings.Default["OverlayLogo"];
+            if ( appSection.Settings["OverlayBGColor"] != null )
+            {
+                var colorValues = appSection.Settings["OverlayBGColor"].Value.Split(',');
+                R = Convert.ToInt16( colorValues[0].Trim() );
+                G = Convert.ToInt16( colorValues[1].Trim() );
+                B = Convert.ToInt16( colorValues[2].Trim() );
+                if ( colorValues.Length > 3 )
+                    A = Convert.ToInt16( colorValues[3].Trim() );
+                overlayBGColor = Color.FromArgb( A, R, G, B );
+            }
+            else
+            {
+                appSection.Settings.Add( "OverlayBGColor", $"{overlayBGColor.R}, {overlayBGColor.G}, {overlayBGColor.B}, {overlayBGColor.A}" );
+            }
+            
+            if ( appSection.Settings["OverlayLogo"] != null )
+                overlayLogo = appSection.Settings["OverlayLogo"].Value;
+            else
+                appSection.Settings.Add( "OverlayLogo", overlayLogo );
 
-            string errorString = Properties.Settings.Default["ErrorCorrectionLevel"].ToString();
+            string errorString = "M";
+            if ( appSection.Settings["ErrorCorrectionLevel"] != null )
+                errorString = appSection.Settings["ErrorCorrectionLevel"].Value;
+            else
+                appSection.Settings.Add( "ErrorCorrectionLevel", errorString );
+
             if ( string.Equals( errorString, I18N._( "L" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
                 errorLevel = ErrorCorrectionLevel.L;
@@ -123,13 +164,24 @@ namespace QRUtils
             }
             else
             {
-                errorLevel = ErrorCorrectionLevel.Q;
+                errorLevel = ErrorCorrectionLevel.M;
             }
-            cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf(I18N._(errorString));
+            cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf( I18N._( errorString ) );
 
-            chkDecodeFormat1D.Checked = (bool)Properties.Settings.Default["DecodeFormat1D"];
-            chkDecodeFormatDM.Checked = (bool)Properties.Settings.Default["DecodeFormatDM"];
-            chkDecodeFormatQR.Checked = (bool)Properties.Settings.Default["DecodeFormatQR"];
+            if ( appSection.Settings["DecodeFormat1D"] != null )
+                chkDecodeFormat1D.Checked = Convert.ToBoolean( appSection.Settings["DecodeFormat1D"].Value );
+            else
+                appSection.Settings.Add( "DecodeFormat1D", chkDecodeFormat1D.Checked.ToString() );
+
+            if ( appSection.Settings["DecodeFormatDM"] != null )
+                chkDecodeFormatDM.Checked = Convert.ToBoolean( appSection.Settings["DecodeFormatDM"].Value );
+            else
+                appSection.Settings.Add( "DecodeFormatDM", chkDecodeFormatDM.Checked.ToString() );
+
+            if ( appSection.Settings["DecodeFormatQR"] != null )
+                chkDecodeFormatQR.Checked = Convert.ToBoolean( appSection.Settings["DecodeFormatQR"].Value );
+            else
+                appSection.Settings.Add( "DecodeFormatQR", chkDecodeFormatQR.Checked.ToString() );
         }
 
         private void hookKeyPressed(object sender, KeyPressedEventArgs e)
@@ -351,12 +403,20 @@ namespace QRUtils
 
         private Bitmap drawOverlayLogo( Bitmap image, string logo )
         {
-            Bitmap logoImage = new Bitmap( $"{AppPath}{logo}");
-            return drawOverlayLogo(image, logoImage);
+            string logoFile = $"{AppPath}{logo}";
+            if ( File.Exists( logoFile ) )
+            {
+                Bitmap logoImage = new Bitmap(logoFile );
+                return drawOverlayLogo( image, logoImage );
+            }
+            else
+                return image;
         }
 
         private Bitmap drawOverlayLogo(Bitmap image, Bitmap logo)
         {
+            if ( logo == null ) return image;
+
             int lw = logo.Width;
             int lh = logo.Height;
 
@@ -365,16 +425,14 @@ namespace QRUtils
             {
                 int CornerRadius = Math.Min(lw, lh) / 4;
                 //Color BackgroundColor = Color.Transparent;
-                Color BackgroundColor = Color.Orange;
+                //Color BackgroundColor = Color.Orange;
+                Color BackgroundColor = overlayBGColor;
 
                 GraphicsPath gp = new GraphicsPath();
                 gp.AddArc( 0, 0, CornerRadius, CornerRadius, 180, 90 );
                 gp.AddArc( lw - CornerRadius, 0, CornerRadius, CornerRadius, 270, 90 );
                 gp.AddArc( lw - CornerRadius, lh - CornerRadius, CornerRadius, CornerRadius, 0, 90 );
                 gp.AddArc( 0, lh - CornerRadius, CornerRadius, CornerRadius, 90, 90 );
-                //gp.CloseFigure();
-                //Brush brush = new TextureBrush(logo);
-                //g.FillPath( brush, gp );
 
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 g.SetClip( gp );
@@ -427,7 +485,7 @@ namespace QRUtils
                 Bitmap qrBitmap = bw.Write(qrText);
                 if(chkOverLogo.Checked)
                 {
-                    qrBitmap = drawOverlayLogo( qrBitmap, "logo.png" );
+                    qrBitmap = drawOverlayLogo( qrBitmap, overlayLogo );
                 }
                 return ( qrBitmap );
             }
@@ -437,64 +495,6 @@ namespace QRUtils
                 return ( new Bitmap( width, height ) );
             }
         }
-
-#if DEBUG
-        //
-        // this function code get from 
-        // http://www.codeproject.com/Articles/617613/Fast-Pixel-Operations-in-NET-With-and-Without-unsa
-        //
-        private void DetectColorWithMarshal(Bitmap image,
-          byte searchedR, byte searchedG, int searchedB, int tolerance)
-        {
-            BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width,
-              image.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-
-            byte[] imageBytes = new byte[Math.Abs(imageData.Stride) * image.Height];
-            IntPtr scan0 = imageData.Scan0;
-
-            Marshal.Copy(scan0, imageBytes, 0, imageBytes.Length);
-
-            byte unmatchingValue = Color.White.G;
-            byte matchingValue = Color.Black.G;
-            int toleranceSquared = tolerance * tolerance;
-
-            for (int i = 0; i < imageBytes.Length; i += 3)
-            {
-                byte pixelB = imageBytes[i];
-                byte pixelR = imageBytes[i + 2];
-                byte pixelG = imageBytes[i + 1];
-
-                int diffR = pixelR - searchedR;
-                int diffG = pixelG - searchedG;
-                int diffB = pixelB - searchedB;
-
-                int distance = diffR * diffR + diffG * diffG + diffB * diffB;
-
-                imageBytes[i] = imageBytes[i + 1] = imageBytes[i + 2] = distance >
-                  toleranceSquared ? unmatchingValue : matchingValue;
-            }
-
-            Marshal.Copy(imageBytes, 0, scan0, imageBytes.Length);
-
-            image.UnlockBits(imageData);
-        }
-
-        //
-        // this function code get from 
-        // http://social.msdn.microsoft.com/Forums/en-us/vblanguage/thread/500f7827-06cf-4646-a4a1-e075c16bbb38
-        //
-        private ColorPalette GetGrayScalePalette(Bitmap image)
-        {
-            if(image.PixelFormat != PixelFormat.Format8bppIndexed) throw new InvalidOperationException();
-            ColorPalette monoPalette = image.Palette;
-            Color[] entries = monoPalette.Entries;
-            for(var i=0; i < image.Palette.Entries.Length; i++)
-            {
-                entries[i] = Color.FromArgb(i, i, i);
-            }
-            return (monoPalette);
-        }
-#endif
 
         private void setDecodeOptions(BarcodeReader br)
         {
@@ -723,9 +723,9 @@ namespace QRUtils
             colorDlg.Color = picMaskColor.BackColor;
             colorDlg.ShowDialog();
             picMaskColor.BackColor = colorDlg.Color;
-            
-            Properties.Settings.Default["MaskColor"] = colorDlg.Color;
-            Properties.Settings.Default.Save(); 
+
+            appSection.Settings["MaskColor"].Value = $"{colorDlg.Color.R}, {colorDlg.Color.G}, {colorDlg.Color.B}, {colorDlg.Color.A}";
+            config.Save(); 
         }
 
         private void cbErrorLevel_SelectedIndexChanged( object sender, EventArgs e )
@@ -751,16 +751,16 @@ namespace QRUtils
             {
                 errorLevel = ErrorCorrectionLevel.Q;
             }
-            Properties.Settings.Default["ErrorCorrectionLevel"] = errorString;
-            Properties.Settings.Default.Save();
+            appSection.Settings["ErrorCorrectionLevel"].Value = errorString;
+            config.Save();
         }
 
         private void chkDecodeFormat_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default["DecodeFormat1D"] = chkDecodeFormat1D.Checked;
-            Properties.Settings.Default["DecodeFormatDM"] = chkDecodeFormatDM.Checked;
-            Properties.Settings.Default["DecodeFormatQR"] = chkDecodeFormatQR.Checked;
-            Properties.Settings.Default.Save();
+            appSection.Settings["DecodeFormat1D"].Value = chkDecodeFormat1D.Checked.ToString();
+            appSection.Settings["DecodeFormatDM"].Value = chkDecodeFormatDM.Checked.ToString();
+            appSection.Settings["DecodeFormatQR"].Value = chkDecodeFormatQR.Checked.ToString();
+            config.Save();
         }
 
         private void chkMultiDecode_CheckedChanged(object sender, EventArgs e)
