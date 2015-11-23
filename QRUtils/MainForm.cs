@@ -101,20 +101,22 @@ namespace QRUtils
 
         private void loadSettings()
         {
-            int R = maskColor.R, G = maskColor.G, B = maskColor.B, A = maskColor.A;
+            //int R = maskColor.R, G = maskColor.G, B = maskColor.B, A = maskColor.A;
             if ( appSection.Settings["MaskColor"] != null )
             {
-                var colorValues = appSection.Settings["MaskColor"].Value.Split(',');
-                R = Convert.ToInt16( colorValues[0].Trim() );
-                G = Convert.ToInt16( colorValues[1].Trim() );
-                B = Convert.ToInt16( colorValues[2].Trim() );
-                if( colorValues.Length>3)
-                  A = Convert.ToInt16( colorValues[3].Trim() );
-                maskColor = Color.FromArgb( A, R, G, B );
+                maskColor = ColorTranslator.FromHtml( appSection.Settings["MaskColor"].Value );
+                //var colorValues = appSection.Settings["MaskColor"].Value.Split(',');
+                //R = Convert.ToInt16( colorValues[0].Trim() );
+                //G = Convert.ToInt16( colorValues[1].Trim() );
+                //B = Convert.ToInt16( colorValues[2].Trim() );
+                //if( colorValues.Length>3)
+                //  A = Convert.ToInt16( colorValues[3].Trim() );
+                //maskColor = Color.FromArgb( A, R, G, B );
             }
             else
             {
-                appSection.Settings.Add( "MaskColor", $"{maskColor.R}, {maskColor.G}, {maskColor.B}, {maskColor.A}" );
+                //appSection.Settings.Add( "MaskColor", $"{maskColor.R}, {maskColor.G}, {maskColor.B}, {maskColor.A}" );
+                appSection.Settings.Add( "MaskColor", ColorTranslator.ToHtml( maskColor ) );
             }
 
             colorDlg.Color = maskColor;
@@ -122,17 +124,19 @@ namespace QRUtils
 
             if ( appSection.Settings["OverlayBGColor"] != null )
             {
-                var colorValues = appSection.Settings["OverlayBGColor"].Value.Split(',');
-                R = Convert.ToInt16( colorValues[0].Trim() );
-                G = Convert.ToInt16( colorValues[1].Trim() );
-                B = Convert.ToInt16( colorValues[2].Trim() );
-                if ( colorValues.Length > 3 )
-                    A = Convert.ToInt16( colorValues[3].Trim() );
-                overlayBGColor = Color.FromArgb( A, R, G, B );
+                overlayBGColor = ColorTranslator.FromHtml( appSection.Settings["OverlayBGColor"].Value );
+
+                //var colorValues = appSection.Settings["OverlayBGColor"].Value.Split(',');
+                //R = Convert.ToInt16( colorValues[0].Trim() );
+                //G = Convert.ToInt16( colorValues[1].Trim() );
+                //B = Convert.ToInt16( colorValues[2].Trim() );
+                //if ( colorValues.Length > 3 )
+                //    A = Convert.ToInt16( colorValues[3].Trim() );
+                //overlayBGColor = Color.FromArgb( A, R, G, B );
             }
             else
             {
-                appSection.Settings.Add( "OverlayBGColor", $"{overlayBGColor.R}, {overlayBGColor.G}, {overlayBGColor.B}, {overlayBGColor.A}" );
+                appSection.Settings.Add( "OverlayBGColor", ColorTranslator.ToHtml( overlayBGColor ) );
             }
             
             if ( appSection.Settings["OverlayLogo"] != null )
@@ -722,9 +726,19 @@ namespace QRUtils
         {
             colorDlg.Color = picMaskColor.BackColor;
             colorDlg.ShowDialog();
+            maskColor = colorDlg.Color;
             picMaskColor.BackColor = colorDlg.Color;
 
-            appSection.Settings["MaskColor"].Value = $"{colorDlg.Color.R}, {colorDlg.Color.G}, {colorDlg.Color.B}, {colorDlg.Color.A}";
+            if ( appSection.Settings["MaskColor"] != null )
+            {
+                appSection.Settings["MaskColor"].Value = ColorTranslator.ToHtml( maskColor );
+            }
+            else
+            {
+                appSection.Settings.Add( "MaskColor", ColorTranslator.ToHtml( maskColor ) );
+            }
+
+            //appSection.Settings["MaskColor"].Value = $"{colorDlg.Color.R}, {colorDlg.Color.G}, {colorDlg.Color.B}, {colorDlg.Color.A}";
             config.Save(); 
         }
 
