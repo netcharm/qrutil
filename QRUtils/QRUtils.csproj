@@ -115,6 +115,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormQRInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormQRInput.Designer.cs">
+      <DependentUpon>FormQRInput.cs</DependentUpon>
+    </Compile>
     <Compile Include="KeyboardHook.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -130,6 +136,9 @@
     <Compile Include="QRCodeSplashForm.designer.cs">
       <DependentUpon>QRCodeSplashForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormQRInput.resx">
+      <DependentUpon>FormQRInput.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

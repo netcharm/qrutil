@@ -82,5 +82,29 @@ namespace QRUtils.Properties {
                 this["DecodeFormat1D"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("255, 128, 0")]
+        public global::System.Drawing.Color OverlayBGColor {
+            get {
+                return ((global::System.Drawing.Color)(this["OverlayBGColor"]));
+            }
+            set {
+                this["OverlayBGColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("logo.png")]
+        public string OverlayLogo {
+            get {
+                return ((string)(this["OverlayLogo"]));
+            }
+            set {
+                this["OverlayLogo"] = value;
+            }
+        }
     }
 }

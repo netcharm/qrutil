@@ -30,6 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.pnlQR = new System.Windows.Forms.Panel();
             this.picQR = new System.Windows.Forms.PictureBox();
             this.edText = new System.Windows.Forms.RichTextBox();
@@ -55,6 +56,7 @@
             this.statusLabelTextCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelDecodeCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelInfo = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnQRInput = new System.Windows.Forms.ToolStripSplitButton();
             this.btnBarCode = new System.Windows.Forms.Button();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
@@ -90,6 +92,7 @@
             this.picQR.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picQR.TabIndex = 0;
             this.picQR.TabStop = false;
+            this.picQR.DoubleClick += new System.EventHandler(this.picQR_DoubleClick);
             // 
             // edText
             // 
@@ -177,7 +180,13 @@
             this.cbBarFormat.Items.AddRange(new object[] {
             "Express",
             "ISBN",
-            "Product"});
+            "Product",
+            "URL",
+            "Phone",
+            "Mail",
+            "SMS",
+            "vCard",
+            "vCalendar"});
             this.cbBarFormat.Location = new System.Drawing.Point(10, 41);
             this.cbBarFormat.Name = "cbBarFormat";
             this.cbBarFormat.Size = new System.Drawing.Size(78, 20);
@@ -315,12 +324,12 @@
             // 
             // status
             // 
-            this.status.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
             this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusLabelHotkey,
             this.statusLabelTextCount,
             this.statusLabelDecodeCount,
-            this.statusLabelInfo});
+            this.statusLabelInfo,
+            this.btnQRInput});
             this.status.Location = new System.Drawing.Point(0, 479);
             this.status.Name = "status";
             this.status.ShowItemToolTips = true;
@@ -364,14 +373,25 @@
             // statusLabelInfo
             // 
             this.statusLabelInfo.Name = "statusLabelInfo";
-            this.statusLabelInfo.Size = new System.Drawing.Size(436, 17);
+            this.statusLabelInfo.Size = new System.Drawing.Size(404, 17);
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
             this.statusLabelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // btnQRInput
+            // 
+            this.btnQRInput.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnQRInput.Image = ((System.Drawing.Image)(resources.GetObject("btnQRInput.Image")));
+            this.btnQRInput.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnQRInput.Name = "btnQRInput";
+            this.btnQRInput.Size = new System.Drawing.Size(32, 20);
+            this.btnQRInput.Text = "QR Input Form";
+            this.btnQRInput.ToolTipText = "Special QR Information Input";
+            this.btnQRInput.ButtonClick += new System.EventHandler(this.btnQRInput_ButtonClick);
+            // 
             // btnBarCode
             // 
-            this.btnBarCode.Location = new System.Drawing.Point(564, 281);
+            this.btnBarCode.Location = new System.Drawing.Point(565, 281);
             this.btnBarCode.Name = "btnBarCode";
             this.btnBarCode.Size = new System.Drawing.Size(40, 44);
             this.btnBarCode.TabIndex = 9;
@@ -439,6 +459,7 @@
         private System.Windows.Forms.CheckBox chkDecodeFormatQR;
         private System.Windows.Forms.ComboBox cbBarFormat;
         private System.Windows.Forms.Button btnBarCode;
+        private System.Windows.Forms.ToolStripSplitButton btnQRInput;
     }
 }
 
