@@ -38,8 +38,11 @@ namespace QRUtils
         private ErrorCorrectionLevel errorLevel = ErrorCorrectionLevel.M;
 
         private Color maskColor = Color.FromArgb(0, 192, 192);
+
+        private bool overlayLogo = false;
+        private string overlayLogoImage = "logo.png";
         private Color overlayBGColor = Color.Orange;
-        private string overlayLogo = "logo.png";
+        private Dictionary<string, string> overlayIcons = new Dictionary<string, string>();
 
         // QR码数据容量
         //   数字                      最多 7089 字符
@@ -101,54 +104,69 @@ namespace QRUtils
 
         private void loadSettings()
         {
-            //int R = maskColor.R, G = maskColor.G, B = maskColor.B, A = maskColor.A;
-            if ( appSection.Settings["MaskColor"] != null )
+            bool update = false;
+            ///
+            /// QR Detect indicator mask color
+            ///
+            try
             {
                 maskColor = ColorTranslator.FromHtml( appSection.Settings["MaskColor"].Value );
-                //var colorValues = appSection.Settings["MaskColor"].Value.Split(',');
-                //R = Convert.ToInt16( colorValues[0].Trim() );
-                //G = Convert.ToInt16( colorValues[1].Trim() );
-                //B = Convert.ToInt16( colorValues[2].Trim() );
-                //if( colorValues.Length>3)
-                //  A = Convert.ToInt16( colorValues[3].Trim() );
-                //maskColor = Color.FromArgb( A, R, G, B );
             }
-            else
+            catch
             {
-                //appSection.Settings.Add( "MaskColor", $"{maskColor.R}, {maskColor.G}, {maskColor.B}, {maskColor.A}" );
                 appSection.Settings.Add( "MaskColor", ColorTranslator.ToHtml( maskColor ) );
+                update = true;
             }
-
             colorDlg.Color = maskColor;
             picMaskColor.BackColor = maskColor;
 
-            if ( appSection.Settings["OverlayBGColor"] != null )
+            ///
+            /// Overlay Logo Icon
+            ///
+            try
+            {
+                overlayLogo = Convert.ToBoolean( appSection.Settings["OverlayLogo"].Value );
+            }
+            catch
+            {
+                appSection.Settings.Add( "OverlayLogo", overlayLogo.ToString() );
+                update = true;
+            }
+            chkOverLogo.Checked = overlayLogo;
+
+            try
             {
                 overlayBGColor = ColorTranslator.FromHtml( appSection.Settings["OverlayBGColor"].Value );
-
-                //var colorValues = appSection.Settings["OverlayBGColor"].Value.Split(',');
-                //R = Convert.ToInt16( colorValues[0].Trim() );
-                //G = Convert.ToInt16( colorValues[1].Trim() );
-                //B = Convert.ToInt16( colorValues[2].Trim() );
-                //if ( colorValues.Length > 3 )
-                //    A = Convert.ToInt16( colorValues[3].Trim() );
-                //overlayBGColor = Color.FromArgb( A, R, G, B );
             }
-            else
+            catch
             {
                 appSection.Settings.Add( "OverlayBGColor", ColorTranslator.ToHtml( overlayBGColor ) );
+                update = true;
             }
-            
-            if ( appSection.Settings["OverlayLogo"] != null )
-                overlayLogo = appSection.Settings["OverlayLogo"].Value;
-            else
-                appSection.Settings.Add( "OverlayLogo", overlayLogo );
 
+            try
+            {
+                overlayLogoImage = appSection.Settings["OverlayLogoImage"].Value;
+            }
+            catch
+            {
+                appSection.Settings.Add( "OverlayLogoImage", overlayLogoImage );
+                update = true;
+            }
+
+            ///
+            /// QR Encode Error Level
+            ///
             string errorString = "M";
-            if ( appSection.Settings["ErrorCorrectionLevel"] != null )
+            try
+            {
                 errorString = appSection.Settings["ErrorCorrectionLevel"].Value;
-            else
+            }
+            catch
+            {
                 appSection.Settings.Add( "ErrorCorrectionLevel", errorString );
+                update = true;
+            }
 
             if ( string.Equals( errorString, I18N._( "L" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
@@ -172,20 +190,40 @@ namespace QRUtils
             }
             cbErrorLevel.SelectedIndex = cbErrorLevel.Items.IndexOf( I18N._( errorString ) );
 
-            if ( appSection.Settings["DecodeFormat1D"] != null )
+            ///
+            /// QR Decode Options
+            ///
+            try
+            {
                 chkDecodeFormat1D.Checked = Convert.ToBoolean( appSection.Settings["DecodeFormat1D"].Value );
-            else
+            }
+            catch
+            {
                 appSection.Settings.Add( "DecodeFormat1D", chkDecodeFormat1D.Checked.ToString() );
+                update = true;
+            }
 
-            if ( appSection.Settings["DecodeFormatDM"] != null )
+            try
+            {
                 chkDecodeFormatDM.Checked = Convert.ToBoolean( appSection.Settings["DecodeFormatDM"].Value );
-            else
+            }
+            catch
+            {
                 appSection.Settings.Add( "DecodeFormatDM", chkDecodeFormatDM.Checked.ToString() );
+                update = true;
+            }
 
-            if ( appSection.Settings["DecodeFormatQR"] != null )
+            try
+            {
                 chkDecodeFormatQR.Checked = Convert.ToBoolean( appSection.Settings["DecodeFormatQR"].Value );
-            else
+            }
+            catch
+            {
                 appSection.Settings.Add( "DecodeFormatQR", chkDecodeFormatQR.Checked.ToString() );
+                update = true;
+            }
+
+            if(update) config.Save();
         }
 
         private void hookKeyPressed(object sender, KeyPressedEventArgs e)
@@ -193,6 +231,37 @@ namespace QRUtils
             // show the keys pressed in a label.
             //edText.Text = e.Modifier.ToString() + " + " + e.Key.ToString();
             btnQRDecode.PerformClick();
+        }
+
+        private void listIcons(string folder)
+        {
+            if ( Directory.Exists( folder ) )
+            {
+                List<string> exts = new List<string>(){ ".png", ".bmp", ".jpg", ".ico", ".gif" };
+                string[] logoFiles = Directory.GetFiles( $"{AppPath}icons" );
+                if ( logoFiles.Length == logoItems.DropDownItems.Count ) return;
+
+                overlayIcons.Clear();
+                logoItems.DropDownItems.Clear();
+                foreach ( string logoFile in logoFiles )
+                {
+                    string itemText = Path.GetFileName(logoFile);
+                    string itemExt = Path.GetExtension(logoFile);
+                    if ( exts.Contains( itemExt.ToLower() ) )
+                    {
+                        overlayIcons.Add( itemText, logoFile );
+
+                        using ( var fs = new FileStream( logoFile, FileMode.Open ) )
+                        {
+                            var img = new Bitmap(fs, true);
+                            ToolStripItem item = logoItems.DropDownItems.Add( itemText, (Bitmap)img.Clone() );
+                        }
+
+                        //ToolStripItem item = logoItems.DropDownItems.Add( itemText, new Bitmap(logoFile,true) );
+                        //item.OnClick += 
+                    }
+                }
+            }
         }
 
         private Bitmap getScreenSnapshot()
@@ -407,7 +476,15 @@ namespace QRUtils
 
         private Bitmap drawOverlayLogo( Bitmap image, string logo )
         {
-            string logoFile = $"{AppPath}{logo}";
+            string logoFile = $"{AppPath}icons\\{logo}";
+            try
+            {
+                logoFile = overlayIcons[logo];
+            }
+            catch
+            {
+            }
+
             if ( File.Exists( logoFile ) )
             {
                 Bitmap logoImage = new Bitmap(logoFile );
@@ -441,17 +518,22 @@ namespace QRUtils
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 g.SetClip( gp );
                 g.Clear( BackgroundColor );
-                g.DrawImage( logo, Point.Empty );
+                g.DrawImage( logo, lw / 16, lh / 16, lw - lw / 8, lh - lh / 8 );
             }
 #if DEBUG
             roundedLogo.Save("RoundedLogo.png");
 #endif
-            int deltaHeigth = image.Height - logo.Height;
-            int deltaWidth = image.Width - logo.Width;
+            //int deltaWidth = image.Width - logo.Width;
+            //int deltaHeigth = image.Height - logo.Height;
+            int w = image.Width / 4;
+            int h = image.Height / 4;
+            int x = (image.Width - image.Width / 4) / 2;
+            int y = (image.Height - image.Height / 4) / 2;
             using ( Graphics g = Graphics.FromImage( image ) )
             {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.DrawImage( roundedLogo, new Point( deltaWidth / 2, deltaHeigth / 2 ) );
+                g.SmoothingMode = SmoothingMode.HighQuality;
+                //g.DrawImage( roundedLogo, new Point( x, y ) );
+                g.DrawImage( roundedLogo, x, y, w, h);
             }
             return image;
         }
@@ -489,7 +571,7 @@ namespace QRUtils
                 Bitmap qrBitmap = bw.Write(qrText);
                 if(chkOverLogo.Checked)
                 {
-                    qrBitmap = drawOverlayLogo( qrBitmap, overlayLogo );
+                    qrBitmap = drawOverlayLogo( qrBitmap, overlayLogoImage );
                 }
                 return ( qrBitmap );
             }
@@ -726,14 +808,14 @@ namespace QRUtils
         {
             colorDlg.Color = picMaskColor.BackColor;
             colorDlg.ShowDialog();
-            maskColor = colorDlg.Color;
             picMaskColor.BackColor = colorDlg.Color;
+            maskColor = colorDlg.Color;
 
-            if ( appSection.Settings["MaskColor"] != null )
+            try
             {
                 appSection.Settings["MaskColor"].Value = ColorTranslator.ToHtml( maskColor );
             }
-            else
+            catch
             {
                 appSection.Settings.Add( "MaskColor", ColorTranslator.ToHtml( maskColor ) );
             }
@@ -744,6 +826,8 @@ namespace QRUtils
 
         private void cbErrorLevel_SelectedIndexChanged( object sender, EventArgs e )
         {
+            if ( !this.Visible ) return;
+
             string errorString = cbErrorLevel.SelectedItem.ToString();
             if ( string.Equals( errorString, I18N._( "L" ), StringComparison.CurrentCultureIgnoreCase ) )
             {
@@ -771,10 +855,13 @@ namespace QRUtils
 
         private void chkDecodeFormat_CheckedChanged(object sender, EventArgs e)
         {
-            appSection.Settings["DecodeFormat1D"].Value = chkDecodeFormat1D.Checked.ToString();
-            appSection.Settings["DecodeFormatDM"].Value = chkDecodeFormatDM.Checked.ToString();
-            appSection.Settings["DecodeFormatQR"].Value = chkDecodeFormatQR.Checked.ToString();
-            config.Save();
+            if ( this.Visible )
+            {
+                appSection.Settings["DecodeFormat1D"].Value = chkDecodeFormat1D.Checked.ToString();
+                appSection.Settings["DecodeFormatDM"].Value = chkDecodeFormatDM.Checked.ToString();
+                appSection.Settings["DecodeFormatQR"].Value = chkDecodeFormatQR.Checked.ToString();
+                config.Save();
+            }
         }
 
         private void chkMultiDecode_CheckedChanged(object sender, EventArgs e)
@@ -895,6 +982,34 @@ namespace QRUtils
             var timestamp = DateTime.Now.ToString( "yyyyMMddTHHmmsszz" );
             var errorlevel = cbErrorLevel.Text;
             picQR.Image.Save( $"QR_{timestamp}_{errorlevel}.png" );
+        }
+
+        private void chkOverLogo_CheckedChanged( object sender, EventArgs e )
+        {
+            if ( this.Visible )
+            {
+                appSection.Settings["OverlayLogo"].Value = chkDecodeFormatQR.Checked.ToString();
+                config.Save();
+            }
+        }
+
+        private void logoItems_DropDownItemClicked( object sender, ToolStripItemClickedEventArgs e )
+        {
+            overlayLogoImage = e.ClickedItem.Text;
+            try
+            {
+                appSection.Settings["OverlayLogoImage"].Value = overlayLogoImage;
+            }
+            catch
+            {
+                appSection.Settings.Add( "OverlayLogoImage", overlayLogoImage );
+            }
+            config.Save();
+        }
+
+        private void logoItems_DropDownOpening( object sender, EventArgs e )
+        {
+            listIcons( $"{AppPath}icons" );
         }
     }
 }

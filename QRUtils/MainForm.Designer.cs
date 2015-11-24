@@ -58,6 +58,7 @@
             this.statusLabelInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnQRInput = new System.Windows.Forms.ToolStripSplitButton();
             this.btnBarCode = new System.Windows.Forms.Button();
+            this.logoItems = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
             this.pnlOption.SuspendLayout();
@@ -256,6 +257,7 @@
             this.chkOverLogo.TabIndex = 13;
             this.chkOverLogo.Text = "Overlay Logo";
             this.chkOverLogo.UseVisualStyleBackColor = true;
+            this.chkOverLogo.CheckedChanged += new System.EventHandler(this.chkOverLogo_CheckedChanged);
             // 
             // lblErrorLevel
             // 
@@ -373,7 +375,7 @@
             // statusLabelInfo
             // 
             this.statusLabelInfo.Name = "statusLabelInfo";
-            this.statusLabelInfo.Size = new System.Drawing.Size(404, 17);
+            this.statusLabelInfo.Size = new System.Drawing.Size(373, 17);
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
             this.statusLabelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -381,6 +383,8 @@
             // btnQRInput
             // 
             this.btnQRInput.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnQRInput.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.logoItems});
             this.btnQRInput.Image = ((System.Drawing.Image)(resources.GetObject("btnQRInput.Image")));
             this.btnQRInput.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnQRInput.Name = "btnQRInput";
@@ -398,6 +402,14 @@
             this.btnBarCode.Text = "Bar Code";
             this.btnBarCode.UseVisualStyleBackColor = true;
             this.btnBarCode.Click += new System.EventHandler(this.btnBarCode_Click);
+            // 
+            // logoItems
+            // 
+            this.logoItems.Name = "logoItems";
+            this.logoItems.Size = new System.Drawing.Size(152, 22);
+            this.logoItems.Text = "Logo";
+            this.logoItems.DropDownOpening += new System.EventHandler(this.logoItems_DropDownOpening);
+            this.logoItems.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.logoItems_DropDownItemClicked);
             // 
             // MainForm
             // 
@@ -460,6 +472,7 @@
         private System.Windows.Forms.ComboBox cbBarFormat;
         private System.Windows.Forms.Button btnBarCode;
         private System.Windows.Forms.ToolStripSplitButton btnQRInput;
+        private System.Windows.Forms.ToolStripMenuItem logoItems;
     }
 }
 
