@@ -43,6 +43,7 @@ namespace QRUtils
         private string overlayLogoImage = "logo.png";
         private Color overlayBGColor = Color.Orange;
         private Dictionary<string, string> overlayIcons = new Dictionary<string, string>();
+        private List<ToolStripItem> iconItems = new List<ToolStripItem>();
 
         // QR码数据容量
         //   数字                      最多 7089 字符
@@ -243,6 +244,19 @@ namespace QRUtils
 
                 overlayIcons.Clear();
                 logoItems.DropDownItems.Clear();
+                //foreach( ToolStripItem item in iconItems )
+                //{
+                //    iconItems.Remove( item );
+                //    item.Dispose();
+                //}
+                for ( int i = iconItems.Count - 1; i >= 0; i-- )
+                {
+                    ToolStripItem item = iconItems[i];
+                    iconItems.Remove( item );
+                    item.Dispose();
+                }
+                iconItems.Clear();
+
                 foreach ( string logoFile in logoFiles )
                 {
                     string itemText = Path.GetFileName(logoFile);
@@ -255,10 +269,9 @@ namespace QRUtils
                         {
                             var img = new Bitmap(fs, true);
                             ToolStripItem item = logoItems.DropDownItems.Add( itemText, (Bitmap)img.Clone() );
+                            iconItems.Add( item );
+                            img.Dispose();
                         }
-
-                        //ToolStripItem item = logoItems.DropDownItems.Add( itemText, new Bitmap(logoFile,true) );
-                        //item.OnClick += 
                     }
                 }
             }
@@ -299,16 +312,18 @@ namespace QRUtils
             if (mark.X < 100) origX = mark.X;
             if (mark.Y < 100) origY = mark.Y;
 
+            Color colorMark = bwQR.GetPixel(origX, origY);
             for (var i = 2; i < 100; i++ )
             {
-                var color = bwQR.GetPixel(origX - i, origY);
-                if(color.ToArgb() == Color.White.ToArgb())
+                Color color = bwQR.GetPixel(origX - i, origY);
+                //if(color.ToArgb() == Color.White.ToArgb())
+                if ( color.ToArgb() != colorMark.ToArgb() )
                 {
                     pixelWidth = i;
                     break;
                 }
             }
-            return (pixelWidth);
+            return ( pixelWidth );
         }
 
         private void ShowQRCodeMask(Result result, Bitmap QRImage)
@@ -586,7 +601,7 @@ namespace QRUtils
         {
             br.AutoRotate = true;
             br.TryInverted = true;
-            br.Options.CharacterSet = "UTF-8";
+            //br.Options.CharacterSet = "UTF-8";
             br.Options.TryHarder = true;
             br.Options.PureBarcode = false;
             //br.Options.ReturnCodabarStartEnd = true;

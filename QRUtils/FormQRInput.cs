@@ -70,11 +70,20 @@ namespace QRUtils
                     //END:VEVENT
                     break;
                 case 2: // E-Mail mailto:abc.@abc.com
+                        // MATMSG:TO:abc@de.com;SUB:title;BODY:contents;;
                     QRText = $"MAILTO:{edMailTo.Text.Trim()}";
                     break;
                 case 3: // Geo    geo:-Latitude-,-Longitude-?q=-Query-
-                    var query = string.IsNullOrEmpty(edGeoQuery.Text) ? string.Empty : $"?q={edGeoQuery.Text}";
-                    QRText = $"GEO:{edGeoLat.Text.Trim()},{edGeoLon.Text.Trim()}{query}";
+                    if(chkGeoMap.Checked)
+                    {
+                        var rb = grpGeoMap.Controls.OfType<RadioButton>().FirstOrDefault( r => r.Checked );
+
+                    }
+                    else
+                    {
+                        var query = string.IsNullOrEmpty(edGeoQuery.Text) ? string.Empty : $"?q={edGeoQuery.Text}";
+                        QRText = $"GEO:{edGeoLat.Text.Trim()},{edGeoLon.Text.Trim()}{query}";
+                    }
                     break;
                 case 4: // Phone  tel:-Phone-
                     QRText = $"TEL:{edPhone.Text.Trim()}";
