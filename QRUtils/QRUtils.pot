@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: QRUtils\n"
 "Report-Msgid-Bugs-To: netcharm <netcharm@163.com>\n"
-"POT-Creation-Date: 2015-11-18 21:15+0800\n"
-"PO-Revision-Date: 2015-11-18 21:15+0800\n"
+"POT-Creation-Date: 2015-12-14 13:26+0800\n"
+"PO-Revision-Date: 2015-12-14 13:26+0800\n"
 "Last-Translator: netcharm <netcharm@163.com>\n"
 "Language-Team: netcharm <netcharm@163.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,103 +20,283 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 
-#: MainForm.Designer.cs:121
+#: FormQRInput.Designer.cs:126
+msgid "Contact"
+msgstr ""
+
+#: FormQRInput.Designer.cs:136
+msgid "Calendar"
+msgstr ""
+
+#: FormQRInput.Designer.cs:147
+msgid "Email"
+msgstr ""
+
+#: FormQRInput.Designer.cs:161
+msgid "Mail to"
+msgstr ""
+
+#: FormQRInput.Designer.cs:185
+msgid "Geo"
+msgstr ""
+
+#: FormQRInput.Designer.cs:201
+msgid "Using Map"
+msgstr ""
+
+#: FormQRInput.Designer.cs:210
+msgid "Map"
+msgstr ""
+
+#: FormQRInput.Designer.cs:224
+msgid "Longitude"
+msgstr ""
+
+#: FormQRInput.Designer.cs:249
+msgid "Query"
+msgstr ""
+
+#: FormQRInput.Designer.cs:274
+msgid "Latitude"
+msgstr ""
+
+#: FormQRInput.Designer.cs:296 MainForm.Designer.cs:188
+msgid "Phone"
+msgstr ""
+
+#: FormQRInput.Designer.cs:310
+msgid "Phone Number"
+msgstr ""
+
+#: FormQRInput.Designer.cs:332 MainForm.Designer.cs:190
+msgid "SMS"
+msgstr ""
+
+#: FormQRInput.Designer.cs:347
+msgid "SMS Text"
+msgstr ""
+
+#: FormQRInput.Designer.cs:372
+msgid "SMS To"
+msgstr ""
+
+#: FormQRInput.Designer.cs:395
+msgid "WIFI"
+msgstr ""
+
+#: FormQRInput.Designer.cs:396
+msgid "WIFI Network Connection"
+msgstr ""
+
+#: FormQRInput.Designer.cs:411
+msgid "Network"
+msgstr ""
+
+#: FormQRInput.Designer.cs:421
+msgid "Hidden"
+msgstr ""
+
+#: FormQRInput.Designer.cs:430
+msgid "WPA/WPA2"
+msgstr ""
+
+#: FormQRInput.Designer.cs:431
+msgid "WEP"
+msgstr ""
+
+#: FormQRInput.Designer.cs:432
+msgid "No Encryption"
+msgstr ""
+
+#: FormQRInput.Designer.cs:449
+msgid "Password"
+msgstr ""
+
+#: FormQRInput.Designer.cs:474
+msgid "SSID"
+msgstr ""
+
+#: FormQRInput.Designer.cs:496 MainForm.Designer.cs:187
+msgid "URL"
+msgstr ""
+
+#: FormQRInput.Designer.cs:510
+msgid "WEB Site URL"
+msgstr ""
+
+#: FormQRInput.Designer.cs:532
+msgid "OK"
+msgstr ""
+
+#: FormQRInput.Designer.cs:545
+msgid "Cancel"
+msgstr ""
+
+#: FormQRInput.Designer.cs:577
+msgid "Sogou"
+msgstr ""
+
+#: FormQRInput.Designer.cs:588
+msgid "QQ"
+msgstr ""
+
+#: FormQRInput.Designer.cs:599
+msgid "AutoNavi"
+msgstr ""
+
+#: FormQRInput.Designer.cs:610
+msgid "Baidu"
+msgstr ""
+
+#: FormQRInput.Designer.cs:621
+msgid "MapABC"
+msgstr ""
+
+#: FormQRInput.Designer.cs:632
+msgid "Open Cycle"
+msgstr ""
+
+#: FormQRInput.Designer.cs:643
+msgid "Open Street"
+msgstr ""
+
+#: FormQRInput.Designer.cs:654
+msgid "Bing"
+msgstr ""
+
+#: FormQRInput.Designer.cs:665
+msgid "Google"
+msgstr ""
+
+#: FormQRInput.Designer.cs:681
+msgid "QR Information Input"
+msgstr ""
+
+#: MainForm.Designer.cs:126
 msgid "==> QR"
 msgstr ""
 
-#: MainForm.Designer.cs:132
+#: MainForm.Designer.cs:137
 msgid "<== QR"
 msgstr ""
 
-#: MainForm.Designer.cs:143
+#: MainForm.Designer.cs:148
 msgid "<== Clip"
 msgstr ""
 
-#: MainForm.Designer.cs:154
+#: MainForm.Designer.cs:159
 msgid "==> Clip"
 msgstr ""
 
-#: MainForm.Designer.cs:183
-msgid "Decode Format"
-msgstr ""
-
-#: MainForm.Designer.cs:194
-msgid "All 1D Code"
-msgstr ""
-
-#: MainForm.Designer.cs:207
-msgid "Data Matrix"
-msgstr ""
-
-#: MainForm.Designer.cs:222
-msgid "QR Code"
-msgstr ""
-
-#: MainForm.Designer.cs:235
-msgid "Overlay Logo"
-msgstr ""
-
-#: MainForm.Designer.cs:245
-msgid "ErrorLevel:"
-msgstr ""
-
-#: MainForm.Designer.cs:253 MainForm.cs:88 MainForm.cs:587
-msgid "L"
-msgstr ""
-
-#: MainForm.Designer.cs:254 MainForm.cs:92 MainForm.cs:591
-msgid "M"
-msgstr ""
-
-#: MainForm.Designer.cs:255 MainForm.cs:96 MainForm.cs:595
-msgid "Q"
-msgstr ""
-
-#: MainForm.Designer.cs:256 MainForm.cs:100 MainForm.cs:599
-msgid "H"
-msgstr ""
-
-#: MainForm.Designer.cs:270
-msgid "Mask Color:"
-msgstr ""
-
-#: MainForm.Designer.cs:294
-msgid "Multiple Decode "
-msgstr ""
-
-#: MainForm.Designer.cs:327
-msgid "Hotkey: WIN + Q"
-msgstr ""
-
-#: MainForm.Designer.cs:338
-msgid "Text Count: 0"
-msgstr ""
-
-#: MainForm.Designer.cs:349
-msgid "Code Found: 0"
-msgstr ""
-
-#: MainForm.Designer.cs:356
-msgid "Ready"
-msgstr ""
-
-#: MainForm.Designer.cs:364
+#: MainForm.Designer.cs:184
 msgid "Express"
 msgstr ""
 
-#: MainForm.Designer.cs:365
+#: MainForm.Designer.cs:185
 msgid "ISBN"
 msgstr ""
 
-#: MainForm.Designer.cs:366
+#: MainForm.Designer.cs:186
 msgid "Product"
 msgstr ""
 
-#: MainForm.Designer.cs:378
+#: MainForm.Designer.cs:189
+msgid "Mail"
+msgstr ""
+
+#: MainForm.Designer.cs:191
+msgid "vCard"
+msgstr ""
+
+#: MainForm.Designer.cs:192
+msgid "vCalendar"
+msgstr ""
+
+#: MainForm.Designer.cs:208
+msgid "Decode Format"
+msgstr ""
+
+#: MainForm.Designer.cs:219
+msgid "All 1D Code"
+msgstr ""
+
+#: MainForm.Designer.cs:232
+msgid "Data Matrix"
+msgstr ""
+
+#: MainForm.Designer.cs:247
+msgid "QR Code"
+msgstr ""
+
+#: MainForm.Designer.cs:260
+msgid "Overlay Logo"
+msgstr ""
+
+#: MainForm.Designer.cs:271
+msgid "ErrorLevel:"
+msgstr ""
+
+#: MainForm.Designer.cs:279 MainForm.cs:172 MainForm.cs:850
+msgid "L"
+msgstr ""
+
+#: MainForm.Designer.cs:280 MainForm.cs:176 MainForm.cs:854
+msgid "M"
+msgstr ""
+
+#: MainForm.Designer.cs:281 MainForm.cs:180 MainForm.cs:858
+msgid "Q"
+msgstr ""
+
+#: MainForm.Designer.cs:282 MainForm.cs:184 MainForm.cs:862
+msgid "H"
+msgstr ""
+
+#: MainForm.Designer.cs:296
+msgid "Mask Color:"
+msgstr ""
+
+#: MainForm.Designer.cs:320
+msgid "Multiple Decode "
+msgstr ""
+
+#: MainForm.Designer.cs:353
+msgid "Hotkey: WIN + Q"
+msgstr ""
+
+#: MainForm.Designer.cs:364
+msgid "Text Count: 0"
+msgstr ""
+
+#: MainForm.Designer.cs:375
+msgid "Code Found: 0"
+msgstr ""
+
+#: MainForm.Designer.cs:382
+msgid "Ready"
+msgstr ""
+
+#: MainForm.Designer.cs:394
+msgid "QR Input Form"
+msgstr ""
+
+#: MainForm.Designer.cs:395
+msgid "Special QR Information Input"
+msgstr ""
+
+#: MainForm.Designer.cs:402
+msgid "Logo"
+msgstr ""
+
+#: MainForm.Designer.cs:412
 msgid "Bar Code"
 msgstr ""
 
-#: MainForm.Designer.cs:401
+#: MainForm.Designer.cs:423
+msgid "Force UTF-8"
+msgstr ""
+
+#: MainForm.Designer.cs:445
 msgid "QRCode Utils"
 msgstr ""
 
@@ -124,37 +304,37 @@ msgstr ""
 msgid "QRCodeSplashForm"
 msgstr ""
 
-#: MainForm.cs:69 MainForm.cs:75
+#: MainForm.cs:96 MainForm.cs:102
 #, csharp-format
 msgid "Hotkey: {0}"
 msgstr ""
 
-#: MainForm.cs:73
+#: MainForm.cs:100
 msgid "Failed to bind hotkey Win+Q!"
 msgstr ""
 
-#: MainForm.cs:73 MainForm.cs:249 MainForm.cs:289
+#: MainForm.cs:100 MainForm.cs:487 MainForm.cs:595
 msgid "Error"
 msgstr ""
 
-#: MainForm.cs:75
+#: MainForm.cs:102
 msgid "None"
 msgstr ""
 
-#: MainForm.cs:249
+#: MainForm.cs:487
 msgid "Text data can not be encoded to barcode!"
 msgstr ""
 
-#: MainForm.cs:289
+#: MainForm.cs:595
 msgid "Text too long!"
 msgstr ""
 
-#: MainForm.cs:493
+#: MainForm.cs:744
 #, csharp-format
 msgid "Code Found: {0}"
 msgstr ""
 
-#: MainForm.cs:571
+#: MainForm.cs:822
 #, csharp-format
 msgid "Text Count: {0}"
 msgstr ""

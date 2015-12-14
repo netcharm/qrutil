@@ -601,7 +601,10 @@ namespace QRUtils
         {
             br.AutoRotate = true;
             br.TryInverted = true;
-            //br.Options.CharacterSet = "UTF-8";
+            if(cbDecodeUTF8.Checked)
+            {
+                br.Options.CharacterSet = "UTF-8";
+            }
             br.Options.TryHarder = true;
             br.Options.PureBarcode = false;
             //br.Options.ReturnCodabarStartEnd = true;

@@ -57,8 +57,9 @@
             this.statusLabelDecodeCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnQRInput = new System.Windows.Forms.ToolStripSplitButton();
-            this.btnBarCode = new System.Windows.Forms.Button();
             this.logoItems = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnBarCode = new System.Windows.Forms.Button();
+            this.cbDecodeUTF8 = new System.Windows.Forms.CheckBox();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
             this.pnlOption.SuspendLayout();
@@ -109,7 +110,7 @@
             this.edText.Name = "edText";
             this.edText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
             this.edText.ShowSelectionMargin = true;
-            this.edText.Size = new System.Drawing.Size(441, 461);
+            this.edText.Size = new System.Drawing.Size(441, 464);
             this.edText.TabIndex = 1;
             this.edText.Text = "";
             this.edText.TextChanged += new System.EventHandler(this.edText_TextChanged);
@@ -161,6 +162,7 @@
             // 
             // pnlOption
             // 
+            this.pnlOption.Controls.Add(this.cbDecodeUTF8);
             this.pnlOption.Controls.Add(this.cbBarFormat);
             this.pnlOption.Controls.Add(this.grpDecodeFormat);
             this.pnlOption.Controls.Add(this.chkOverLogo);
@@ -171,7 +173,7 @@
             this.pnlOption.Controls.Add(this.chkMultiDecode);
             this.pnlOption.Location = new System.Drawing.Point(456, 331);
             this.pnlOption.Name = "pnlOption";
-            this.pnlOption.Size = new System.Drawing.Size(258, 137);
+            this.pnlOption.Size = new System.Drawing.Size(258, 141);
             this.pnlOption.TabIndex = 7;
             // 
             // cbBarFormat
@@ -188,7 +190,7 @@
             "SMS",
             "vCard",
             "vCalendar"});
-            this.cbBarFormat.Location = new System.Drawing.Point(10, 41);
+            this.cbBarFormat.Location = new System.Drawing.Point(10, 47);
             this.cbBarFormat.Name = "cbBarFormat";
             this.cbBarFormat.Size = new System.Drawing.Size(78, 20);
             this.cbBarFormat.TabIndex = 16;
@@ -198,9 +200,9 @@
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormat1D);
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatDM);
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatQR);
-            this.grpDecodeFormat.Location = new System.Drawing.Point(145, 41);
+            this.grpDecodeFormat.Location = new System.Drawing.Point(144, 52);
             this.grpDecodeFormat.Name = "grpDecodeFormat";
-            this.grpDecodeFormat.Size = new System.Drawing.Size(111, 87);
+            this.grpDecodeFormat.Size = new System.Drawing.Size(112, 87);
             this.grpDecodeFormat.TabIndex = 15;
             this.grpDecodeFormat.TabStop = false;
             this.grpDecodeFormat.Text = "Decode Format";
@@ -287,7 +289,7 @@
             // lblMaskColor
             // 
             this.lblMaskColor.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.lblMaskColor.Location = new System.Drawing.Point(12, 19);
+            this.lblMaskColor.Location = new System.Drawing.Point(12, 7);
             this.lblMaskColor.Name = "lblMaskColor";
             this.lblMaskColor.Size = new System.Drawing.Size(80, 36);
             this.lblMaskColor.TabIndex = 9;
@@ -296,7 +298,7 @@
             // 
             // picMaskColor
             // 
-            this.picMaskColor.Location = new System.Drawing.Point(94, 19);
+            this.picMaskColor.Location = new System.Drawing.Point(94, 7);
             this.picMaskColor.Name = "picMaskColor";
             this.picMaskColor.Size = new System.Drawing.Size(36, 36);
             this.picMaskColor.TabIndex = 8;
@@ -311,7 +313,7 @@
             this.chkMultiDecode.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMultiDecode.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkMultiDecode.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.chkMultiDecode.Location = new System.Drawing.Point(140, 14);
+            this.chkMultiDecode.Location = new System.Drawing.Point(140, 7);
             this.chkMultiDecode.Name = "chkMultiDecode";
             this.chkMultiDecode.Size = new System.Drawing.Size(111, 24);
             this.chkMultiDecode.TabIndex = 7;
@@ -375,7 +377,7 @@
             // statusLabelInfo
             // 
             this.statusLabelInfo.Name = "statusLabelInfo";
-            this.statusLabelInfo.Size = new System.Drawing.Size(373, 17);
+            this.statusLabelInfo.Size = new System.Drawing.Size(404, 17);
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
             this.statusLabelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -393,6 +395,14 @@
             this.btnQRInput.ToolTipText = "Special QR Information Input";
             this.btnQRInput.ButtonClick += new System.EventHandler(this.btnQRInput_ButtonClick);
             // 
+            // logoItems
+            // 
+            this.logoItems.Name = "logoItems";
+            this.logoItems.Size = new System.Drawing.Size(94, 22);
+            this.logoItems.Text = "Logo";
+            this.logoItems.DropDownOpening += new System.EventHandler(this.logoItems_DropDownOpening);
+            this.logoItems.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.logoItems_DropDownItemClicked);
+            // 
             // btnBarCode
             // 
             this.btnBarCode.Location = new System.Drawing.Point(565, 281);
@@ -403,13 +413,15 @@
             this.btnBarCode.UseVisualStyleBackColor = true;
             this.btnBarCode.Click += new System.EventHandler(this.btnBarCode_Click);
             // 
-            // logoItems
+            // cbDecodeUTF8
             // 
-            this.logoItems.Name = "logoItems";
-            this.logoItems.Size = new System.Drawing.Size(152, 22);
-            this.logoItems.Text = "Logo";
-            this.logoItems.DropDownOpening += new System.EventHandler(this.logoItems_DropDownOpening);
-            this.logoItems.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.logoItems_DropDownItemClicked);
+            this.cbDecodeUTF8.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbDecodeUTF8.Location = new System.Drawing.Point(155, 36);
+            this.cbDecodeUTF8.Name = "cbDecodeUTF8";
+            this.cbDecodeUTF8.Size = new System.Drawing.Size(96, 16);
+            this.cbDecodeUTF8.TabIndex = 17;
+            this.cbDecodeUTF8.Text = "Force UTF-8";
+            this.cbDecodeUTF8.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -473,6 +485,7 @@
         private System.Windows.Forms.Button btnBarCode;
         private System.Windows.Forms.ToolStripSplitButton btnQRInput;
         private System.Windows.Forms.ToolStripMenuItem logoItems;
+        private System.Windows.Forms.CheckBox cbDecodeUTF8;
     }
 }
 
