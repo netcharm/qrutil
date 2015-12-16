@@ -8,6 +8,7 @@ using System.IO;
 using System.Media;
 using System.Threading;
 using System.Windows.Forms;
+using System.Linq;
 using NGettext.WinForm;
 using ZXing;
 using ZXing.Common;
@@ -275,6 +276,23 @@ namespace QRUtils
                     }
                 }
             }
+        }
+
+        private bool isAllowedDrag( IDataObject Data )
+        {
+            string[] allowed_fmts = {
+                DataFormats.FileDrop,
+                DataFormats.Text,
+                DataFormats.UnicodeText,
+                DataFormats.OemText,
+                DataFormats.Html,
+                DataFormats.Rtf,
+                DataFormats.StringFormat
+            };
+
+            string[] fmts = Data.GetFormats( true );
+
+            return ( fmts.Intersect( allowed_fmts ).Any() );
         }
 
         private Bitmap getScreenSnapshot()
@@ -639,7 +657,7 @@ namespace QRUtils
             if (chkDecodeFormatQR.Checked) br.Options.PossibleFormats.Add(BarcodeFormat.QR_CODE);
         }
 
-        private string QRDecode(Bitmap qrImage)
+        private string QRDecode(Bitmap qrImage, bool showMask=true)
         {
             using (qrImage)
             {
@@ -654,7 +672,7 @@ namespace QRUtils
                     var result = br.Decode(qrImage);
                     if (result != null)
                     {
-                        ShowQRCodeMask(result, qrImage);
+                        if(showMask) ShowQRCodeMask(result, qrImage);
                         SystemSounds.Beep.Play();
                         return (result.Text);
                     }
@@ -676,7 +694,7 @@ namespace QRUtils
             }
         }
 
-        private List<string> QRDecodeMulti(Bitmap qrImage)
+        private List<string> QRDecodeMulti(Bitmap qrImage, bool showMask = true )
         {
             using (qrImage)
             {
@@ -697,7 +715,7 @@ namespace QRUtils
                         var textList = new List<string>();
                         foreach (var result in results)
                         {
-                            ShowQRCodeMask(result, qrImage);
+                            if ( showMask ) ShowQRCodeMask( result, qrImage );
                             textList.Add(result.Text);
                         }
                         //SystemSounds.Asterisk.Play();
@@ -1029,5 +1047,74 @@ namespace QRUtils
         {
             listIcons( $"{AppPath}icons" );
         }
+
+        private void MainForm_DragOver( object sender, DragEventArgs e )
+        {
+            edText.EnableAutoDragDrop = false;
+            edText.AllowDrop = false;
+            if ( isAllowedDrag( e.Data ) )
+            {
+                if ( e.Data.GetDataPresent( DataFormats.FileDrop ) )
+                {
+                    string[] dragFiles = (string [])e.Data.GetData(DataFormats.FileDrop, true);
+                    if ( dragFiles.Length > 0 )
+                    {
+                        List<string> exts = new List<string>(){ ".png", ".bmp", ".jpg", ".ico", ".gif" };
+                        string dragFileName = dragFiles[0].ToString();
+                        if ( exts.Contains( Path.GetExtension( dragFileName ).ToLower() ) )
+                            e.Effect = DragDropEffects.Copy;
+                        else
+                            e.Effect = DragDropEffects.None;
+                    }
+                }
+                else
+                {
+                    edText.AllowDrop = true;
+                    edText.EnableAutoDragDrop = true;
+                    e.Effect = DragDropEffects.Copy;
+                }
+            }
+            return;
+        }
+
+        private void MainForm_DragDrop( object sender, DragEventArgs e )
+        {
+            // Determine whether string data exists in the drop data. If not, then 
+            // the drop effect reflects that the drop cannot occur. 
+            if ( e.Data.GetDataPresent( DataFormats.FileDrop ) )
+            {
+                //e.Effect = DragDropEffects.Copy;
+                try
+                {
+                    string[] dragFiles = (string [])e.Data.GetData(DataFormats.FileDrop, true);
+                    if ( dragFiles.Length > 0 )
+                    {
+                        List<string> exts = new List<string>(){ ".png", ".bmp", ".jpg", ".ico", ".gif" };
+                        string dragFileName = dragFiles[0].ToString();
+                        if ( exts.Contains( Path.GetExtension( dragFileName ).ToLower() ))
+                        {
+                            Bitmap qrImage = new Bitmap(dragFileName);
+                            string qrText = QRDecode( qrImage, false );
+                            qrImage.Dispose();
+                            if ( !string.IsNullOrEmpty( qrText ) )
+                            {
+                                edText.Text = qrText;
+                                picQR.Load( dragFileName );
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+            else if ( isAllowedDrag( e.Data ) )
+            {
+                edText.Text = e.Data.GetData( "System.String", true ).ToString();
+            }
+            return;
+        }
+
     }
 }

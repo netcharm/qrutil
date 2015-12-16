@@ -39,6 +39,8 @@
             this.btnClipFrom = new System.Windows.Forms.Button();
             this.btnClipTo = new System.Windows.Forms.Button();
             this.pnlOption = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cbDecodeUTF8 = new System.Windows.Forms.CheckBox();
             this.cbBarFormat = new System.Windows.Forms.ComboBox();
             this.grpDecodeFormat = new System.Windows.Forms.GroupBox();
             this.chkDecodeFormat1D = new System.Windows.Forms.CheckBox();
@@ -59,7 +61,6 @@
             this.btnQRInput = new System.Windows.Forms.ToolStripSplitButton();
             this.logoItems = new System.Windows.Forms.ToolStripMenuItem();
             this.btnBarCode = new System.Windows.Forms.Button();
-            this.cbDecodeUTF8 = new System.Windows.Forms.CheckBox();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
             this.pnlOption.SuspendLayout();
@@ -162,6 +163,7 @@
             // 
             // pnlOption
             // 
+            this.pnlOption.Controls.Add(this.label1);
             this.pnlOption.Controls.Add(this.cbDecodeUTF8);
             this.pnlOption.Controls.Add(this.cbBarFormat);
             this.pnlOption.Controls.Add(this.grpDecodeFormat);
@@ -175,6 +177,26 @@
             this.pnlOption.Name = "pnlOption";
             this.pnlOption.Size = new System.Drawing.Size(258, 141);
             this.pnlOption.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.label1.Location = new System.Drawing.Point(4, 49);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(58, 16);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "BarCode:";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // cbDecodeUTF8
+            // 
+            this.cbDecodeUTF8.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbDecodeUTF8.Location = new System.Drawing.Point(149, 28);
+            this.cbDecodeUTF8.Name = "cbDecodeUTF8";
+            this.cbDecodeUTF8.Size = new System.Drawing.Size(106, 20);
+            this.cbDecodeUTF8.TabIndex = 17;
+            this.cbDecodeUTF8.Text = "Force UTF-8";
+            this.cbDecodeUTF8.UseVisualStyleBackColor = true;
             // 
             // cbBarFormat
             // 
@@ -190,9 +212,9 @@
             "SMS",
             "vCard",
             "vCalendar"});
-            this.cbBarFormat.Location = new System.Drawing.Point(10, 47);
+            this.cbBarFormat.Location = new System.Drawing.Point(71, 47);
             this.cbBarFormat.Name = "cbBarFormat";
-            this.cbBarFormat.Size = new System.Drawing.Size(78, 20);
+            this.cbBarFormat.Size = new System.Drawing.Size(61, 20);
             this.cbBarFormat.TabIndex = 16;
             // 
             // grpDecodeFormat
@@ -200,6 +222,7 @@
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormat1D);
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatDM);
             this.grpDecodeFormat.Controls.Add(this.chkDecodeFormatQR);
+            this.grpDecodeFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.grpDecodeFormat.Location = new System.Drawing.Point(144, 52);
             this.grpDecodeFormat.Name = "grpDecodeFormat";
             this.grpDecodeFormat.Size = new System.Drawing.Size(112, 87);
@@ -211,7 +234,6 @@
             // 
             this.chkDecodeFormat1D.AutoEllipsis = true;
             this.chkDecodeFormat1D.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkDecodeFormat1D.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkDecodeFormat1D.Location = new System.Drawing.Point(6, 58);
             this.chkDecodeFormat1D.Name = "chkDecodeFormat1D";
             this.chkDecodeFormat1D.Size = new System.Drawing.Size(99, 17);
@@ -224,7 +246,6 @@
             // 
             this.chkDecodeFormatDM.AutoEllipsis = true;
             this.chkDecodeFormatDM.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkDecodeFormatDM.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkDecodeFormatDM.Location = new System.Drawing.Point(6, 37);
             this.chkDecodeFormatDM.Name = "chkDecodeFormatDM";
             this.chkDecodeFormatDM.Size = new System.Drawing.Size(99, 17);
@@ -239,7 +260,6 @@
             this.chkDecodeFormatQR.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkDecodeFormatQR.Checked = true;
             this.chkDecodeFormatQR.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDecodeFormatQR.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkDecodeFormatQR.Location = new System.Drawing.Point(6, 16);
             this.chkDecodeFormatQR.Name = "chkDecodeFormatQR";
             this.chkDecodeFormatQR.Size = new System.Drawing.Size(99, 17);
@@ -252,10 +272,9 @@
             // 
             this.chkOverLogo.AutoEllipsis = true;
             this.chkOverLogo.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkOverLogo.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.chkOverLogo.Location = new System.Drawing.Point(10, 104);
+            this.chkOverLogo.Location = new System.Drawing.Point(2, 104);
             this.chkOverLogo.Name = "chkOverLogo";
-            this.chkOverLogo.Size = new System.Drawing.Size(120, 24);
+            this.chkOverLogo.Size = new System.Drawing.Size(130, 24);
             this.chkOverLogo.TabIndex = 13;
             this.chkOverLogo.Text = "Overlay Logo";
             this.chkOverLogo.UseVisualStyleBackColor = true;
@@ -263,24 +282,24 @@
             // 
             // lblErrorLevel
             // 
-            this.lblErrorLevel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.lblErrorLevel.Location = new System.Drawing.Point(12, 78);
+            this.lblErrorLevel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblErrorLevel.Location = new System.Drawing.Point(4, 78);
             this.lblErrorLevel.Name = "lblErrorLevel";
-            this.lblErrorLevel.Size = new System.Drawing.Size(80, 16);
+            this.lblErrorLevel.Size = new System.Drawing.Size(88, 16);
             this.lblErrorLevel.TabIndex = 11;
             this.lblErrorLevel.Text = "ErrorLevel:";
+            this.lblErrorLevel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cbErrorLevel
             // 
             this.cbErrorLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbErrorLevel.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cbErrorLevel.FormattingEnabled = true;
             this.cbErrorLevel.Items.AddRange(new object[] {
             "L",
             "M",
             "Q",
             "H"});
-            this.cbErrorLevel.Location = new System.Drawing.Point(94, 76);
+            this.cbErrorLevel.Location = new System.Drawing.Point(96, 76);
             this.cbErrorLevel.Name = "cbErrorLevel";
             this.cbErrorLevel.Size = new System.Drawing.Size(36, 20);
             this.cbErrorLevel.TabIndex = 10;
@@ -288,17 +307,16 @@
             // 
             // lblMaskColor
             // 
-            this.lblMaskColor.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.lblMaskColor.Location = new System.Drawing.Point(12, 7);
+            this.lblMaskColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lblMaskColor.Location = new System.Drawing.Point(4, 8);
             this.lblMaskColor.Name = "lblMaskColor";
-            this.lblMaskColor.Size = new System.Drawing.Size(80, 36);
+            this.lblMaskColor.Size = new System.Drawing.Size(88, 36);
             this.lblMaskColor.TabIndex = 9;
             this.lblMaskColor.Text = "Mask Color:";
-            this.lblMaskColor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // picMaskColor
             // 
-            this.picMaskColor.Location = new System.Drawing.Point(94, 7);
+            this.picMaskColor.Location = new System.Drawing.Point(95, 7);
             this.picMaskColor.Name = "picMaskColor";
             this.picMaskColor.Size = new System.Drawing.Size(36, 36);
             this.picMaskColor.TabIndex = 8;
@@ -311,11 +329,10 @@
             this.chkMultiDecode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkMultiDecode.Checked = true;
             this.chkMultiDecode.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkMultiDecode.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkMultiDecode.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.chkMultiDecode.Location = new System.Drawing.Point(140, 7);
+            this.chkMultiDecode.Location = new System.Drawing.Point(135, 6);
             this.chkMultiDecode.Name = "chkMultiDecode";
-            this.chkMultiDecode.Size = new System.Drawing.Size(111, 24);
+            this.chkMultiDecode.Size = new System.Drawing.Size(120, 20);
             this.chkMultiDecode.TabIndex = 7;
             this.chkMultiDecode.Text = "Multiple Decode ";
             this.chkMultiDecode.UseVisualStyleBackColor = true;
@@ -413,18 +430,9 @@
             this.btnBarCode.UseVisualStyleBackColor = true;
             this.btnBarCode.Click += new System.EventHandler(this.btnBarCode_Click);
             // 
-            // cbDecodeUTF8
-            // 
-            this.cbDecodeUTF8.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbDecodeUTF8.Location = new System.Drawing.Point(155, 36);
-            this.cbDecodeUTF8.Name = "cbDecodeUTF8";
-            this.cbDecodeUTF8.Size = new System.Drawing.Size(96, 16);
-            this.cbDecodeUTF8.TabIndex = 17;
-            this.cbDecodeUTF8.Text = "Force UTF-8";
-            this.cbDecodeUTF8.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 501);
@@ -443,6 +451,8 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "QRCode Utils";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+            this.DragOver += new System.Windows.Forms.DragEventHandler(this.MainForm_DragOver);
             this.pnlQR.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).EndInit();
             this.pnlOption.ResumeLayout(false);
@@ -486,6 +496,7 @@
         private System.Windows.Forms.ToolStripSplitButton btnQRInput;
         private System.Windows.Forms.ToolStripMenuItem logoItems;
         private System.Windows.Forms.CheckBox cbDecodeUTF8;
+        private System.Windows.Forms.Label label1;
     }
 }
 
