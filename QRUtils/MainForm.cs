@@ -589,10 +589,16 @@ namespace QRUtils
 
             var bw = new BarcodeWriter();
 
+            var el = errorLevel;
+            if ( chkOverLogo.Checked && el == ErrorCorrectionLevel.L )
+            {
+                el = ErrorCorrectionLevel.M;
+            }
+
             bw.Options.Width = width;
             bw.Options.Height = height;
             bw.Options.PureBarcode = false;
-            bw.Options.Hints.Add(EncodeHintType.ERROR_CORRECTION, errorLevel);
+            bw.Options.Hints.Add(EncodeHintType.ERROR_CORRECTION, el);
             bw.Options.Hints.Add(EncodeHintType.MARGIN, margin);
             bw.Options.Hints.Add(EncodeHintType.DISABLE_ECI, true);
             bw.Options.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
