@@ -278,6 +278,12 @@ namespace QRUtils
             }
         }
 
+        private bool isImage( string filename )
+        {
+            List<string> exts = new List<string>(){ ".png", ".bmp", ".jpg", ".ico", ".gif" };
+            return ( exts.Contains( Path.GetExtension( filename ).ToLower() ));
+        }
+
         private bool isAllowedDrag( IDataObject Data )
         {
             string[] allowed_fmts = {
@@ -1059,9 +1065,8 @@ namespace QRUtils
                     string[] dragFiles = (string [])e.Data.GetData(DataFormats.FileDrop, true);
                     if ( dragFiles.Length > 0 )
                     {
-                        List<string> exts = new List<string>(){ ".png", ".bmp", ".jpg", ".ico", ".gif" };
                         string dragFileName = dragFiles[0].ToString();
-                        if ( exts.Contains( Path.GetExtension( dragFileName ).ToLower() ) )
+                        if ( isImage( dragFileName ) )
                             e.Effect = DragDropEffects.Copy;
                         else
                             e.Effect = DragDropEffects.None;
@@ -1089,9 +1094,8 @@ namespace QRUtils
                     string[] dragFiles = (string [])e.Data.GetData(DataFormats.FileDrop, true);
                     if ( dragFiles.Length > 0 )
                     {
-                        List<string> exts = new List<string>(){ ".png", ".bmp", ".jpg", ".ico", ".gif" };
                         string dragFileName = dragFiles[0].ToString();
-                        if ( exts.Contains( Path.GetExtension( dragFileName ).ToLower() ))
+                        if ( isImage( dragFileName ) )
                         {
                             Bitmap qrImage = new Bitmap(dragFileName);
                             string qrText = QRDecode( qrImage, false );
