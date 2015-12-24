@@ -589,21 +589,19 @@ namespace QRUtils
 
             var bw = new BarcodeWriter();
 
-            var el = errorLevel;
-            if ( chkOverLogo.Checked && el == ErrorCorrectionLevel.L )
+            var ecl = errorLevel;
+            if ( chkOverLogo.Checked && ecl == ErrorCorrectionLevel.L )
             {
-                el = ErrorCorrectionLevel.M;
+                ecl = ErrorCorrectionLevel.M;
             }
 
             bw.Options.Width = width;
             bw.Options.Height = height;
             bw.Options.PureBarcode = false;
-            bw.Options.Hints.Add(EncodeHintType.ERROR_CORRECTION, el);
+            bw.Options.Hints.Add(EncodeHintType.ERROR_CORRECTION, ecl);
             bw.Options.Hints.Add(EncodeHintType.MARGIN, margin);
             bw.Options.Hints.Add(EncodeHintType.DISABLE_ECI, true);
             bw.Options.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
-            //bw.Options.Hints.Add(EncodeHintType.PDF417_COMPACT, true);
-            //bw.Options.Hints.Add(EncodeHintType.PDF417_COMPACTION, ZXing.PDF417.Internal.Compaction.AUTO);
 
             bw.Renderer = new BitmapRenderer();
             bw.Format = BarcodeFormat.QR_CODE;
