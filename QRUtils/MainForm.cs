@@ -913,7 +913,12 @@ namespace QRUtils
 
         private void edText_KeyPress( object sender, KeyPressEventArgs e )
         {
-            //if( e.KeyChar == Keys.V && this.modi
+            bool ctrl = ((Control.ModifierKeys & Keys.Control) == Keys.Control);
+            if( e.KeyChar == 'V' && ctrl)
+            {
+
+            }
+
         }
 
         private void edText_KeyUp( object sender, KeyEventArgs e )
