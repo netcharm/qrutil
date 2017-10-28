@@ -1,0 +1,35 @@
+3100 7493 38881
+
+9787538717051
+
+710121725660
+
+400638133393
+
+7-309-04547
+978-986-181-728
+
+978-81-7525-766-5
+
+TEL:12313123124
+
+SMSTO:1231231:2131dadfasdas
+
+MAILTO:abc@abc.com?SUBJECT=test&BODY=Enter message here...
+WIFI:S:SSID-31312-IDSS;T:WPA;P:PASS-SSAP;H:true;;
+
+NetCharm_Guest_860C
+714220440401
+WIFI:S:NetCharm_Guest_860C;T:WPA;P:714220440401;;
+
+
+androidamap://navi?lat=36.547901&lon=104.258354
+
+geo:36.547901,104.258354?&q=
+
+
+http://weixin.qq.com/r/oa5geFXEtgjJrREb9-uz
+
+http://weixin.qq.com/r/hUyQiEzEcBEPrQjr9xmX
+
+14.0.23107

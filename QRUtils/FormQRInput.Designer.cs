@@ -36,9 +36,9 @@
             this.edMailTo = new System.Windows.Forms.TextBox();
             this.tabPageGeo = new System.Windows.Forms.TabPage();
             this.grpGeoMap = new System.Windows.Forms.GroupBox();
-            this.flowLayout = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutGeoMap = new System.Windows.Forms.FlowLayoutPanel();
             this.rbGeoMapAutonavi = new System.Windows.Forms.RadioButton();
-            this.rbGeoMapABC = new System.Windows.Forms.RadioButton();
+            this.rbGeoMapBar = new System.Windows.Forms.RadioButton();
             this.rbGeoMapBaidu = new System.Windows.Forms.RadioButton();
             this.rbGeoMapBing = new System.Windows.Forms.RadioButton();
             this.rbGeoMapGoogle = new System.Windows.Forms.RadioButton();
@@ -74,12 +74,16 @@
             this.edURL = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.tabCamera = new System.Windows.Forms.TabPage();
+            this.picCamera = new System.Windows.Forms.PictureBox();
+            this.btnCameraStart = new System.Windows.Forms.Button();
+            this.btnCameraStop = new System.Windows.Forms.Button();
             this.tabsQR.SuspendLayout();
             this.tabPageEmail.SuspendLayout();
             this.grpMailTo.SuspendLayout();
             this.tabPageGeo.SuspendLayout();
             this.grpGeoMap.SuspendLayout();
-            this.flowLayout.SuspendLayout();
+            this.flowLayoutGeoMap.SuspendLayout();
             this.grpGeoLon.SuspendLayout();
             this.grpGeoQuery.SuspendLayout();
             this.grpGeoLat.SuspendLayout();
@@ -94,6 +98,8 @@
             this.grpWifiSSID.SuspendLayout();
             this.tabPageURL.SuspendLayout();
             this.grpURL.SuspendLayout();
+            this.tabCamera.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picCamera)).BeginInit();
             this.SuspendLayout();
             // 
             // tabsQR
@@ -109,6 +115,7 @@
             this.tabsQR.Controls.Add(this.tabPageSMS);
             this.tabsQR.Controls.Add(this.tabPageWifi);
             this.tabsQR.Controls.Add(this.tabPageURL);
+            this.tabsQR.Controls.Add(this.tabCamera);
             this.tabsQR.Location = new System.Drawing.Point(12, 12);
             this.tabsQR.Name = "tabsQR";
             this.tabsQR.SelectedIndex = 0;
@@ -165,6 +172,7 @@
             this.edMailTo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.edMailTo.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.edMailTo.Location = new System.Drawing.Point(12, 20);
             this.edMailTo.MaxLength = 32;
             this.edMailTo.Name = "edMailTo";
@@ -190,64 +198,64 @@
             this.grpGeoMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpGeoMap.Controls.Add(this.flowLayout);
+            this.grpGeoMap.Controls.Add(this.flowLayoutGeoMap);
             this.grpGeoMap.Controls.Add(this.chkGeoMap);
             this.grpGeoMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.grpGeoMap.Location = new System.Drawing.Point(16, 231);
             this.grpGeoMap.Name = "grpGeoMap";
             this.grpGeoMap.Size = new System.Drawing.Size(550, 125);
-            this.grpGeoMap.TabIndex = 15;
+            this.grpGeoMap.TabIndex = 3;
             this.grpGeoMap.TabStop = false;
             this.grpGeoMap.Text = "Using Map";
             // 
-            // flowLayout
+            // flowLayoutGeoMap
             // 
-            this.flowLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.flowLayoutGeoMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayout.AutoScroll = true;
-            this.flowLayout.Controls.Add(this.rbGeoMapAutonavi);
-            this.flowLayout.Controls.Add(this.rbGeoMapABC);
-            this.flowLayout.Controls.Add(this.rbGeoMapBaidu);
-            this.flowLayout.Controls.Add(this.rbGeoMapBing);
-            this.flowLayout.Controls.Add(this.rbGeoMapGoogle);
-            this.flowLayout.Controls.Add(this.rbGeoMapOCM);
-            this.flowLayout.Controls.Add(this.rbGeoMapOSM);
-            this.flowLayout.Controls.Add(this.rbGeoMapQQ);
-            this.flowLayout.Controls.Add(this.rbGeoMapSogou);
-            this.flowLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayout.Location = new System.Drawing.Point(87, 14);
-            this.flowLayout.Name = "flowLayout";
-            this.flowLayout.Size = new System.Drawing.Size(460, 105);
-            this.flowLayout.TabIndex = 10;
+            this.flowLayoutGeoMap.AutoScroll = true;
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapAutonavi);
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapBar);
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapBaidu);
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapBing);
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapGoogle);
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapOCM);
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapOSM);
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapQQ);
+            this.flowLayoutGeoMap.Controls.Add(this.rbGeoMapSogou);
+            this.flowLayoutGeoMap.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutGeoMap.Location = new System.Drawing.Point(87, 14);
+            this.flowLayoutGeoMap.Name = "flowLayoutGeoMap";
+            this.flowLayoutGeoMap.Size = new System.Drawing.Size(460, 105);
+            this.flowLayoutGeoMap.TabIndex = 10;
             // 
             // rbGeoMapAutonavi
             // 
+            this.rbGeoMapAutonavi.Checked = true;
             this.rbGeoMapAutonavi.Location = new System.Drawing.Point(3, 3);
             this.rbGeoMapAutonavi.Name = "rbGeoMapAutonavi";
             this.rbGeoMapAutonavi.Size = new System.Drawing.Size(89, 24);
-            this.rbGeoMapAutonavi.TabIndex = 16;
+            this.rbGeoMapAutonavi.TabIndex = 1;
             this.rbGeoMapAutonavi.TabStop = true;
             this.rbGeoMapAutonavi.Text = "AutoNavi";
             this.rbGeoMapAutonavi.UseVisualStyleBackColor = true;
             // 
-            // rbGeoMapABC
+            // rbGeoMapBar
             // 
-            this.rbGeoMapABC.Location = new System.Drawing.Point(3, 33);
-            this.rbGeoMapABC.Name = "rbGeoMapABC";
-            this.rbGeoMapABC.Size = new System.Drawing.Size(89, 24);
-            this.rbGeoMapABC.TabIndex = 14;
-            this.rbGeoMapABC.TabStop = true;
-            this.rbGeoMapABC.Text = "MapABC";
-            this.rbGeoMapABC.UseVisualStyleBackColor = true;
+            this.rbGeoMapBar.Enabled = false;
+            this.rbGeoMapBar.Location = new System.Drawing.Point(3, 33);
+            this.rbGeoMapBar.Name = "rbGeoMapBar";
+            this.rbGeoMapBar.Size = new System.Drawing.Size(89, 24);
+            this.rbGeoMapBar.TabIndex = 2;
+            this.rbGeoMapBar.Text = "MapBar";
+            this.rbGeoMapBar.UseVisualStyleBackColor = true;
             // 
             // rbGeoMapBaidu
             // 
             this.rbGeoMapBaidu.Location = new System.Drawing.Point(3, 63);
             this.rbGeoMapBaidu.Name = "rbGeoMapBaidu";
             this.rbGeoMapBaidu.Size = new System.Drawing.Size(89, 24);
-            this.rbGeoMapBaidu.TabIndex = 15;
-            this.rbGeoMapBaidu.TabStop = true;
+            this.rbGeoMapBaidu.TabIndex = 3;
             this.rbGeoMapBaidu.Text = "Baidu";
             this.rbGeoMapBaidu.UseVisualStyleBackColor = true;
             // 
@@ -256,8 +264,7 @@
             this.rbGeoMapBing.Location = new System.Drawing.Point(98, 3);
             this.rbGeoMapBing.Name = "rbGeoMapBing";
             this.rbGeoMapBing.Size = new System.Drawing.Size(98, 24);
-            this.rbGeoMapBing.TabIndex = 11;
-            this.rbGeoMapBing.TabStop = true;
+            this.rbGeoMapBing.TabIndex = 4;
             this.rbGeoMapBing.Text = "Bing";
             this.rbGeoMapBing.UseVisualStyleBackColor = true;
             // 
@@ -266,18 +273,17 @@
             this.rbGeoMapGoogle.Location = new System.Drawing.Point(98, 33);
             this.rbGeoMapGoogle.Name = "rbGeoMapGoogle";
             this.rbGeoMapGoogle.Size = new System.Drawing.Size(98, 24);
-            this.rbGeoMapGoogle.TabIndex = 10;
-            this.rbGeoMapGoogle.TabStop = true;
+            this.rbGeoMapGoogle.TabIndex = 5;
             this.rbGeoMapGoogle.Text = "Google";
             this.rbGeoMapGoogle.UseVisualStyleBackColor = true;
             // 
             // rbGeoMapOCM
             // 
+            this.rbGeoMapOCM.Enabled = false;
             this.rbGeoMapOCM.Location = new System.Drawing.Point(98, 63);
             this.rbGeoMapOCM.Name = "rbGeoMapOCM";
             this.rbGeoMapOCM.Size = new System.Drawing.Size(89, 24);
-            this.rbGeoMapOCM.TabIndex = 13;
-            this.rbGeoMapOCM.TabStop = true;
+            this.rbGeoMapOCM.TabIndex = 6;
             this.rbGeoMapOCM.Text = "Open Cycle";
             this.rbGeoMapOCM.UseVisualStyleBackColor = true;
             // 
@@ -286,8 +292,7 @@
             this.rbGeoMapOSM.Location = new System.Drawing.Point(202, 3);
             this.rbGeoMapOSM.Name = "rbGeoMapOSM";
             this.rbGeoMapOSM.Size = new System.Drawing.Size(98, 24);
-            this.rbGeoMapOSM.TabIndex = 12;
-            this.rbGeoMapOSM.TabStop = true;
+            this.rbGeoMapOSM.TabIndex = 7;
             this.rbGeoMapOSM.Text = "Open Street";
             this.rbGeoMapOSM.UseVisualStyleBackColor = true;
             // 
@@ -296,23 +301,24 @@
             this.rbGeoMapQQ.Location = new System.Drawing.Point(202, 33);
             this.rbGeoMapQQ.Name = "rbGeoMapQQ";
             this.rbGeoMapQQ.Size = new System.Drawing.Size(89, 24);
-            this.rbGeoMapQQ.TabIndex = 17;
-            this.rbGeoMapQQ.TabStop = true;
+            this.rbGeoMapQQ.TabIndex = 8;
             this.rbGeoMapQQ.Text = "QQ";
             this.rbGeoMapQQ.UseVisualStyleBackColor = true;
             // 
             // rbGeoMapSogou
             // 
+            this.rbGeoMapSogou.Enabled = false;
             this.rbGeoMapSogou.Location = new System.Drawing.Point(202, 63);
             this.rbGeoMapSogou.Name = "rbGeoMapSogou";
             this.rbGeoMapSogou.Size = new System.Drawing.Size(89, 24);
-            this.rbGeoMapSogou.TabIndex = 18;
-            this.rbGeoMapSogou.TabStop = true;
+            this.rbGeoMapSogou.TabIndex = 9;
             this.rbGeoMapSogou.Text = "Sogou";
             this.rbGeoMapSogou.UseVisualStyleBackColor = true;
             // 
             // chkGeoMap
             // 
+            this.chkGeoMap.Checked = true;
+            this.chkGeoMap.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkGeoMap.Location = new System.Drawing.Point(15, 21);
             this.chkGeoMap.Name = "chkGeoMap";
             this.chkGeoMap.Size = new System.Drawing.Size(66, 24);
@@ -329,7 +335,7 @@
             this.grpGeoLon.Location = new System.Drawing.Point(16, 87);
             this.grpGeoLon.Name = "grpGeoLon";
             this.grpGeoLon.Size = new System.Drawing.Size(550, 55);
-            this.grpGeoLon.TabIndex = 14;
+            this.grpGeoLon.TabIndex = 1;
             this.grpGeoLon.TabStop = false;
             this.grpGeoLon.Text = "Longitude";
             // 
@@ -342,7 +348,7 @@
             this.edGeoLon.MaxLength = 32;
             this.edGeoLon.Name = "edGeoLon";
             this.edGeoLon.Size = new System.Drawing.Size(525, 21);
-            this.edGeoLon.TabIndex = 2;
+            this.edGeoLon.TabIndex = 0;
             this.edGeoLon.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // grpGeoQuery
@@ -354,7 +360,7 @@
             this.grpGeoQuery.Location = new System.Drawing.Point(16, 158);
             this.grpGeoQuery.Name = "grpGeoQuery";
             this.grpGeoQuery.Size = new System.Drawing.Size(550, 55);
-            this.grpGeoQuery.TabIndex = 13;
+            this.grpGeoQuery.TabIndex = 2;
             this.grpGeoQuery.TabStop = false;
             this.grpGeoQuery.Text = "Query";
             // 
@@ -363,11 +369,12 @@
             this.edGeoQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.edGeoQuery.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.edGeoQuery.Location = new System.Drawing.Point(12, 20);
             this.edGeoQuery.MaxLength = 32;
             this.edGeoQuery.Name = "edGeoQuery";
             this.edGeoQuery.Size = new System.Drawing.Size(525, 21);
-            this.edGeoQuery.TabIndex = 2;
+            this.edGeoQuery.TabIndex = 0;
             this.edGeoQuery.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // grpGeoLat
@@ -379,7 +386,7 @@
             this.grpGeoLat.Location = new System.Drawing.Point(16, 16);
             this.grpGeoLat.Name = "grpGeoLat";
             this.grpGeoLat.Size = new System.Drawing.Size(550, 55);
-            this.grpGeoLat.TabIndex = 12;
+            this.grpGeoLat.TabIndex = 0;
             this.grpGeoLat.TabStop = false;
             this.grpGeoLat.Text = "Latitude";
             // 
@@ -392,7 +399,7 @@
             this.edGeoLat.MaxLength = 32;
             this.edGeoLat.Name = "edGeoLat";
             this.edGeoLat.Size = new System.Drawing.Size(525, 21);
-            this.edGeoLat.TabIndex = 2;
+            this.edGeoLat.TabIndex = 0;
             this.edGeoLat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tabPagePhone
@@ -461,6 +468,7 @@
             this.edSmsText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.edSmsText.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.edSmsText.Location = new System.Drawing.Point(12, 20);
             this.edSmsText.MaxLength = 70;
             this.edSmsText.Multiline = true;
@@ -486,6 +494,7 @@
             this.edSmsTo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.edSmsTo.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.edSmsTo.Location = new System.Drawing.Point(12, 20);
             this.edSmsTo.MaxLength = 32;
             this.edSmsTo.Name = "edSmsTo";
@@ -563,6 +572,7 @@
             this.edWifiPass.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.edWifiPass.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.edWifiPass.Location = new System.Drawing.Point(13, 20);
             this.edWifiPass.MaxLength = 63;
             this.edWifiPass.Name = "edWifiPass";
@@ -588,6 +598,7 @@
             this.edWifiSSID.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.edWifiSSID.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.edWifiSSID.Location = new System.Drawing.Point(13, 20);
             this.edWifiSSID.MaxLength = 63;
             this.edWifiSSID.Name = "edWifiSSID";
@@ -624,6 +635,7 @@
             this.edURL.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.edURL.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.edURL.Location = new System.Drawing.Point(12, 20);
             this.edURL.MaxLength = 512;
             this.edURL.Name = "edURL";
@@ -655,6 +667,51 @@
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             // 
+            // tabCamera
+            // 
+            this.tabCamera.Controls.Add(this.btnCameraStop);
+            this.tabCamera.Controls.Add(this.btnCameraStart);
+            this.tabCamera.Controls.Add(this.picCamera);
+            this.tabCamera.Location = new System.Drawing.Point(4, 22);
+            this.tabCamera.Name = "tabCamera";
+            this.tabCamera.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCamera.Size = new System.Drawing.Size(581, 362);
+            this.tabCamera.TabIndex = 8;
+            this.tabCamera.Text = "Camera";
+            this.tabCamera.UseVisualStyleBackColor = true;
+            // 
+            // picCamera
+            // 
+            this.picCamera.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.picCamera.Location = new System.Drawing.Point(7, 7);
+            this.picCamera.Name = "picCamera";
+            this.picCamera.Size = new System.Drawing.Size(477, 349);
+            this.picCamera.TabIndex = 0;
+            this.picCamera.TabStop = false;
+            // 
+            // btnCameraStart
+            // 
+            this.btnCameraStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCameraStart.Location = new System.Drawing.Point(500, 7);
+            this.btnCameraStart.Name = "btnCameraStart";
+            this.btnCameraStart.Size = new System.Drawing.Size(75, 68);
+            this.btnCameraStart.TabIndex = 1;
+            this.btnCameraStart.Text = "Start";
+            this.btnCameraStart.UseVisualStyleBackColor = true;
+            this.btnCameraStart.Click += new System.EventHandler(this.btnCameraStart_Click);
+            // 
+            // btnCameraStop
+            // 
+            this.btnCameraStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCameraStop.Location = new System.Drawing.Point(499, 288);
+            this.btnCameraStop.Name = "btnCameraStop";
+            this.btnCameraStop.Size = new System.Drawing.Size(75, 68);
+            this.btnCameraStop.TabIndex = 2;
+            this.btnCameraStop.Text = "Stop";
+            this.btnCameraStop.UseVisualStyleBackColor = true;
+            this.btnCameraStop.Click += new System.EventHandler(this.btnCameraStop_Click);
+            // 
             // FormQRInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -669,13 +726,14 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "QR Information Input";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormQRInput_FormClosing);
             this.tabsQR.ResumeLayout(false);
             this.tabPageEmail.ResumeLayout(false);
             this.grpMailTo.ResumeLayout(false);
             this.grpMailTo.PerformLayout();
             this.tabPageGeo.ResumeLayout(false);
             this.grpGeoMap.ResumeLayout(false);
-            this.flowLayout.ResumeLayout(false);
+            this.flowLayoutGeoMap.ResumeLayout(false);
             this.grpGeoLon.ResumeLayout(false);
             this.grpGeoLon.PerformLayout();
             this.grpGeoQuery.ResumeLayout(false);
@@ -700,6 +758,8 @@
             this.tabPageURL.ResumeLayout(false);
             this.grpURL.ResumeLayout(false);
             this.grpURL.PerformLayout();
+            this.tabCamera.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picCamera)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -742,9 +802,9 @@
         private System.Windows.Forms.TextBox edMailTo;
         private System.Windows.Forms.GroupBox grpGeoMap;
         private System.Windows.Forms.CheckBox chkGeoMap;
-        private System.Windows.Forms.FlowLayoutPanel flowLayout;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutGeoMap;
         private System.Windows.Forms.RadioButton rbGeoMapAutonavi;
-        private System.Windows.Forms.RadioButton rbGeoMapABC;
+        private System.Windows.Forms.RadioButton rbGeoMapBar;
         private System.Windows.Forms.RadioButton rbGeoMapBing;
         private System.Windows.Forms.RadioButton rbGeoMapGoogle;
         private System.Windows.Forms.RadioButton rbGeoMapQQ;
@@ -752,5 +812,9 @@
         private System.Windows.Forms.RadioButton rbGeoMapBaidu;
         private System.Windows.Forms.RadioButton rbGeoMapOCM;
         private System.Windows.Forms.RadioButton rbGeoMapOSM;
+        private System.Windows.Forms.TabPage tabCamera;
+        private System.Windows.Forms.Button btnCameraStop;
+        private System.Windows.Forms.Button btnCameraStart;
+        private System.Windows.Forms.PictureBox picCamera;
     }
 }

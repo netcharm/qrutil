@@ -5,11 +5,17 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Media;
+using System.Net;
 using System.Threading;
 using System.Windows.Forms;
-using System.Linq;
+using Common.Logging;
 using NGettext.WinForm;
+using WebDAVSharp.Server;
+using WebDAVSharp.Server.Adapters;
+using WebDAVSharp.Server.Stores;
+using WebDAVSharp.Server.Stores.DiskStore;
 using ZXing;
 using ZXing.Common;
 using ZXing.QrCode.Internal;
@@ -22,7 +28,7 @@ namespace QRUtils
         URL=3, TEL=4, MAIL=5, SMS=6,
         VCARD=7, VCAL=8
     };
-    
+
     public partial class MainForm : Form
     {
         private static string AppPath = AppDomain.CurrentDomain.BaseDirectory;
@@ -61,48 +67,9 @@ namespace QRUtils
 
         private KeyboardHook hook = new KeyboardHook();
 
+        private QRSimpleHTTPServer webserver;
 
-        public MainForm()
-        {
-            InitializeComponent();
-            Application.EnableVisualStyles();
-            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
-
-            I18N i10n = new I18N( null, this );
-
-            status.Padding = new Padding( 
-                status.Padding.Left,
-                status.Padding.Top, 
-                status.Padding.Left, 
-                status.Padding.Bottom 
-                );
-
-            btnQRInput.Image = Icon.ToBitmap();
-
-            edText.MaxLength = MAX_TEXT;
-
-            colorDlg.Color = Color.Cyan;
-            picMaskColor.BackColor = Color.Red;
-
-            if( cbBarFormat.Items.Count > 0)
-                cbBarFormat.SelectedIndex = 0;
-
-            loadSettings();
-
-            // register the event that is fired after the key press.
-            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hookKeyPressed);
-            try
-            {
-                hook.RegisterHotKey(QRUtils.ModifierKeys.Win, Keys.Q);
-                statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), "WIN + Q" );
-            }
-            catch
-            {
-                MessageBox.Show( this, I18N._( "Failed to bind hotkey Win+Q!" ), I18N._( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error );
-                //status.Items[0]
-                statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), I18N._( "None" ) );
-            }
-        }
+        private WebDavServer wifiServer;
 
         private void loadSettings()
         {
@@ -225,26 +192,26 @@ namespace QRUtils
                 update = true;
             }
 
-            if(update) config.Save();
+            if ( update ) config.Save();
         }
 
-        private void hookKeyPressed(object sender, KeyPressedEventArgs e)
+        private void hookKeyPressed( object sender, KeyPressedEventArgs e )
         {
             // show the keys pressed in a label.
             //edText.Text = e.Modifier.ToString() + " + " + e.Key.ToString();
             btnQRDecode.PerformClick();
         }
 
-        private void listIcons(string folder)
+        private void listIcons( string folder )
         {
             if ( Directory.Exists( folder ) )
             {
                 List<string> exts = new List<string>(){ ".png", ".bmp", ".jpg", ".ico", ".gif" };
                 string[] logoFiles = Directory.GetFiles( $"{AppPath}icons" );
-                if ( logoFiles.Length == logoItems.DropDownItems.Count ) return;
+                if ( logoFiles.Length == miLogoItems.DropDownItems.Count ) return;
 
                 overlayIcons.Clear();
-                logoItems.DropDownItems.Clear();
+                miLogoItems.DropDownItems.Clear();
                 //foreach( ToolStripItem item in iconItems )
                 //{
                 //    iconItems.Remove( item );
@@ -269,7 +236,7 @@ namespace QRUtils
                         using ( var fs = new FileStream( logoFile, FileMode.Open ) )
                         {
                             var img = new Bitmap(fs, true);
-                            ToolStripItem item = logoItems.DropDownItems.Add( itemText, (Bitmap)img.Clone() );
+                            ToolStripItem item = miLogoItems.DropDownItems.Add( itemText, (Bitmap)img.Clone() );
                             iconItems.Add( item );
                             img.Dispose();
                         }
@@ -281,7 +248,7 @@ namespace QRUtils
         private bool isImage( string filename )
         {
             List<string> exts = new List<string>(){ ".png", ".bmp", ".jpg", ".ico", ".gif" };
-            return ( exts.Contains( Path.GetExtension( filename ).ToLower() ));
+            return ( exts.Contains( Path.GetExtension( filename ).ToLower() ) );
         }
 
         private bool isAllowedDrag( IDataObject Data )
@@ -305,20 +272,20 @@ namespace QRUtils
         {
             Bitmap fullImage = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
                                           Screen.PrimaryScreen.Bounds.Height);
-            using (Graphics g = Graphics.FromImage(fullImage))
+            using ( Graphics g = Graphics.FromImage( fullImage ) )
             {
-                g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
+                g.CopyFromScreen( Screen.PrimaryScreen.Bounds.X,
                                     Screen.PrimaryScreen.Bounds.Y,
                                     0, 0,
                                     fullImage.Size,
-                                    CopyPixelOperation.SourceCopy);
+                                    CopyPixelOperation.SourceCopy );
             }
-            return (fullImage);
+            return ( fullImage );
         }
 
-        private float calcBorderWidth(Bitmap QRImage, Point mark, Size size)
+        private float calcBorderWidth( Bitmap QRImage, Point mark, Size size )
         {
-            if (mark.X <= 0 || mark.Y <= 0) return 0;
+            if ( mark.X <= 0 || mark.Y <= 0 ) return 0;
 
             float pixelWidth = 1.0f;
 
@@ -327,17 +294,17 @@ namespace QRUtils
             int W = Math.Min(QRImage.Width - X, size.Width + 200);
             int H = Math.Min(QRImage.Height - Y, size.Height + 200);
             Bitmap bwQR = QRImage.Clone(new Rectangle(X, Y, W, H), PixelFormat.Format1bppIndexed);
-            #if DEBUG 
-            bwQR.Save("test-bw.png");
-            #endif
+#if DEBUG
+            bwQR.Save( "test-bw.png" );
+#endif
 
             int origX = 100;
             int origY = 100;
-            if (mark.X < 100) origX = mark.X;
-            if (mark.Y < 100) origY = mark.Y;
+            if ( mark.X < 100 ) origX = mark.X;
+            if ( mark.Y < 100 ) origY = mark.Y;
 
             Color colorMark = bwQR.GetPixel(origX, origY);
-            for (var i = 2; i < 100; i++ )
+            for ( var i = 2; i < 100; i++ )
             {
                 Color color = bwQR.GetPixel(origX - i, origY);
                 //if(color.ToArgb() == Color.White.ToArgb())
@@ -350,7 +317,7 @@ namespace QRUtils
             return ( pixelWidth );
         }
 
-        private void ShowQRCodeMask(Result result, Bitmap QRImage)
+        private void ShowQRCodeMask( Result result, Bitmap QRImage )
         {
             QRCodeSplashForm splash = new QRCodeSplashForm();
             splash.Panel.BackColor = picMaskColor.BackColor;
@@ -358,27 +325,27 @@ namespace QRUtils
             float minX = int.MaxValue, minY = int.MaxValue, maxX = 0, maxY = 0;
             object orientation = 0;
             float Angle = 0;
-            if (result.ResultMetadata.ContainsKey(ResultMetadataType.ORIENTATION))
+            if ( result.ResultMetadata.ContainsKey( ResultMetadataType.ORIENTATION ) )
             {
-                result.ResultMetadata.TryGetValue(ResultMetadataType.ORIENTATION, out orientation);
-                Angle = (float)((int)orientation * Math.PI / 180);
+                result.ResultMetadata.TryGetValue( ResultMetadataType.ORIENTATION, out orientation );
+                Angle = (float) ( (int) orientation * Math.PI / 180 );
             }
-            foreach (ResultPoint point in result.ResultPoints)
+            foreach ( ResultPoint point in result.ResultPoints )
             {
                 float x = point.X;
                 float y = point.Y;
-                if (Angle != 0)
+                if ( Angle != 0 )
                 {
                     //x = QRImage.Width - (float)Math.Abs(point.X * Math.Cos(Angle) - point.Y * Math.Sin(Angle));
                     //y = QRImage.Height - (float)Math.Abs(point.Y * Math.Cos(Angle) + point.X * Math.Sin(Angle));
-                    x = QRImage.Width - (float)Math.Abs(point.X * Math.Cos(Angle) + point.Y * Math.Sin(Angle));
-                    y = (float)Math.Abs(-point.Y * Math.Cos(Angle) + point.X * Math.Sin(Angle));
+                    x = QRImage.Width - (float) Math.Abs( point.X * Math.Cos( Angle ) + point.Y * Math.Sin( Angle ) );
+                    y = (float) Math.Abs( -point.Y * Math.Cos( Angle ) + point.X * Math.Sin( Angle ) );
                 }
 
-                minX = Math.Min(minX, x);
-                minY = Math.Min(minY, y);
-                maxX = Math.Max(maxX, x);
-                maxY = Math.Max(maxY, y);
+                minX = Math.Min( minX, x );
+                minY = Math.Min( minY, y );
+                maxX = Math.Max( maxX, x );
+                maxY = Math.Max( maxY, y );
             }
 
             Point mark = new Point((int)minX, (int)minY);
@@ -389,12 +356,12 @@ namespace QRUtils
             maxX += margin;
             minY -= margin;
             maxY += margin;
-            splash.Location = new Point((int)minX, (int)minY);
+            splash.Location = new Point( (int) minX, (int) minY );
             // we need a panel because a window has a minimal size
-            splash.Panel.Size = new Size((int)maxX - (int)minX, (int)maxY - (int)minY);
+            splash.Panel.Size = new Size( (int) maxX - (int) minX, (int) maxY - (int) minY );
             splash.Size = splash.Panel.Size;
             splash.Show();
-            System.Threading.Thread.Sleep(250);
+            System.Threading.Thread.Sleep( 250 );
             splash.Close();
         }
 
@@ -428,7 +395,7 @@ namespace QRUtils
             return text.Substring( 0, 9 ) + cd.ToString();
         }
 
-        private string calcISBN_13(string text)
+        private string calcISBN_13( string text )
         {
             text = text.Replace( "-", "" ).Replace( " ", "" );
 
@@ -446,7 +413,7 @@ namespace QRUtils
             return text.Substring( 0, 12 ) + cd.ToString();
         }
 
-        private Bitmap BarEncode( string text, BarcodeFormat barFormat = BarcodeFormat.CODE_128, bool isbn = false )
+        public Bitmap BarEncode( string text, BarcodeFormat barFormat = BarcodeFormat.CODE_128, bool isbn = false )
         {
             var width = 256;
             var height = 128;
@@ -501,7 +468,7 @@ namespace QRUtils
                 var bmW = rectangle[2];
                 var bmH = rectangle[3];
                 //bw.Options.Width = ( bmW <= 256 ) ? ( bmW + 32 ) : (int)( bmW * ( 1 + 32 / 256 ) );
-                bw.Options.Width = (int)( bmW * 1.25);
+                bw.Options.Width = (int) ( bmW * 1.25 );
 
                 Bitmap barcodeBitmap = bw.Write(barText);
                 return ( barcodeBitmap );
@@ -533,7 +500,7 @@ namespace QRUtils
                 return image;
         }
 
-        private Bitmap drawOverlayLogo(Bitmap image, Bitmap logo)
+        private Bitmap drawOverlayLogo( Bitmap image, Bitmap logo )
         {
             if ( logo == null ) return image;
 
@@ -560,7 +527,7 @@ namespace QRUtils
                 g.DrawImage( logo, lw / 16, lh / 16, lw - lw / 8, lh - lh / 8 );
             }
 #if DEBUG
-            roundedLogo.Save("RoundedLogo.png");
+            roundedLogo.Save( "RoundedLogo.png" );
 #endif
             //int deltaWidth = image.Width - logo.Width;
             //int deltaHeigth = image.Height - logo.Height;
@@ -572,18 +539,18 @@ namespace QRUtils
             {
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 //g.DrawImage( roundedLogo, new Point( x, y ) );
-                g.DrawImage( roundedLogo, x, y, w, h);
+                g.DrawImage( roundedLogo, x, y, w, h );
             }
             return image;
         }
 
-        private Bitmap QREncode(string text)
+        public Bitmap QREncode( string text )
         {
             var width = 512;
             var height = 512;
             var margin = 0;
 
-            if (string.IsNullOrEmpty(text)) return (new Bitmap(width, height));
+            if ( string.IsNullOrEmpty( text ) ) return ( new Bitmap( width, height ) );
 
             string qrText = text;
 
@@ -598,21 +565,21 @@ namespace QRUtils
             bw.Options.Width = width;
             bw.Options.Height = height;
             bw.Options.PureBarcode = false;
-            bw.Options.Hints.Add(EncodeHintType.ERROR_CORRECTION, ecl);
-            bw.Options.Hints.Add(EncodeHintType.MARGIN, margin);
-            bw.Options.Hints.Add(EncodeHintType.DISABLE_ECI, true);
-            bw.Options.Hints.Add(EncodeHintType.CHARACTER_SET, "UTF-8");
+            bw.Options.Hints.Add( EncodeHintType.ERROR_CORRECTION, ecl );
+            bw.Options.Hints.Add( EncodeHintType.MARGIN, margin );
+            bw.Options.Hints.Add( EncodeHintType.DISABLE_ECI, true );
+            bw.Options.Hints.Add( EncodeHintType.CHARACTER_SET, "UTF-8" );
 
             bw.Renderer = new BitmapRenderer();
             bw.Format = BarcodeFormat.QR_CODE;
-            if (qrText.Length > MAX_TEXT)
+            if ( qrText.Length > MAX_TEXT )
             {
-                qrText = qrText.Substring(0, MAX_TEXT);
+                qrText = qrText.Substring( 0, MAX_TEXT );
             }
             try
             {
                 Bitmap qrBitmap = bw.Write(qrText);
-                if(chkOverLogo.Checked)
+                if ( chkOverLogo.Checked )
                 {
                     qrBitmap = drawOverlayLogo( qrBitmap, overlayLogoImage );
                 }
@@ -625,11 +592,11 @@ namespace QRUtils
             }
         }
 
-        private void setDecodeOptions(BarcodeReader br)
+        private void setDecodeOptions( BarcodeReader br )
         {
             br.AutoRotate = true;
             br.TryInverted = true;
-            if(cbDecodeUTF8.Checked)
+            if ( cbDecodeUTF8.Checked )
             {
                 br.Options.CharacterSet = "UTF-8";
             }
@@ -646,416 +613,178 @@ namespace QRUtils
                 //BarcodeFormat.PDF_417,
                 //BarcodeFormat.QR_CODE
             };
-            if (chkDecodeFormat1D.Checked)
+            if ( chkDecodeFormat1D.Checked )
             {
-                br.Options.PossibleFormats.Add(BarcodeFormat.All_1D);
-                br.Options.PossibleFormats.Add(BarcodeFormat.CODABAR);
-                br.Options.PossibleFormats.Add(BarcodeFormat.CODE_128);
-                br.Options.PossibleFormats.Add(BarcodeFormat.CODE_39);
-                br.Options.PossibleFormats.Add(BarcodeFormat.CODE_93);
-                br.Options.PossibleFormats.Add(BarcodeFormat.EAN_13);
-                br.Options.PossibleFormats.Add(BarcodeFormat.EAN_8);
-                br.Options.PossibleFormats.Add(BarcodeFormat.ITF);
-                br.Options.PossibleFormats.Add(BarcodeFormat.MAXICODE);
-                br.Options.PossibleFormats.Add(BarcodeFormat.RSS_14);
-                br.Options.PossibleFormats.Add(BarcodeFormat.RSS_EXPANDED);
-                br.Options.PossibleFormats.Add(BarcodeFormat.UPC_A);
-                br.Options.PossibleFormats.Add(BarcodeFormat.UPC_E);
-                br.Options.PossibleFormats.Add(BarcodeFormat.UPC_EAN_EXTENSION);
+                br.Options.PossibleFormats.Add( BarcodeFormat.All_1D );
+                br.Options.PossibleFormats.Add( BarcodeFormat.CODABAR );
+                br.Options.PossibleFormats.Add( BarcodeFormat.CODE_128 );
+                br.Options.PossibleFormats.Add( BarcodeFormat.CODE_39 );
+                br.Options.PossibleFormats.Add( BarcodeFormat.CODE_93 );
+                br.Options.PossibleFormats.Add( BarcodeFormat.EAN_13 );
+                br.Options.PossibleFormats.Add( BarcodeFormat.EAN_8 );
+                br.Options.PossibleFormats.Add( BarcodeFormat.ITF );
+                br.Options.PossibleFormats.Add( BarcodeFormat.MAXICODE );
+                br.Options.PossibleFormats.Add( BarcodeFormat.RSS_14 );
+                br.Options.PossibleFormats.Add( BarcodeFormat.RSS_EXPANDED );
+                br.Options.PossibleFormats.Add( BarcodeFormat.UPC_A );
+                br.Options.PossibleFormats.Add( BarcodeFormat.UPC_E );
+                br.Options.PossibleFormats.Add( BarcodeFormat.UPC_EAN_EXTENSION );
             }
-            if (chkDecodeFormatDM.Checked) br.Options.PossibleFormats.Add(BarcodeFormat.DATA_MATRIX);
-            if (chkDecodeFormatQR.Checked) br.Options.PossibleFormats.Add(BarcodeFormat.QR_CODE);
+            if ( chkDecodeFormatDM.Checked ) br.Options.PossibleFormats.Add( BarcodeFormat.DATA_MATRIX );
+            if ( chkDecodeFormatQR.Checked ) br.Options.PossibleFormats.Add( BarcodeFormat.QR_CODE );
         }
 
-        private string QRDecode(Bitmap qrImage, bool showMask=true)
+        public string QRDecode( Bitmap qrImage, bool showMask = true )
         {
-            using (qrImage)
+            using ( qrImage )
             {
                 //var br = new BarcodeReader(null,
                 //                           bitmap => new BitmapLuminanceSource(bitmap),
                 //                           luminance => new GlobalHistogramBinarizer(luminance));
                 var br = new BarcodeReader();
-                setDecodeOptions(br);
+                setDecodeOptions( br );
 
                 try
                 {
                     var result = br.Decode(qrImage);
-                    if (result != null)
+                    if ( result != null )
                     {
-                        if(showMask) ShowQRCodeMask(result, qrImage);
+                        if ( showMask ) ShowQRCodeMask( result, qrImage );
                         SystemSounds.Beep.Play();
-                        return (result.Text);
+                        return ( result.Text );
                     }
                     else
                     {
 #if DEBUG
-                        MessageBox.Show(this, "Failed to find Code!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show( this, "Failed to find Code!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
 #endif
                         SystemSounds.Exclamation.Play();
-                        return (string.Empty);
+                        return ( string.Empty );
                     }
                 }
                 catch
                 {
                     SystemSounds.Exclamation.Play();
-                    return (string.Empty);
+                    return ( string.Empty );
                 }
 
             }
         }
 
-        private List<string> QRDecodeMulti(Bitmap qrImage, bool showMask = true )
+        public List<string> QRDecodeMulti( Bitmap qrImage, bool showMask = true )
         {
-            using (qrImage)
+            using ( qrImage )
             {
 #if DEBUG
-                qrImage.Save("screensnap.png");
+                qrImage.Save( "screensnap.png" );
 #endif
                 //var br = new BarcodeReader( null, 
                 //                            bitmap => new BitmapLuminanceSource(bitmap),
                 //                            luminance => new GlobalHistogramBinarizer(luminance));
                 var br = new BarcodeReader();
-                setDecodeOptions(br);
+                setDecodeOptions( br );
 
                 try
                 {
                     var results = br.DecodeMultiple(qrImage);
-                    if (results != null)
+                    if ( results != null )
                     {
                         var textList = new List<string>();
-                        foreach (var result in results)
+                        foreach ( var result in results )
                         {
                             if ( showMask ) ShowQRCodeMask( result, qrImage );
-                            textList.Add(result.Text);
+                            textList.Add( result.Text );
                         }
                         //SystemSounds.Asterisk.Play();
                         SystemSounds.Beep.Play();
-                        return (textList);
+                        return ( textList );
                     }
                     else
                     {
 #if DEBUG
-                        MessageBox.Show(this, "Failed to find Code!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show( this, "Failed to find Code!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
 #endif
                         SystemSounds.Exclamation.Play();
-                        return (new List<string>());
+                        return ( new List<string>() );
                     }
                 }
                 catch
                 {
                     SystemSounds.Exclamation.Play();
-                    return (new List<string>());
+                    return ( new List<string>() );
                 }
             }
         }
 
-        private void btnQRDecode_Click(object sender, EventArgs e)
+        public MainForm()
         {
-            bool MULTI = chkMultiDecode.Checked; //true;
+            InitializeComponent();
+            Application.EnableVisualStyles();
+            Icon = Icon.ExtractAssociatedIcon( Application.ExecutablePath );
 
-            //this.Hide();
-            //Application.DoEvents();
-            if ( WindowState != FormWindowState.Minimized)
-            {
-                Opacity = 0.0f;
-                System.Threading.Thread.Sleep(75);
-            }
-            if (MULTI)
-            {
-                edText.Clear();
-                var results = QRDecodeMulti(getScreenSnapshot());
-                foreach (var result in results)
-                {
-                    edText.Text += result + "\n\n";
-                }
-                //status.Items[2]
-                statusLabelDecodeCount.Text = string.Format(I18N._("Code Found: {0}"), results.Count);
-            }
-            else
-            {
-                edText.Text = QRDecode(getScreenSnapshot());
-                //status.Items[2]
-                if(edText.Text.Length>0)
-                {
-                    statusLabelDecodeCount.Text = string.Format("Code Found: {0}", 1);
-                }
-                else
-                {
-                    statusLabelDecodeCount.Text = string.Format("Code Found: {0}", 0);
-                }
-            }
+            I18N i10n = new I18N( null, this );
 
-            Opacity = 1.0f;
-            //this.Show();
-        }
+            status.Padding = new Padding(
+                status.Padding.Left,
+                status.Padding.Top,
+                status.Padding.Left,
+                status.Padding.Bottom
+                );
 
-        private void btnQREncode_Click(object sender, EventArgs e)
-        {
-            picQR.Image = QREncode(edText.Text);
-        }
+            btnQRInput.Image = Icon.ToBitmap();
 
-        private void btnClipTo_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty( edText.Text ))
-            {
-                Clipboard.SetText(edText.Text);
-            }
-        }
+            edText.MaxLength = MAX_TEXT;
 
-        private void btnClipFrom_Click(object sender, EventArgs e)
-        {           
-            edText.Text = Clipboard.GetText(TextDataFormat.UnicodeText);
-        }
+            colorDlg.Color = Color.Cyan;
+            picMaskColor.BackColor = Color.Red;
 
-        private void edText_KeyDown(object sender, KeyEventArgs e)
-        {
-            if ((e.Control && e.KeyCode == Keys.V) || (e.Shift && e.KeyCode == Keys.I))
-            {
-                lastText = edText.Text;
-                lastCursor = edText.SelectionStart;
+            if ( cbBarFormat.Items.Count > 0 )
+                cbBarFormat.SelectedIndex = 0;
 
-                if ( edText.SelectionLength > 0 )
-                {
-                    edText.Text = edText.Text.Remove( edText.SelectionStart, edText.SelectionLength );
-                    edText.SelectionStart = lastCursor;
-                }
-                var cliptext = Clipboard.GetText(TextDataFormat.UnicodeText);
-                string text = edText.Text.Insert( edText.SelectionStart, cliptext );
-                if (text.Length>MAX_TEXT)
-                {
-                    edText.Text = text.Substring(0, MAX_TEXT);
-                }
-                else
-                {
-                    edText.Text = text;
-                }
-                edText.SelectionStart = lastCursor + cliptext.Length;
-                e.Handled = true;
-            }
-            else if ( e.Control && e.KeyCode == Keys.Z )
-            {
-                if(!edText.CanUndo)
-                {
-                    edText.Text = lastText;
-                    edText.SelectionStart = lastCursor;
-                    //e.Handled = true;
-                }
-            }
+            loadSettings();
 
-        }
-
-        private void edText_TextChanged(object sender, EventArgs e)
-        {
-            //status.Items[1]
-            statusLabelTextCount.Text = string.Format(I18N._("Text Count: {0}"), edText.Text.Length.ToString());
-        }
-
-        private void picMaskColor_Click(object sender, EventArgs e)
-        {
-            colorDlg.Color = picMaskColor.BackColor;
-            colorDlg.ShowDialog();
-            picMaskColor.BackColor = colorDlg.Color;
-            maskColor = colorDlg.Color;
-
+            // register the event that is fired after the key press.
+            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>( hookKeyPressed );
             try
             {
-                appSection.Settings["MaskColor"].Value = ColorTranslator.ToHtml( maskColor );
+                hook.RegisterHotKey( QRUtils.ModifierKeys.Win, Keys.Q );
+                statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), "WIN + Q" );
             }
             catch
             {
-                appSection.Settings.Add( "MaskColor", ColorTranslator.ToHtml( maskColor ) );
+                MessageBox.Show( this, I18N._( "Failed to bind hotkey Win+Q!" ), I18N._( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error );
+                //status.Items[0]
+                statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), I18N._( "None" ) );
             }
 
-            //appSection.Settings["MaskColor"].Value = $"{colorDlg.Color.R}, {colorDlg.Color.G}, {colorDlg.Color.B}, {colorDlg.Color.A}";
-            config.Save(); 
+            //webserver = new QRSimpleHTTPServer();
+            //webserver.run();
+
+            // create properties
+            //var properties = new Common.Logging.Configuration.NameValueCollection();
+            //properties["showDateTime"] = "true";
+            //LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter( properties );
+
+            var localPath = @"d:\Develop\MS\_projects\vs2015\QRUtils\QRUtils\bin\Debug\";
+            var localUrl = @"http://localhost:8081/";
+
+            //wifiServer = new WebDavServer( new WebDavDiskStore(localPath) );
+            //wifiServer.Listener.AdaptedInstance.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
+            //wifiServer.Listener.Prefixes.Add( localUrl );
+            //wifiServer.Start();
         }
 
-        private void cbErrorLevel_SelectedIndexChanged( object sender, EventArgs e )
+        private void MainForm_FormClosing( object sender, FormClosingEventArgs e )
         {
-            if ( !this.Visible ) return;
+            if ( webserver != null )
+            {
+                webserver.Stop();
+            }
 
-            string errorString = cbErrorLevel.SelectedItem.ToString();
-            if ( string.Equals( errorString, I18N._( "L" ), StringComparison.CurrentCultureIgnoreCase ) )
+            if ( wifiServer != null )
             {
-                errorLevel = ErrorCorrectionLevel.L;
+                wifiServer.Stop();
             }
-            else if ( string.Equals( errorString, I18N._( "M" ), StringComparison.CurrentCultureIgnoreCase ) )
-            {
-                errorLevel = ErrorCorrectionLevel.M;
-            }
-            else if ( string.Equals( errorString, I18N._( "Q" ), StringComparison.CurrentCultureIgnoreCase ) )
-            {
-                errorLevel = ErrorCorrectionLevel.Q;
-            }
-            else if ( string.Equals( errorString, I18N._( "H" ), StringComparison.CurrentCultureIgnoreCase ) )
-            {
-                errorLevel = ErrorCorrectionLevel.H;
-            }
-            else
-            {
-                errorLevel = ErrorCorrectionLevel.Q;
-            }
-            appSection.Settings["ErrorCorrectionLevel"].Value = errorString;
-            config.Save();
-        }
-
-        private void chkDecodeFormat_CheckedChanged(object sender, EventArgs e)
-        {
-            if ( this.Visible )
-            {
-                appSection.Settings["DecodeFormat1D"].Value = chkDecodeFormat1D.Checked.ToString();
-                appSection.Settings["DecodeFormatDM"].Value = chkDecodeFormatDM.Checked.ToString();
-                appSection.Settings["DecodeFormatQR"].Value = chkDecodeFormatQR.Checked.ToString();
-                config.Save();
-            }
-        }
-
-        private void chkMultiDecode_CheckedChanged(object sender, EventArgs e)
-        {
-            //grpDecodeFormat.Enabled = chkMultiDecode.Checked;
-            if(chkDecodeFormatQR.Checked || chkDecodeFormatDM.Checked || chkDecodeFormat1D.Checked)
-            {
-
-            }
-            else
-            {
-                if(chkMultiDecode.Checked) chkDecodeFormatQR.Checked = true;
-            }
-        }
-
-        private void btnBarCode_Click( object sender, EventArgs e )
-        {
-            var targetBar = (BARCODE_TYPE) Enum.ToObject( typeof( BARCODE_TYPE ), cbBarFormat.SelectedIndex );
-            var targetFromat = BarcodeFormat.CODE_39;
-
-            bool isbn = false;
-            bool OneD = true;
-
-            string infoText = edText.Text;
-
-            switch(cbBarFormat.SelectedIndex)
-            {
-                case 0:
-                    targetFromat = BarcodeFormat.CODE_128;
-                    OneD = true;
-                    break;
-                case 1:
-                    targetFromat = BarcodeFormat.EAN_13;
-                    isbn = true;
-                    OneD = true;
-                    break;
-                case 2:
-                    targetFromat = BarcodeFormat.EAN_13;
-                    OneD = true;
-                    break;
-                case 3:
-                    targetFromat = BarcodeFormat.QR_CODE;
-                    OneD = false;
-                    if(!infoText.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ||
-                       !infoText.StartsWith( "https://", StringComparison.InvariantCultureIgnoreCase) )
-                    {
-                        infoText = "http://" + infoText;
-                    }
-                    break;
-                case 4:
-                    targetFromat = BarcodeFormat.QR_CODE;
-                    OneD = false;
-                    if ( !infoText.StartsWith( "tel:", StringComparison.InvariantCultureIgnoreCase ) )
-                    {
-                        infoText = "TEL:" + infoText;
-                    }
-                    break;
-                case 5:
-                    targetFromat = BarcodeFormat.QR_CODE;
-                    OneD = false;
-                    if ( !infoText.StartsWith( "mailto:", StringComparison.InvariantCultureIgnoreCase ) )
-                    {
-                        var mail = "abc@abc.com";
-                        var subject = "main to ...";
-                        infoText = $"MAILTO:{mail}?SUBJECT={subject}&BODY={infoText}";
-                    }
-                    break;
-                case 6:
-                    targetFromat = BarcodeFormat.QR_CODE;
-                    OneD = false;
-                    if ( !infoText.StartsWith( "smsto:", StringComparison.InvariantCultureIgnoreCase ) )
-                    {
-                        var phone = "1234567890";
-                        infoText = $"SMSTO:{phone}:{infoText}";
-                    }
-                    break;
-                case 7:
-                    targetFromat = BarcodeFormat.QR_CODE;
-                    OneD = false;
-                    break;
-                case 8:
-                    targetFromat = BarcodeFormat.QR_CODE;
-                    OneD = false;
-                    break;
-                default:
-                    targetFromat = BarcodeFormat.CODE_128;
-                    OneD = true;
-                    break;
-            }
-            if(OneD)
-            {
-                infoText = infoText.Replace( "-", "" ).Replace( " ", "" );
-                picQR.Image = BarEncode( infoText, targetFromat, isbn );
-            }
-            else
-            {
-                picQR.Image = QREncode( edText.Text );
-            }
-        }
-
-        private void btnQRInput_ButtonClick( object sender, EventArgs e )
-        {
-            FormQRInput form = new FormQRInput();
-            form.Icon = Icon;
-            DialogResult dlgResult = form.ShowDialog();
-            if(dlgResult == DialogResult.OK)
-            {
-                edText.Text = form.QRContent;
-                edText.SelectionStart = edText.Text.Length;
-                btnQREncode.PerformClick();
-            }
-            form.Close();
-            form.Dispose();
-        }
-
-        private void picQR_DoubleClick( object sender, EventArgs e )
-        {
-            var timestamp = DateTime.Now.ToString( "yyyyMMddTHHmmsszz" );
-            var errorlevel = cbErrorLevel.Text;
-            picQR.Image.Save( $"QR_{timestamp}_{errorlevel}.png" );
-        }
-
-        private void chkOverLogo_CheckedChanged( object sender, EventArgs e )
-        {
-            if ( this.Visible )
-            {
-                appSection.Settings["OverlayLogo"].Value = chkDecodeFormatQR.Checked.ToString();
-                config.Save();
-            }
-        }
-
-        private void logoItems_DropDownItemClicked( object sender, ToolStripItemClickedEventArgs e )
-        {
-            overlayLogoImage = e.ClickedItem.Text;
-            try
-            {
-                appSection.Settings["OverlayLogoImage"].Value = overlayLogoImage;
-            }
-            catch
-            {
-                appSection.Settings.Add( "OverlayLogoImage", overlayLogoImage );
-            }
-            config.Save();
-        }
-
-        private void logoItems_DropDownOpening( object sender, EventArgs e )
-        {
-            listIcons( $"{AppPath}icons" );
         }
 
         private void MainForm_DragOver( object sender, DragEventArgs e )
@@ -1124,5 +853,324 @@ namespace QRUtils
             return;
         }
 
+        private void btnQRDecode_Click( object sender, EventArgs e )
+        {
+            bool MULTI = chkMultiDecode.Checked; //true;
+
+            //this.Hide();
+            //Application.DoEvents();
+            if ( WindowState != FormWindowState.Minimized )
+            {
+                Opacity = 0.0f;
+                System.Threading.Thread.Sleep( 75 );
+            }
+            if ( MULTI )
+            {
+                edText.Clear();
+                var results = QRDecodeMulti(getScreenSnapshot());
+                foreach ( var result in results )
+                {
+                    edText.Text += result + "\n\n";
+                }
+                //status.Items[2]
+                statusLabelDecodeCount.Text = string.Format( I18N._( "Code Found: {0}" ), results.Count );
+            }
+            else
+            {
+                edText.Text = QRDecode( getScreenSnapshot() );
+                //status.Items[2]
+                if ( edText.Text.Length > 0 )
+                {
+                    statusLabelDecodeCount.Text = string.Format( "Code Found: {0}", 1 );
+                }
+                else
+                {
+                    statusLabelDecodeCount.Text = string.Format( "Code Found: {0}", 0 );
+                }
+            }
+
+            Opacity = 1.0f;
+            //this.Show();
+        }
+
+        private void btnQREncode_Click( object sender, EventArgs e )
+        {
+            picQR.Image = QREncode( edText.Text );
+        }
+
+        private void btnClipTo_Click( object sender, EventArgs e )
+        {
+            if ( !string.IsNullOrEmpty( edText.Text ) )
+            {
+                Clipboard.SetText( edText.Text );
+            }
+        }
+
+        private void btnClipFrom_Click( object sender, EventArgs e )
+        {
+            edText.Text = Clipboard.GetText( TextDataFormat.UnicodeText );
+        }
+
+        private void edText_KeyPress( object sender, KeyPressEventArgs e )
+        {
+            //if( e.KeyChar == Keys.V && this.modi
+        }
+
+        private void edText_KeyUp( object sender, KeyEventArgs e )
+        {
+            if ( ( e.Control && e.KeyCode == Keys.V ) || 
+                 ( e.Shift && e.KeyCode == Keys.I ) ||
+                 ( e.Modifiers == Keys.Control && e.KeyCode == Keys.V ||
+                 ( e.Modifiers == Keys.Shift && e.KeyCode == Keys.I ) ) ||
+                 ( e.Modifiers == Keys.ControlKey && e.KeyCode == Keys.V ||
+                 ( e.Modifiers == Keys.ShiftKey && e.KeyCode == Keys.I ) ) )
+            {
+                lastText = edText.Text;
+                lastCursor = edText.SelectionStart;
+
+                if ( edText.SelectionLength > 0 )
+                {
+                    edText.Text = edText.Text.Remove( edText.SelectionStart, edText.SelectionLength );
+                    edText.SelectionStart = lastCursor;
+                }
+                var cliptext = Clipboard.GetText(TextDataFormat.UnicodeText);
+                string text = edText.Text.Insert( edText.SelectionStart, cliptext );
+                if ( text.Length > MAX_TEXT )
+                {
+                    edText.Text = text.Substring( 0, MAX_TEXT );
+                }
+                else
+                {
+                    edText.Text = text;
+                }
+                edText.SelectionStart = lastCursor + cliptext.Length;
+                e.Handled = true;
+            }
+            else if ( e.Control && e.KeyCode == Keys.Z )
+            {
+                if ( !edText.CanUndo )
+                {
+                    edText.Text = lastText;
+                    edText.SelectionStart = lastCursor;
+                    //e.Handled = true;
+                }
+            }
+        }
+
+        private void edText_TextChanged( object sender, EventArgs e )
+        {
+            //status.Items[1]
+            statusLabelTextCount.Text = string.Format( I18N._( "Text Count: {0}" ), edText.Text.Length.ToString() );
+        }
+
+        private void picMaskColor_Click( object sender, EventArgs e )
+        {
+            colorDlg.Color = picMaskColor.BackColor;
+            colorDlg.ShowDialog();
+            picMaskColor.BackColor = colorDlg.Color;
+            maskColor = colorDlg.Color;
+
+            try
+            {
+                appSection.Settings["MaskColor"].Value = ColorTranslator.ToHtml( maskColor );
+            }
+            catch
+            {
+                appSection.Settings.Add( "MaskColor", ColorTranslator.ToHtml( maskColor ) );
+            }
+
+            //appSection.Settings["MaskColor"].Value = $"{colorDlg.Color.R}, {colorDlg.Color.G}, {colorDlg.Color.B}, {colorDlg.Color.A}";
+            config.Save();
+        }
+
+        private void cbErrorLevel_SelectedIndexChanged( object sender, EventArgs e )
+        {
+            if ( !this.Visible ) return;
+
+            string errorString = cbErrorLevel.SelectedItem.ToString();
+            if ( string.Equals( errorString, I18N._( "L" ), StringComparison.CurrentCultureIgnoreCase ) )
+            {
+                errorLevel = ErrorCorrectionLevel.L;
+            }
+            else if ( string.Equals( errorString, I18N._( "M" ), StringComparison.CurrentCultureIgnoreCase ) )
+            {
+                errorLevel = ErrorCorrectionLevel.M;
+            }
+            else if ( string.Equals( errorString, I18N._( "Q" ), StringComparison.CurrentCultureIgnoreCase ) )
+            {
+                errorLevel = ErrorCorrectionLevel.Q;
+            }
+            else if ( string.Equals( errorString, I18N._( "H" ), StringComparison.CurrentCultureIgnoreCase ) )
+            {
+                errorLevel = ErrorCorrectionLevel.H;
+            }
+            else
+            {
+                errorLevel = ErrorCorrectionLevel.Q;
+            }
+            appSection.Settings["ErrorCorrectionLevel"].Value = errorString;
+            config.Save();
+        }
+
+        private void chkDecodeFormat_CheckedChanged( object sender, EventArgs e )
+        {
+            if ( this.Visible )
+            {
+                appSection.Settings["DecodeFormat1D"].Value = chkDecodeFormat1D.Checked.ToString();
+                appSection.Settings["DecodeFormatDM"].Value = chkDecodeFormatDM.Checked.ToString();
+                appSection.Settings["DecodeFormatQR"].Value = chkDecodeFormatQR.Checked.ToString();
+                config.Save();
+            }
+        }
+
+        private void chkMultiDecode_CheckedChanged( object sender, EventArgs e )
+        {
+            //grpDecodeFormat.Enabled = chkMultiDecode.Checked;
+            if ( chkDecodeFormatQR.Checked || chkDecodeFormatDM.Checked || chkDecodeFormat1D.Checked )
+            {
+
+            }
+            else
+            {
+                if ( chkMultiDecode.Checked ) chkDecodeFormatQR.Checked = true;
+            }
+        }
+
+        private void btnBarCode_Click( object sender, EventArgs e )
+        {
+            var targetBar = (BARCODE_TYPE) Enum.ToObject( typeof( BARCODE_TYPE ), cbBarFormat.SelectedIndex );
+            var targetFromat = BarcodeFormat.CODE_39;
+
+            bool isbn = false;
+            bool OneD = true;
+
+            string infoText = edText.Text;
+
+            switch ( cbBarFormat.SelectedIndex )
+            {
+                case 0:
+                    targetFromat = BarcodeFormat.CODE_128;
+                    OneD = true;
+                    break;
+                case 1:
+                    targetFromat = BarcodeFormat.EAN_13;
+                    isbn = true;
+                    OneD = true;
+                    break;
+                case 2:
+                    targetFromat = BarcodeFormat.EAN_13;
+                    OneD = true;
+                    break;
+                case 3:
+                    targetFromat = BarcodeFormat.QR_CODE;
+                    OneD = false;
+                    if ( !infoText.StartsWith( "http://", StringComparison.InvariantCultureIgnoreCase ) ||
+                       !infoText.StartsWith( "https://", StringComparison.InvariantCultureIgnoreCase ) )
+                    {
+                        infoText = "http://" + infoText;
+                    }
+                    break;
+                case 4:
+                    targetFromat = BarcodeFormat.QR_CODE;
+                    OneD = false;
+                    if ( !infoText.StartsWith( "tel:", StringComparison.InvariantCultureIgnoreCase ) )
+                    {
+                        infoText = "TEL:" + infoText;
+                    }
+                    break;
+                case 5:
+                    targetFromat = BarcodeFormat.QR_CODE;
+                    OneD = false;
+                    if ( !infoText.StartsWith( "mailto:", StringComparison.InvariantCultureIgnoreCase ) )
+                    {
+                        var mail = "abc@abc.com";
+                        var subject = "main to ...";
+                        infoText = $"MAILTO:{mail}?SUBJECT={subject}&BODY={infoText}";
+                    }
+                    break;
+                case 6:
+                    targetFromat = BarcodeFormat.QR_CODE;
+                    OneD = false;
+                    if ( !infoText.StartsWith( "smsto:", StringComparison.InvariantCultureIgnoreCase ) )
+                    {
+                        var phone = "1234567890";
+                        infoText = $"SMSTO:{phone}:{infoText}";
+                    }
+                    break;
+                case 7:
+                    targetFromat = BarcodeFormat.QR_CODE;
+                    OneD = false;
+                    break;
+                case 8:
+                    targetFromat = BarcodeFormat.QR_CODE;
+                    OneD = false;
+                    break;
+                default:
+                    targetFromat = BarcodeFormat.CODE_128;
+                    OneD = true;
+                    break;
+            }
+            if ( OneD )
+            {
+                infoText = infoText.Replace( "-", "" ).Replace( " ", "" );
+                picQR.Image = BarEncode( infoText, targetFromat, isbn );
+            }
+            else
+            {
+                picQR.Image = QREncode( edText.Text );
+            }
+        }
+
+        private void btnQRInput_ButtonClick( object sender, EventArgs e )
+        {
+            FormQRInput form = new FormQRInput();
+            form.Icon = Icon;
+            DialogResult dlgResult = form.ShowDialog();
+            if ( dlgResult == DialogResult.OK )
+            {
+                edText.Text = form.QRContent;
+                edText.SelectionStart = edText.Text.Length;
+                btnQREncode.PerformClick();
+            }
+            form.Close();
+            form.Dispose();
+        }
+
+        private void picQR_DoubleClick( object sender, EventArgs e )
+        {
+            var timestamp = DateTime.Now.ToString( "yyyyMMddTHHmmsszz" );
+            var errorlevel = cbErrorLevel.Text;
+            picQR.Image.Save( $"QR_{timestamp}_{errorlevel}.png" );
+        }
+
+        private void chkOverLogo_CheckedChanged( object sender, EventArgs e )
+        {
+            if ( this.Visible )
+            {
+                appSection.Settings["OverlayLogo"].Value = chkDecodeFormatQR.Checked.ToString();
+                config.Save();
+            }
+        }
+
+        private void logoItems_DropDownItemClicked( object sender, ToolStripItemClickedEventArgs e )
+        {
+            overlayLogoImage = e.ClickedItem.Text;
+            try
+            {
+                appSection.Settings["OverlayLogoImage"].Value = overlayLogoImage;
+            }
+            catch
+            {
+                appSection.Settings.Add( "OverlayLogoImage", overlayLogoImage );
+            }
+            config.Save();
+        }
+
+        private void logoItems_DropDownOpening( object sender, EventArgs e )
+        {
+            listIcons( $"{AppPath}icons" );
+        }
+
     }
+    
 }

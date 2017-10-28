@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using AForge.Video;
+using AForge.Video.DirectShow;
 using NGettext.WinForm;
 
 namespace QRUtils
@@ -18,6 +17,10 @@ namespace QRUtils
             get { return QRText; }
             set { QRText = value; }
         }
+
+        private FilterInfoCollection videoDevices;
+        private VideoCaptureDevice videoSource;
+        private int timeCount = 0;
 
         public FormQRInput()
         {
@@ -76,8 +79,63 @@ namespace QRUtils
                 case 3: // Geo    geo:-Latitude-,-Longitude-?q=-Query-
                     if(chkGeoMap.Checked)
                     {
-                        var rb = grpGeoMap.Controls.OfType<RadioButton>().FirstOrDefault( r => r.Checked );
+                        var latlon = (string.IsNullOrEmpty(edGeoLat.Text)||string.IsNullOrEmpty(edGeoLon.Text)) ? string.Empty : $"{edGeoLat.Text},{edGeoLon.Text}";
+                        var query = string.IsNullOrEmpty(edGeoQuery.Text) ? latlon : $"{edGeoQuery.Text}";
 
+                        //RadioButton rb = grpGeoMap.Controls.OfType<RadioButton>().FirstOrDefault( r => r.Checked );
+                        RadioButton rb = flowLayoutGeoMap.Controls.OfType<RadioButton>().FirstOrDefault( r => r.Checked );
+                        if ( rb != null )
+                        {
+                            if ( rb.Name.Equals( "rbGeoMapAutonavi", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // http://m.amap.com/?q=lat,lon
+                                QRText = $"http://m.amap.com/?q={query}";
+                            }
+                            else if ( rb.Name.Equals( "rbGeoMapBar", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // http://m.mapbar.com/?q=lat,lon
+                                // QRText = $"http://m.mapbar.com/?q={query}";
+                            }
+                            else if ( rb.Name.Equals( "rbGeoMapBaidu", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // http://map.baidu.com/mobile/webapp/search/search/wd=地点&qt=s&searchFlag=bigBox&version=5/vt=map
+                                QRText = $"http://map.baidu.com/mobile/webapp/search/search/wd={query}&qt=s&searchFlag=bigBox&version=5/vt=map";
+                            }
+                            else if ( rb.Name.Equals( "rbGeoMapBing", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // http://maps.bing.com/?q=lat,lon
+                                QRText = $"http://maps.bing.com/?q={query}";
+                            }
+                            else if ( rb.Name.Equals( "rbGeoMapGoogle", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // http://maps.google.com/?q=lat,lon
+                                QRText = $"http://maps.google.com/?q={query}";
+                            }
+                            else if ( rb.Name.Equals( "rbGeoMapOCM", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // http://www.opencyclemap.org/search?query=lat,lon
+                                // QRText = $"http://maps.bing.com/search?query={query}";
+                            }
+                            else if ( rb.Name.Equals( "rbGeoMapOSM", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // www.openstreetmap.org/search?query=lat,lon
+                                QRText = $"www.openstreetmap.org/search?query={query}";
+                            }
+                            else if ( rb.Name.Equals( "rbGeoMapQQ", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // http://apis.map.qq.com/uri/v1/geocoder?coord=lat,lon
+                                // http://apis.map.qq.com/uri/v1/search?keyword=地点
+                                if(string.IsNullOrEmpty(edGeoQuery.Text))
+                                    QRText = $"http://apis.map.qq.com/uri/v1/geocoder?coord={query}";
+                                else
+                                    QRText = $"http://apis.map.qq.com/uri/v1/search?keyword={query}";                                
+                            }
+                            else if ( rb.Name.Equals( "rbGeoMapSogou", StringComparison.CurrentCultureIgnoreCase ) )
+                            {
+                                // http://map.sogou.com/?q=lat,lon
+                                // QRText = $"http://map.sogou.com/?q={query}";
+                            }
+                        }
                     }
                     else
                     {
@@ -117,6 +175,55 @@ namespace QRUtils
                     break;
             }
             
+        }
+
+        private void btnCameraStart_Click( object sender, EventArgs e )
+        {
+            // enumerate video devices
+            videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
+            if ( videoDevices.Count > 0 )
+            {
+                // create video source
+                videoSource = new VideoCaptureDevice( videoDevices[0].MonikerString );
+                // set NewFrame event handler
+                videoSource.NewFrame += new NewFrameEventHandler( video_NewFrame );
+                // start the video source
+                timeCount = 0;
+                videoSource.SignalToStop();
+                videoSource.Start();
+                // ...
+                //videoSource.WaitForStop();
+            }
+        }
+
+        private void btnCameraStop_Click( object sender, EventArgs e )
+        {
+            videoSource.SignalToStop();
+            videoSource.Stop();
+        }
+
+        private void video_NewFrame( object sender, NewFrameEventArgs eventArgs )
+        {
+            // get new frame
+            Bitmap bitmap = eventArgs.Frame;
+            picCamera.Image = bitmap;
+            // process the frame
+            if( Application.OpenForms["MainForm"] != null )
+            {
+                List<string> qrTextList = (Application.OpenForms["MainForm"] as MainForm).QRDecodeMulti( bitmap, false );
+                if ( qrTextList.Count > 0 || timeCount > 300 )
+                {
+                    videoSource.SignalToStop();
+                    videoSource.Stop();
+                }
+            }
+            timeCount += 1;
+        }
+
+        private void FormQRInput_FormClosing( object sender, FormClosingEventArgs e )
+        {
+            videoSource.SignalToStop();
+            videoSource.Stop();
         }
     }
 }

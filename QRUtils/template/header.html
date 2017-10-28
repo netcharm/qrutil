@@ -1,0 +1,118 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="width=400px, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>文件位置 {{title}}</title>
+    <style>
+        body {
+            background-color: #fff;
+            color: #000;
+        }
+        
+        h1 {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 1em;
+        }
+        
+        h2 {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 1em;
+        }
+        
+        p,
+        li,
+        a {
+            font-size: 1em;
+            font-weight: normal;
+        }
+        
+        .container {
+            max-height: 200px;
+        }
+        
+        .name,
+        .size,
+        .time {
+            padding-right: 25px;
+        }
+        
+        .tools {
+            float: right;
+            background-color: #eee;
+        }
+        
+        .name2 {
+            padding-right: 25px;
+            background-color: #eee;
+        }
+        
+        .size {
+            padding-left: 32px;
+            min-width: 100px;
+            display: inline-block;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .time {
+            padding-left: 25px;
+            min-width: 100px;
+            display: inline-block;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .name p,
+        .name2 p,
+        .time p,
+        .size p {
+            margin: 1px 1px;
+        }
+        
+        img {
+            vertical-align: middle;
+        }
+        
+        a {
+            vertical-align: middle;
+        }
+        
+        #progr {
+            display: none;
+        }
+    </style>
+    <style type="text/css">
+        html,
+        body,
+        div,
+        p {
+            display: block;
+            -moz-user-select: text !important;
+            -khtml-user-select: text !important;
+            -webkit-user-select: text !important;
+            user-select: text !important;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>文件位置 {{title}}</h2>
+    <div class="name">
+        <a href="/8657?z=1">下载压缩的 ZIP</a> (无进度栏)
+    </div>
+    <div class="name">
+        <a href="/8657?z=0">下载未压缩的 ZIP</a> (含进度栏)
+    </div>
+    <br/>    
+    <div class="name2">排序按:
+        <a href="/8657?s=-1">名称</a> |             
+        <a href="/8657?s=2">扩展名</a> | 
+        <a href="/8657?s=-3">大小</a> | 
+        <a href="/8657?s=-4">时间</a>
+    </div>
+    <br />
+    <div class="container">
+        

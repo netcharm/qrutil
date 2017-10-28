@@ -59,7 +59,7 @@
             this.statusLabelDecodeCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnQRInput = new System.Windows.Forms.ToolStripSplitButton();
-            this.logoItems = new System.Windows.Forms.ToolStripMenuItem();
+            this.miLogoItems = new System.Windows.Forms.ToolStripMenuItem();
             this.btnBarCode = new System.Windows.Forms.Button();
             this.pnlQR.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picQR)).BeginInit();
@@ -99,6 +99,7 @@
             // 
             // edText
             // 
+            this.edText.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
             this.edText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.edText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -112,10 +113,11 @@
             this.edText.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
             this.edText.ShowSelectionMargin = true;
             this.edText.Size = new System.Drawing.Size(441, 464);
-            this.edText.TabIndex = 1;
+            this.edText.TabIndex = 0;
             this.edText.Text = "";
             this.edText.TextChanged += new System.EventHandler(this.edText_TextChanged);
-            this.edText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edText_KeyDown);
+            this.edText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edText_KeyPress);
+            this.edText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.edText_KeyUp);
             // 
             // btnQREncode
             // 
@@ -403,7 +405,7 @@
             // 
             this.btnQRInput.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnQRInput.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.logoItems});
+            this.miLogoItems});
             this.btnQRInput.Image = ((System.Drawing.Image)(resources.GetObject("btnQRInput.Image")));
             this.btnQRInput.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnQRInput.Name = "btnQRInput";
@@ -412,13 +414,13 @@
             this.btnQRInput.ToolTipText = "Special QR Information Input";
             this.btnQRInput.ButtonClick += new System.EventHandler(this.btnQRInput_ButtonClick);
             // 
-            // logoItems
+            // miLogoItems
             // 
-            this.logoItems.Name = "logoItems";
-            this.logoItems.Size = new System.Drawing.Size(94, 22);
-            this.logoItems.Text = "Logo";
-            this.logoItems.DropDownOpening += new System.EventHandler(this.logoItems_DropDownOpening);
-            this.logoItems.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.logoItems_DropDownItemClicked);
+            this.miLogoItems.Name = "miLogoItems";
+            this.miLogoItems.Size = new System.Drawing.Size(94, 22);
+            this.miLogoItems.Text = "Logo";
+            this.miLogoItems.DropDownOpening += new System.EventHandler(this.logoItems_DropDownOpening);
+            this.miLogoItems.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.logoItems_DropDownItemClicked);
             // 
             // btnBarCode
             // 
@@ -447,10 +449,12 @@
             this.Controls.Add(this.pnlQR);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.HelpButton = true;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "QRCode Utils";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
             this.DragOver += new System.Windows.Forms.DragEventHandler(this.MainForm_DragOver);
             this.pnlQR.ResumeLayout(false);
@@ -473,7 +477,6 @@
         private System.Windows.Forms.PictureBox picQR;
         private System.Windows.Forms.Button btnClipFrom;
         private System.Windows.Forms.Button btnClipTo;
-        private System.Windows.Forms.RichTextBox edText;
         private System.Windows.Forms.Panel pnlOption;
         private System.Windows.Forms.CheckBox chkMultiDecode;
         private System.Windows.Forms.Label lblMaskColor;
@@ -494,9 +497,10 @@
         private System.Windows.Forms.ComboBox cbBarFormat;
         private System.Windows.Forms.Button btnBarCode;
         private System.Windows.Forms.ToolStripSplitButton btnQRInput;
-        private System.Windows.Forms.ToolStripMenuItem logoItems;
+        private System.Windows.Forms.ToolStripMenuItem miLogoItems;
         private System.Windows.Forms.CheckBox cbDecodeUTF8;
         private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.RichTextBox edText;
     }
 }
 
