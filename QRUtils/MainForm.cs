@@ -12,10 +12,6 @@ using System.Threading;
 using System.Windows.Forms;
 using Common.Logging;
 using NGettext.WinForm;
-using WebDAVSharp.Server;
-using WebDAVSharp.Server.Adapters;
-using WebDAVSharp.Server.Stores;
-using WebDAVSharp.Server.Stores.DiskStore;
 using ZXing;
 using ZXing.Common;
 using ZXing.QrCode.Internal;
@@ -68,8 +64,6 @@ namespace QRUtils
         private KeyboardHook hook = new KeyboardHook();
 
         private QRSimpleHTTPServer webserver;
-
-        private WebDavServer wifiServer;
 
         private void loadSettings()
         {
@@ -743,48 +737,32 @@ namespace QRUtils
 
             loadSettings();
 
+            KeysConverter kc = new KeysConverter();
+            var sKey = Keys.Oemtilde;
+            var skn = "~";// kc.ConvertToString(sKey);
             // register the event that is fired after the key press.
             hook.KeyPressed += new EventHandler<KeyPressedEventArgs>( hookKeyPressed );
             try
             {
-                hook.RegisterHotKey( QRUtils.ModifierKeys.Win, Keys.Q );
-                statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), "WIN + Q" );
+                hook.RegisterHotKey( QRUtils.ModifierKeys.Win, sKey);
+                statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), $"Win + {skn}" );
             }
             catch
             {
-                MessageBox.Show( this, I18N._( "Failed to bind hotkey Win+Q!" ), I18N._( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error );
+                MessageBox.Show( this, I18N._($"Failed to bind hotkey Win + {skn}!" ), I18N._( "Error" ), MessageBoxButtons.OK, MessageBoxIcon.Error );
                 //status.Items[0]
                 statusLabelHotkey.Text = string.Format( I18N._( "Hotkey: {0}" ), I18N._( "None" ) );
             }
-
-            //webserver = new QRSimpleHTTPServer();
-            //webserver.run();
 
             // create properties
             //var properties = new Common.Logging.Configuration.NameValueCollection();
             //properties["showDateTime"] = "true";
             //LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter( properties );
 
-            var localPath = @"d:\Develop\MS\_projects\vs2015\QRUtils\QRUtils\bin\Debug\";
-            var localUrl = @"http://localhost:8081/";
-
-            //wifiServer = new WebDavServer( new WebDavDiskStore(localPath) );
-            //wifiServer.Listener.AdaptedInstance.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
-            //wifiServer.Listener.Prefixes.Add( localUrl );
-            //wifiServer.Start();
         }
 
         private void MainForm_FormClosing( object sender, FormClosingEventArgs e )
         {
-            if ( webserver != null )
-            {
-                webserver.Stop();
-            }
-
-            if ( wifiServer != null )
-            {
-                wifiServer.Stop();
-            }
         }
 
         private void MainForm_DragOver( object sender, DragEventArgs e )
