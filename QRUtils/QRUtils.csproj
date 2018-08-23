@@ -105,12 +105,6 @@
     <ApplicationManifest>QRUtils.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AForge.Video">
-      <HintPath>..\..\_refs\AForge.Video.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.DirectShow">
-      <HintPath>..\..\_refs\AForge.Video.DirectShow.dll</HintPath>
-    </Reference>
     <Reference Include="Common.Logging">
       <HintPath>..\..\_refs\Common.Logging.dll</HintPath>
     </Reference>

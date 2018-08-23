@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using AForge.Video;
-using AForge.Video.DirectShow;
 using NGettext.WinForm;
 
 namespace QRUtils
@@ -18,8 +16,6 @@ namespace QRUtils
             set { QRText = value; }
         }
 
-        private FilterInfoCollection videoDevices;
-        private VideoCaptureDevice videoSource;
         private int timeCount = 0;
 
         public FormQRInput()
@@ -177,53 +173,8 @@ namespace QRUtils
             
         }
 
-        private void btnCameraStart_Click( object sender, EventArgs e )
-        {
-            // enumerate video devices
-            videoDevices = new FilterInfoCollection( FilterCategory.VideoInputDevice );
-            if ( videoDevices.Count > 0 )
-            {
-                // create video source
-                videoSource = new VideoCaptureDevice( videoDevices[0].MonikerString );
-                // set NewFrame event handler
-                videoSource.NewFrame += new NewFrameEventHandler( video_NewFrame );
-                // start the video source
-                timeCount = 0;
-                videoSource.SignalToStop();
-                videoSource.Start();
-                // ...
-                //videoSource.WaitForStop();
-            }
-        }
-
-        private void btnCameraStop_Click( object sender, EventArgs e )
-        {
-            videoSource.SignalToStop();
-            videoSource.Stop();
-        }
-
-        private void video_NewFrame( object sender, NewFrameEventArgs eventArgs )
-        {
-            // get new frame
-            Bitmap bitmap = eventArgs.Frame;
-            picCamera.Image = bitmap;
-            // process the frame
-            if( Application.OpenForms["MainForm"] != null )
-            {
-                List<string> qrTextList = (Application.OpenForms["MainForm"] as MainForm).QRDecodeMulti( bitmap, false );
-                if ( qrTextList.Count > 0 || timeCount > 300 )
-                {
-                    videoSource.SignalToStop();
-                    videoSource.Stop();
-                }
-            }
-            timeCount += 1;
-        }
-
         private void FormQRInput_FormClosing( object sender, FormClosingEventArgs e )
         {
-            videoSource.SignalToStop();
-            videoSource.Stop();
         }
     }
 }

@@ -74,10 +74,6 @@
             this.edURL = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.tabCamera = new System.Windows.Forms.TabPage();
-            this.picCamera = new System.Windows.Forms.PictureBox();
-            this.btnCameraStart = new System.Windows.Forms.Button();
-            this.btnCameraStop = new System.Windows.Forms.Button();
             this.tabsQR.SuspendLayout();
             this.tabPageEmail.SuspendLayout();
             this.grpMailTo.SuspendLayout();
@@ -98,8 +94,6 @@
             this.grpWifiSSID.SuspendLayout();
             this.tabPageURL.SuspendLayout();
             this.grpURL.SuspendLayout();
-            this.tabCamera.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picCamera)).BeginInit();
             this.SuspendLayout();
             // 
             // tabsQR
@@ -115,7 +109,6 @@
             this.tabsQR.Controls.Add(this.tabPageSMS);
             this.tabsQR.Controls.Add(this.tabPageWifi);
             this.tabsQR.Controls.Add(this.tabPageURL);
-            this.tabsQR.Controls.Add(this.tabCamera);
             this.tabsQR.Location = new System.Drawing.Point(12, 12);
             this.tabsQR.Name = "tabsQR";
             this.tabsQR.SelectedIndex = 0;
@@ -667,51 +660,6 @@
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // tabCamera
-            // 
-            this.tabCamera.Controls.Add(this.btnCameraStop);
-            this.tabCamera.Controls.Add(this.btnCameraStart);
-            this.tabCamera.Controls.Add(this.picCamera);
-            this.tabCamera.Location = new System.Drawing.Point(4, 22);
-            this.tabCamera.Name = "tabCamera";
-            this.tabCamera.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCamera.Size = new System.Drawing.Size(581, 362);
-            this.tabCamera.TabIndex = 8;
-            this.tabCamera.Text = "Camera";
-            this.tabCamera.UseVisualStyleBackColor = true;
-            // 
-            // picCamera
-            // 
-            this.picCamera.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.picCamera.Location = new System.Drawing.Point(7, 7);
-            this.picCamera.Name = "picCamera";
-            this.picCamera.Size = new System.Drawing.Size(477, 349);
-            this.picCamera.TabIndex = 0;
-            this.picCamera.TabStop = false;
-            // 
-            // btnCameraStart
-            // 
-            this.btnCameraStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCameraStart.Location = new System.Drawing.Point(500, 7);
-            this.btnCameraStart.Name = "btnCameraStart";
-            this.btnCameraStart.Size = new System.Drawing.Size(75, 68);
-            this.btnCameraStart.TabIndex = 1;
-            this.btnCameraStart.Text = "Start";
-            this.btnCameraStart.UseVisualStyleBackColor = true;
-            this.btnCameraStart.Click += new System.EventHandler(this.btnCameraStart_Click);
-            // 
-            // btnCameraStop
-            // 
-            this.btnCameraStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCameraStop.Location = new System.Drawing.Point(499, 288);
-            this.btnCameraStop.Name = "btnCameraStop";
-            this.btnCameraStop.Size = new System.Drawing.Size(75, 68);
-            this.btnCameraStop.TabIndex = 2;
-            this.btnCameraStop.Text = "Stop";
-            this.btnCameraStop.UseVisualStyleBackColor = true;
-            this.btnCameraStop.Click += new System.EventHandler(this.btnCameraStop_Click);
-            // 
             // FormQRInput
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -758,8 +706,6 @@
             this.tabPageURL.ResumeLayout(false);
             this.grpURL.ResumeLayout(false);
             this.grpURL.PerformLayout();
-            this.tabCamera.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picCamera)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -812,9 +758,5 @@
         private System.Windows.Forms.RadioButton rbGeoMapBaidu;
         private System.Windows.Forms.RadioButton rbGeoMapOCM;
         private System.Windows.Forms.RadioButton rbGeoMapOSM;
-        private System.Windows.Forms.TabPage tabCamera;
-        private System.Windows.Forms.Button btnCameraStop;
-        private System.Windows.Forms.Button btnCameraStart;
-        private System.Windows.Forms.PictureBox picCamera;
     }
 }

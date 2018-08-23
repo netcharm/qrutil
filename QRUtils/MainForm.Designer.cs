@@ -99,7 +99,6 @@
             // 
             // edText
             // 
-            this.edText.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
             this.edText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.edText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -116,8 +115,7 @@
             this.edText.TabIndex = 0;
             this.edText.Text = "";
             this.edText.TextChanged += new System.EventHandler(this.edText_TextChanged);
-            this.edText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edText_KeyPress);
-            this.edText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.edText_KeyUp);
+            this.edText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edText_KeyDown);
             // 
             // btnQREncode
             // 
@@ -353,10 +351,10 @@
             this.statusLabelDecodeCount,
             this.statusLabelInfo,
             this.btnQRInput});
-            this.status.Location = new System.Drawing.Point(0, 479);
+            this.status.Location = new System.Drawing.Point(0, 475);
             this.status.Name = "status";
             this.status.ShowItemToolTips = true;
-            this.status.Size = new System.Drawing.Size(724, 22);
+            this.status.Size = new System.Drawing.Size(724, 26);
             this.status.SizingGrip = false;
             this.status.TabIndex = 8;
             // 
@@ -368,7 +366,7 @@
             this.statusLabelHotkey.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.statusLabelHotkey.DoubleClickEnabled = true;
             this.statusLabelHotkey.Name = "statusLabelHotkey";
-            this.statusLabelHotkey.Size = new System.Drawing.Size(99, 17);
+            this.statusLabelHotkey.Size = new System.Drawing.Size(113, 21);
             this.statusLabelHotkey.Text = "Hotkey: WIN + Q";
             // 
             // statusLabelTextCount
@@ -379,7 +377,7 @@
             this.statusLabelTextCount.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.statusLabelTextCount.DoubleClickEnabled = true;
             this.statusLabelTextCount.Name = "statusLabelTextCount";
-            this.statusLabelTextCount.Size = new System.Drawing.Size(87, 17);
+            this.statusLabelTextCount.Size = new System.Drawing.Size(88, 21);
             this.statusLabelTextCount.Text = "Text Count: 0";
             // 
             // statusLabelDecodeCount
@@ -390,13 +388,13 @@
             this.statusLabelDecodeCount.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.statusLabelDecodeCount.DoubleClickEnabled = true;
             this.statusLabelDecodeCount.Name = "statusLabelDecodeCount";
-            this.statusLabelDecodeCount.Size = new System.Drawing.Size(87, 17);
+            this.statusLabelDecodeCount.Size = new System.Drawing.Size(97, 21);
             this.statusLabelDecodeCount.Text = "Code Found: 0";
             // 
             // statusLabelInfo
             // 
             this.statusLabelInfo.Name = "statusLabelInfo";
-            this.statusLabelInfo.Size = new System.Drawing.Size(404, 17);
+            this.statusLabelInfo.Size = new System.Drawing.Size(379, 21);
             this.statusLabelInfo.Spring = true;
             this.statusLabelInfo.Text = "Ready";
             this.statusLabelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -409,7 +407,7 @@
             this.btnQRInput.Image = ((System.Drawing.Image)(resources.GetObject("btnQRInput.Image")));
             this.btnQRInput.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnQRInput.Name = "btnQRInput";
-            this.btnQRInput.Size = new System.Drawing.Size(32, 20);
+            this.btnQRInput.Size = new System.Drawing.Size(32, 24);
             this.btnQRInput.Text = "QR Input Form";
             this.btnQRInput.ToolTipText = "Special QR Information Input";
             this.btnQRInput.ButtonClick += new System.EventHandler(this.btnQRInput_ButtonClick);
@@ -417,7 +415,7 @@
             // miLogoItems
             // 
             this.miLogoItems.Name = "miLogoItems";
-            this.miLogoItems.Size = new System.Drawing.Size(94, 22);
+            this.miLogoItems.Size = new System.Drawing.Size(106, 22);
             this.miLogoItems.Text = "Logo";
             this.miLogoItems.DropDownOpening += new System.EventHandler(this.logoItems_DropDownOpening);
             this.miLogoItems.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.logoItems_DropDownItemClicked);
@@ -500,7 +498,7 @@
         private System.Windows.Forms.ToolStripMenuItem miLogoItems;
         private System.Windows.Forms.CheckBox cbDecodeUTF8;
         private System.Windows.Forms.Label label1;
-        public System.Windows.Forms.RichTextBox edText;
+        protected System.Windows.Forms.RichTextBox edText;
     }
 }
 

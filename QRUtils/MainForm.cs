@@ -889,38 +889,28 @@ namespace QRUtils
             edText.Text = Clipboard.GetText( TextDataFormat.UnicodeText );
         }
 
-        private void edText_KeyPress( object sender, KeyPressEventArgs e )
+        private void edText_KeyDown(object sender, KeyEventArgs e)
         {
-            bool ctrl = ((Control.ModifierKeys & Keys.Control) == Keys.Control);
-            if( e.KeyChar == 'V' && ctrl)
-            {
-
-            }
-
-        }
-
-        private void edText_KeyUp( object sender, KeyEventArgs e )
-        {
-            if ( ( e.Control && e.KeyCode == Keys.V ) || 
-                 ( e.Shift && e.KeyCode == Keys.I ) ||
-                 ( e.Modifiers == Keys.Control && e.KeyCode == Keys.V ||
-                 ( e.Modifiers == Keys.Shift && e.KeyCode == Keys.I ) ) ||
-                 ( e.Modifiers == Keys.ControlKey && e.KeyCode == Keys.V ||
-                 ( e.Modifiers == Keys.ShiftKey && e.KeyCode == Keys.I ) ) )
+            if ((e.Control && e.KeyCode == Keys.V) ||
+                 (e.Shift && e.KeyCode == Keys.I) ||
+                 (e.Modifiers == Keys.Control && e.KeyCode == Keys.V ||
+                 (e.Modifiers == Keys.Shift && e.KeyCode == Keys.I)) ||
+                 (e.Modifiers == Keys.ControlKey && e.KeyCode == Keys.V ||
+                 (e.Modifiers == Keys.ShiftKey && e.KeyCode == Keys.I)))
             {
                 lastText = edText.Text;
                 lastCursor = edText.SelectionStart;
 
-                if ( edText.SelectionLength > 0 )
+                if (edText.SelectionLength > 0)
                 {
-                    edText.Text = edText.Text.Remove( edText.SelectionStart, edText.SelectionLength );
+                    edText.Text = edText.Text.Remove(edText.SelectionStart, edText.SelectionLength);
                     edText.SelectionStart = lastCursor;
                 }
                 var cliptext = Clipboard.GetText(TextDataFormat.UnicodeText);
-                string text = edText.Text.Insert( edText.SelectionStart, cliptext );
-                if ( text.Length > MAX_TEXT )
+                string text = edText.Text.Insert(edText.SelectionStart, cliptext);
+                if (text.Length > MAX_TEXT)
                 {
-                    edText.Text = text.Substring( 0, MAX_TEXT );
+                    edText.Text = text.Substring(0, MAX_TEXT);
                 }
                 else
                 {
@@ -929,9 +919,9 @@ namespace QRUtils
                 edText.SelectionStart = lastCursor + cliptext.Length;
                 e.Handled = true;
             }
-            else if ( e.Control && e.KeyCode == Keys.Z )
+            else if (e.Control && e.KeyCode == Keys.Z)
             {
-                if ( !edText.CanUndo )
+                if (!edText.CanUndo)
                 {
                     edText.Text = lastText;
                     edText.SelectionStart = lastCursor;
@@ -944,26 +934,6 @@ namespace QRUtils
         {
             //status.Items[1]
             statusLabelTextCount.Text = string.Format( I18N._( "Text Count: {0}" ), edText.Text.Length.ToString() );
-        }
-
-        private void picMaskColor_Click( object sender, EventArgs e )
-        {
-            colorDlg.Color = picMaskColor.BackColor;
-            colorDlg.ShowDialog();
-            picMaskColor.BackColor = colorDlg.Color;
-            maskColor = colorDlg.Color;
-
-            try
-            {
-                appSection.Settings["MaskColor"].Value = ColorTranslator.ToHtml( maskColor );
-            }
-            catch
-            {
-                appSection.Settings.Add( "MaskColor", ColorTranslator.ToHtml( maskColor ) );
-            }
-
-            //appSection.Settings["MaskColor"].Value = $"{colorDlg.Color.R}, {colorDlg.Color.G}, {colorDlg.Color.B}, {colorDlg.Color.A}";
-            config.Save();
         }
 
         private void cbErrorLevel_SelectedIndexChanged( object sender, EventArgs e )
@@ -1016,6 +986,15 @@ namespace QRUtils
             else
             {
                 if ( chkMultiDecode.Checked ) chkDecodeFormatQR.Checked = true;
+            }
+        }
+
+        private void chkOverLogo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.Visible)
+            {
+                appSection.Settings["OverlayLogo"].Value = chkDecodeFormatQR.Checked.ToString();
+                config.Save();
             }
         }
 
@@ -1119,20 +1098,31 @@ namespace QRUtils
             form.Dispose();
         }
 
+        private void picMaskColor_Click(object sender, EventArgs e)
+        {
+            colorDlg.Color = picMaskColor.BackColor;
+            colorDlg.ShowDialog();
+            picMaskColor.BackColor = colorDlg.Color;
+            maskColor = colorDlg.Color;
+
+            try
+            {
+                appSection.Settings["MaskColor"].Value = ColorTranslator.ToHtml(maskColor);
+            }
+            catch
+            {
+                appSection.Settings.Add("MaskColor", ColorTranslator.ToHtml(maskColor));
+            }
+
+            //appSection.Settings["MaskColor"].Value = $"{colorDlg.Color.R}, {colorDlg.Color.G}, {colorDlg.Color.B}, {colorDlg.Color.A}";
+            config.Save();
+        }
+
         private void picQR_DoubleClick( object sender, EventArgs e )
         {
             var timestamp = DateTime.Now.ToString( "yyyyMMddTHHmmsszz" );
             var errorlevel = cbErrorLevel.Text;
             picQR.Image.Save( $"QR_{timestamp}_{errorlevel}.png" );
-        }
-
-        private void chkOverLogo_CheckedChanged( object sender, EventArgs e )
-        {
-            if ( this.Visible )
-            {
-                appSection.Settings["OverlayLogo"].Value = chkDecodeFormatQR.Checked.ToString();
-                config.Save();
-            }
         }
 
         private void logoItems_DropDownItemClicked( object sender, ToolStripItemClickedEventArgs e )
