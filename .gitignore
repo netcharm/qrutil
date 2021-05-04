@@ -2,3 +2,4 @@
 *.user
 /QRUtils/bin
 /QRUtils/obj
+/packages/ZXing.Net.0.16.6
